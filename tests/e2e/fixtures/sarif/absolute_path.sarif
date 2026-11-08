@@ -1,0 +1,43 @@
+{
+  "$schema": "https://docs.oasis-open.org/sarif/sarif/v2.1.0/cos02/schemas/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "fixture",
+          "informationUri": "https://example.invalid/cbe",
+          "rules": [
+            {
+              "id": "CBE-SECRET-001",
+              "name": "FixtureRule"
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "CBE-SECRET-001",
+          "ruleIndex": 0,
+          "level": "error",
+          "message": {
+            "text": "fixture finding"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "C:/repo/src/a.py"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

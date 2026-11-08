@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cbe.cyberbutler.dev/schemas/v1.7/release-train.schema.json",
+  "title": "CBE release train components v1.7",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "components"],
+  "properties": {
+    "schema_version": {
+      "const": "1"
+    },
+    "components": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cbm", "cbc"],
+      "properties": {
+        "cbm": {
+          "$ref": "#/$defs/component"
+        },
+        "cbc": {
+          "$ref": "#/$defs/component"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "component": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["declared_attached", "status"],
+      "properties": {
+        "declared_attached": {
+          "type": "boolean"
+        },
+        "status": {
+          "enum": [
+            "PASS",
+            "NOT_UPLOADED",
+            "SKIPPED_INFRA",
+            "PRECONDITION_FAIL",
+            "EVIDENCE_ABSENT"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        }
+      }
+    }
+  }
+}

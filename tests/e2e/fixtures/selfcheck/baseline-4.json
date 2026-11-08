@@ -1,0 +1,8 @@
+{
+  "schema_version": "1",
+  "exit_code": 4,
+  "gate_status": "FAIL",
+  "error": {
+    "code": "SKIP_RATIO_EXCEEDED"
+  }
+}

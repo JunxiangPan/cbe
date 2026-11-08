@@ -1,0 +1,30 @@
+{
+  "schema_version": "1",
+  "pack_id": "cbe-min",
+  "pack_version": "0.1.0",
+  "description": "Minimal valid CBE manifest fixture",
+  "package_types": [
+    "cbe"
+  ],
+  "providers": {
+    "builtin-manifest": {
+      "kind": "builtin",
+      "output_formats": [
+        "json"
+      ]
+    }
+  },
+  "rules": [
+    {
+      "rule_id": "CBE-QUALITY-001",
+      "title": "Minimal advisory rule",
+      "severity": "warning",
+      "gate": "advisory",
+      "provider": "builtin-manifest",
+      "version_constraint": "*",
+      "package_types": [
+        "cbe"
+      ]
+    }
+  ]
+}

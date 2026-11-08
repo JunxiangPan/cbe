@@ -1,0 +1,14 @@
+{
+  "schema_version": "1",
+  "components": {
+    "cbm": {
+      "declared_attached": true,
+      "status": "EVIDENCE_ABSENT",
+      "reason": "no artifact"
+    },
+    "cbc": {
+      "declared_attached": false,
+      "status": "NOT_UPLOADED"
+    }
+  }
+}

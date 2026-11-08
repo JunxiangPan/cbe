@@ -1,0 +1,8 @@
+name: bypass
+on: [push]
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - run: cbe run-provider --all
+        continue-on-error: true

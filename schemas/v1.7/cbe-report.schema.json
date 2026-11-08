@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cbe.cyberbutler.dev/schemas/v1.7/cbe-report.schema.json",
+  "title": "CBE report v1.7 with report identity",
+  "description": "CBE-local proposal. CBS must update schemas/v1.7/cbe-report.schema.json to match before this is contract-conformant.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "package_id",
+    "producer_id",
+    "version",
+    "tag",
+    "gate_status",
+    "exit_code",
+    "applicable_count",
+    "skip_count",
+    "skip_ratio",
+    "blocking_skip",
+    "warn_count",
+    "rules_manifest_hash",
+    "sarif_paths",
+    "evidence_sha256"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1"
+    },
+    "package_id": {
+      "enum": ["cbs", "cbe", "cbp", "cbm", "cbc", "cbg"]
+    },
+    "producer_id": {
+      "const": "cbe"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "tag": {
+      "type": "string",
+      "pattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "gate_status": {
+      "enum": ["PASS", "FAIL", "SKIPPED_INFRA", "PRECONDITION_FAIL"]
+    },
+    "exit_code": {
+      "type": "integer",
+      "enum": [0, 2, 3, 4]
+    },
+    "applicable_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "skip_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "skip_ratio": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "blocking_skip": {
+      "type": "boolean"
+    },
+    "warn_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "rules_manifest_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "sarif_paths": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "evidence_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

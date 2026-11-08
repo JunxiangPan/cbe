@@ -1,0 +1,89 @@
+--- a/docs/v1.7/CONTRACT.md
++++ b/docs/v1.7/CONTRACT.md
+@@ -67,8 +67,21 @@
+ - A non-applicable rule is emitted as `SKIPPED` with a reason, but is not in
+   the denominator.
+ - `skip_ratio = skip_count / applicable_count`, with `applicable_count > 0`.
+ - A SKIP over 20% exits `4`.
++
++F2 blocking set:
++
++```text
++F2 blocking set =
++  the three structural checks (manifest validation, no-bypass enforcement,
++  provider output missing/invalid)
++  + any manifest rule with gate: "blocking".
++
++advisory rules enter the SKIP denominator; blocking rules do not, and may not
++be SKIPPED. A blocking rule's package_types must equal the manifest's top-level
++package_types, so a blocking rule can never become non-applicable/SKIPPED.
++```
+ 
+ ### F3 — CBP SKIP denominator
+ 
+ Same structure as F2.
+@@ -210,8 +223,9 @@
+ ```json
+ {
+   "schema_version": "1",
+   "package_id": "cbe",
++  "producer_id": "cbe",
+   "version": "vX.Y.Z",
+   "tag": "vX.Y.Z",
+   "gate_status": "PASS|FAIL|SKIPPED_INFRA|PRECONDITION_FAIL",
+   "exit_code": 0,
+@@ -219,20 +233,39 @@
+   "skip_count": 0,
+   "skip_ratio": 0.0,
+   "blocking_skip": false,
+   "warn_count": 0,
+-  "rules_manifest_hash": "sha256:...",
++  "rules_manifest_hash": "<64 lowercase hex>",
+   "sarif_paths": [],
+-  "evidence_sha256": "sha256:..."
++  "evidence_sha256": "<64 lowercase hex>"
+ }
+ ```
++
++### 5.1 Report identity
++
++- `package_id` is the **subject package** being verified (`cbs`, `cbe`, `cbp`,
++  `cbm`, `cbc`, `cbg`).
++- `producer_id` is the component that produced the report (`cbe`, `cbp`).
++- `version` and `tag` are the subject package's version, not the producer's
++  version.
++- A consumer checks `package_id` against its own package name; `producer_id`
++  is for traceability only.
++
++### 5.2 Hash representation
++
++The `"sha256:..."` forms in the examples are algorithm annotations, not part of
++the value. Schema fields (`rules_manifest_hash`, `evidence_sha256`,
++`artifact_hashes.*`) are bare 64-character lowercase hexadecimal strings. An
++input carrying a `sha256:` prefix is an input error (exit `2`); a tool must not
++silently strip the prefix.
+ 
+ ### CBP quality manifest
+ 
+ ```json
+ {
+   "schema_version": "1",
+   "package_id": "cbp",
++  "producer_id": "cbp",
+   "version": "vX.Y.Z",
+   "gate_status": "PASS|FAIL|SKIPPED_INFRA|PRECONDITION_FAIL",
+   "applicable_gate_count": 0,
+   "skip_count": 0,
+@@ -241,10 +274,10 @@
+   "gates": [
+     {"name": "encoding", "status": "PASS|FAIL|SKIPPED", "reason": ""}
+   ],
+   "artifact_hashes": {},
+-  "release_body_hash": "sha256:...",
+-  "evidence_sha256": "sha256:..."
++  "release_body_hash": "<64 lowercase hex>",
++  "evidence_sha256": "<64 lowercase hex>"
+ }
+ ```
+ 
+ Missing required fields: exit `2`, status `FAIL`.

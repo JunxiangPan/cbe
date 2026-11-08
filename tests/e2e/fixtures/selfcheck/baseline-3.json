@@ -1,0 +1,8 @@
+{
+  "schema_version": "1",
+  "exit_code": 3,
+  "gate_status": "FAIL",
+  "error": {
+    "code": "GATE_FAILED"
+  }
+}

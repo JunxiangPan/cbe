@@ -1,0 +1,9 @@
+{
+  "cbe": {
+    "rules": {
+      "exclude": [
+        "CBE-SECRET-001"
+      ]
+    }
+  }
+}

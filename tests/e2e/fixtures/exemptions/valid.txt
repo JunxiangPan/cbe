@@ -1,0 +1,1 @@
+SKIPPED: CBE-QUALITY-001 reason=legacy fixture, tracked in ISSUE-42

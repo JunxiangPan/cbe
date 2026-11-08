@@ -1,0 +1,4 @@
+cbe:
+  rules:
+    disable:
+      - CBE-SECRET-001

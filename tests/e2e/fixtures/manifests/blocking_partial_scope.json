@@ -1,0 +1,80 @@
+{
+  "schema_version": "1",
+  "pack_id": "cbe-core",
+  "pack_version": "0.1.0",
+  "description": "Full CBE manifest fixture",
+  "package_types": [
+    "cbs",
+    "cbe"
+  ],
+  "providers": {
+    "builtin-manifest": {
+      "kind": "builtin",
+      "output_formats": [
+        "json"
+      ]
+    },
+    "gitleaks": {
+      "kind": "exec",
+      "output_formats": [
+        "sarif"
+      ],
+      "command": [
+        "python",
+        "tests/e2e/fixtures/providers/sarif_findings.py",
+        "{out}/gitleaks.sarif"
+      ],
+      "timeout_seconds": 300
+    }
+  },
+  "rules": [
+    {
+      "rule_id": "CBE-SECRET-001",
+      "title": "No hardcoded secrets",
+      "description": "Blocking secret finding fixture",
+      "severity": "error",
+      "gate": "blocking",
+      "provider": "gitleaks",
+      "provider_rule_ids": [
+        "generic-api-key",
+        "aws-access-token"
+      ],
+      "version_constraint": ">=0.1.0 <2.0.0",
+      "package_types": [
+        "cbs"
+      ],
+      "tags": [
+        "security",
+        "secrets"
+      ],
+      "sarif": {
+        "name": "NoHardcodedSecrets",
+        "short_description": "Hardcoded secret detected",
+        "help_uri": "https://example.invalid/cbe/CBE-SECRET-001"
+      }
+    },
+    {
+      "rule_id": "CBE-QUALITY-001",
+      "title": "Manifest quality advisory",
+      "severity": "warning",
+      "gate": "advisory",
+      "provider": "builtin-manifest",
+      "version_constraint": "*",
+      "package_types": [
+        "cbs",
+        "cbe"
+      ]
+    },
+    {
+      "rule_id": "CBE-QUALITY-002",
+      "title": "CBS-only advisory",
+      "severity": "note",
+      "gate": "advisory",
+      "provider": "builtin-manifest",
+      "version_constraint": "*",
+      "package_types": [
+        "cbs"
+      ]
+    }
+  ]
+}
