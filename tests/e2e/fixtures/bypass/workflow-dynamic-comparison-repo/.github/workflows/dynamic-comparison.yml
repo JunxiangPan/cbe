@@ -1,0 +1,8 @@
+name: dynamic-comparison-gate
+on: [push]
+jobs:
+  cbe-gate:
+    if: ${{ inputs.foo == inputs.bar }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: cbe validate-manifest --manifest rules.json

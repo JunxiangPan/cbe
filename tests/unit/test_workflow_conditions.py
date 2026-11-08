@@ -34,6 +34,8 @@ def test_literal_boolean_expressions_are_evaluated() -> None:
 
 def test_dynamic_context_is_unknown() -> None:
     assert _evaluate_condition("${{ inputs.skip_cbe == 'true' }}")[0] == "unknown"
+    assert _evaluate_condition("${{ inputs.foo == inputs.bar }}")[0] == "unknown"
+    assert _evaluate_condition("${{ env.FOO() == true }}")[0] == "unknown"
     assert _evaluate_condition("${{ vars.SKIP_CBE }}")[0] == "unknown"
     assert _evaluate_condition("${{ github.event_name == 'pull_request' }}")[0] == "unknown"
     assert _evaluate_condition("${{ needs.preflight.result == 'success' }}")[0] == "unknown"

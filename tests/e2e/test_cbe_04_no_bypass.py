@@ -121,6 +121,7 @@ def test_reachable_cbe_gate_passes() -> None:
         ("workflow-dynamic-if-repo", "UNVERIFIABLE_CONDITION"),
         ("workflow-dynamic-needs-repo", "UNVERIFIABLE_NEEDS_CHAIN"),
         ("workflow-env-call-repo", "UNVERIFIABLE_CONDITION"),
+        ("workflow-dynamic-comparison-repo", "UNVERIFIABLE_CONDITION"),
     ],
 )
 def test_unverifiable_workflow_conditions_warn_without_failing(repo: str, warning_code: str) -> None:

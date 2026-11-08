@@ -4,16 +4,16 @@ CBE is the rule-pack manifest, provider execution, no-bypass enforcement, and
 SARIF evidence gate for the Cyber-Butler release train. It is a sibling project
 to `public-release` (CBS), `cbp-action-release` (CBP), and `cbm`.
 
-Status: **commit 6**. Commit 1 froze the manifest schema, the five CLI
+Status: **commit 7**. Commit 1 froze the manifest schema, the five CLI
 interfaces, and the E2E fixtures. Commit 2 added the manifest validator
 (P0-03). Commit 3 added `enforce-no-bypass` (P0-04), the `RuleSet` shared model,
 `run_e2e.py`, and CBE-01..CBE-04 E2E. Commit 4 added workflow gate-skip
-detection (P0-04.5). Commit 5 added static-analysis warnings. Commit 6 adds the
-restricted-evaluator security evidence (`env.FOO()` is unknown, never executed),
-`warn_count` in `enforce-no-bypass`, B-32 report/body pending, and the CBE-07a/b
-split with an explicit counted SKIP. `run-provider`, `symbol-index`, and
-`emit-sarif` still return exit 3 `NOT_IMPLEMENTED`; actual rule packs are not
-part of this repository yet.
+detection (P0-04.5). Commit 5 added static-analysis warnings. Commit 6 added the
+restricted-evaluator security evidence, `warn_count`, and the CBE-07a/b split.
+Commit 7 adds the dynamic-comparison test, the B-32 consequence text, the
+Ubuntu+Windows CI matrix, and the coverage gate. `run-provider`,
+`symbol-index`, and `emit-sarif` still return exit 3 `NOT_IMPLEMENTED`; actual
+rule packs are not part of this repository yet.
 
 ## Runtime dependencies
 
@@ -27,6 +27,13 @@ CBE is **not** zero-runtime-dependency. It declares:
 Both are in `pyproject.toml`. The workflow parser reads only the target
 repository's `.github/workflows/`; it does not execute workflow YAML or any
 GitHub expression.
+
+## CI
+
+`.github/workflows/cbe-e2e.yml` runs on `ubuntu-latest` and `windows-latest`
+with Python 3.10. Each job runs `tests/e2e/run_e2e.py` and a unit-test coverage
+gate (`--cov=cbe --cov-fail-under=60`). The gate covers measured unit-test
+coverage; E2E commands run in subprocesses and are not counted by coverage.
 
 ## Scope of the first commit
 

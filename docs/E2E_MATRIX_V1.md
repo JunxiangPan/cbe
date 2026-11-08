@@ -59,9 +59,10 @@ contract.
   `if: ${{ false }}` in its `needs` chain, an evaluable-false `!true`/`1 == 2`,
   or a commented-out `cbe-gate:` job exits 3 with
   `reason=WORKFLOW_SKIPS_CBE_GATE`; a reachable or statically true `cbe-gate`
-  passes. Dynamic `if`/`needs` conditions and `env.FOO()` exit 0 but emit
-  `UNVERIFIABLE_CONDITION` / `UNVERIFIABLE_NEEDS_CHAIN` warnings; they are not
-  silently treated as safe. `warn_count` equals `len(warnings)`.
+  passes. Dynamic `if`/`needs` conditions, `env.FOO()`, and
+  `inputs.foo == inputs.bar` exit 0 but emit `UNVERIFIABLE_CONDITION` /
+  `UNVERIFIABLE_NEEDS_CHAIN` warnings; they are not silently treated as safe.
+  `warn_count` equals `len(warnings)`.
 - Expected: 3 / `FAIL`; clean/reachable = 0; unknown flag = 2; 1/5 = 0; 2/5 = 4.
 
 ## CBE-05 — exemptions
@@ -173,6 +174,8 @@ tests/e2e/fixtures/
                     workflow-if-false-repo/, workflow-needs-repo/,
                     workflow-commented-repo/, reachable-repo/,
                     workflow-dynamic-if-repo/, workflow-dynamic-needs-repo/,
+                    workflow-dynamic-comparison-repo/,
+                    workflow-env-call-repo/,
                     workflow-negated-true-repo/, workflow-comparison-false-repo/,
                     workflow-static-true-repo/, clean-repo/
   exemptions/       valid.txt, missing_reason.txt, blocking.txt,

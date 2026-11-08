@@ -125,6 +125,7 @@ Static limits:
   `needs.*`, matrix/steps, functions such as `always()`) cannot be evaluated
   before the run. A `cbe-gate` with such an `if` emits warning
   `UNVERIFIABLE_CONDITION`; exit stays 0 unless another bypass exists.
+  This includes `inputs.foo == inputs.bar` and `env.FOO() == true`.
 - A `needs` chain containing such a condition emits
   `UNVERIFIABLE_NEEDS_CHAIN`; it is not silently treated as reachable.
 - The evaluator is a **restricted literal parser**, not Python `eval`. It

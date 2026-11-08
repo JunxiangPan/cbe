@@ -43,6 +43,12 @@ Status values:
 | B-31 | CBE-07 / CBP interop | CBP `report_aggregator.py:32/43` passes external rule IDs through; CBE-* can enter CBP SARIF | Cross-namespace violation; CBE-07 cannot test CBP consumption yet | **PENDING-CBP**: fix the aggregator to preserve `CBE-*` without rewriting. CBE-07 is split: 07a (CBE emits `CBE-*`) must PASS; 07b (CBP consumes and preserves) is explicit SKIP `CBP_REPORT_AGGREGATOR_NOT_FIXED`, non-blocking applicable, counted in `skip_count` and visible |
 | B-32 | §5 report / Release body | `enforce-no-bypass` now emits `warn_count`, but `cbe-report.json` and Release body assembly are not implemented | Unverifiable conditions could be JSON-only and absent from the audited report/body | **PENDING-IMPL P0-05**: report assembly sums command `warn_count`; Section B lists the count and warning codes. Until then CBE must not claim report/body visibility |
 
+**B-32 consequence:** until P0-05 report assembly lands,
+`UNVERIFIABLE_CONDITION` / `UNVERIFIABLE_NEEDS_CHAIN` are visible only in
+per-command JSON, not in `cbe-report.json` or Release body Section B. Auditors
+reading the report/body cannot see workflow conditional-skip risk. Do not claim
+“dynamic conditions are machine-visible” until B-32 is closed.
+
 ## P0 blockers at start of implementation
 
 The five blockers named in review were B-00, B-01, B-03, B-04, B-08. Current

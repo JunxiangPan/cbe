@@ -8,6 +8,7 @@ dist/
 .pytest_cache/
 .pytest-tmp/
 .pytest-tmp-e2e/
+.pytest-tmp-coverage/
 .mypy_cache/
 .coverage
 coverage.json
