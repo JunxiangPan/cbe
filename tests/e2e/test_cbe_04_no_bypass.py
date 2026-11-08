@@ -120,6 +120,7 @@ def test_reachable_cbe_gate_passes() -> None:
     [
         ("workflow-dynamic-if-repo", "UNVERIFIABLE_CONDITION"),
         ("workflow-dynamic-needs-repo", "UNVERIFIABLE_NEEDS_CHAIN"),
+        ("workflow-env-call-repo", "UNVERIFIABLE_CONDITION"),
     ],
 )
 def test_unverifiable_workflow_conditions_warn_without_failing(repo: str, warning_code: str) -> None:
@@ -134,6 +135,7 @@ def test_unverifiable_workflow_conditions_warn_without_failing(repo: str, warnin
     assert data["gate_status"] == "PASS"
     assert data["bypass_attempts"] == []
     assert any(warning["code"] == warning_code for warning in data["warnings"])
+    assert data["warn_count"] == len(data["warnings"])
 
 
 @pytest.mark.parametrize(

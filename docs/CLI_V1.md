@@ -203,7 +203,10 @@ SKIPPED: CBE-QUALITY-001 reason=legacy fixture, tracked in ISSUE-42
   denominator.
 - Output keys: `bypass_attempts`, `exemptions`, `scanned`,
   `applicable_count`, `skip_count`, `not_applicable_count`, `skip_ratio`,
-  `blocking_skip`, `blocking_applicable_count`.
+  `blocking_skip`, `blocking_applicable_count`, `warn_count`, `warnings`.
+- `warn_count == len(warnings)` and includes `UNVERIFIABLE_CONDITION`,
+  `UNVERIFIABLE_NEEDS_CHAIN`, `EXEMPTION_NOT_APPLICABLE`, `NO_ADVISORY_CHECKS`,
+  and manifest warnings. It is machine-readable output, not stderr-only.
 - Each `bypass_attempts[]` entry includes `reason`. A skipped gate job carries
   `reason=WORKFLOW_SKIPS_CBE_GATE`; `continue-on-error`/`|| true` entries carry
   an empty reason and remain generic workflow bypasses.
@@ -253,6 +256,12 @@ F2/F4/F5/F6 live there, not in a `cbe` subcommand.
 - `skip_count * 5 > applicable_count` → exit 4; exactly 20% passes.
 - `blocking_skip=true` → exit 3.
 - `SKIPPED_INFRA` and `NOT_UPLOADED` never enter the skip ratio.
+- `warn_count` is the sum of the five command outputs' `warn_count` values. It
+  must include `UNVERIFIABLE_CONDITION` / `UNVERIFIABLE_NEEDS_CHAIN`; Release
+  body Section B must list the count and warning codes. This report/body wiring
+  is **PENDING-IMPL** until `tools/cbe_gate.py` and the body generator land;
+  until then, `enforce-no-bypass` emits `warn_count` in JSON but CBE does not
+  claim it is already visible in `cbe-report.json` or the Release body.
 
 F4 baseline and release-train handling are specified in
 `CONTRACT_AMENDMENTS_PROPOSED.md` and `DECISIONS.md`; the implementation lands

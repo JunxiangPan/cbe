@@ -4,25 +4,29 @@ CBE is the rule-pack manifest, provider execution, no-bypass enforcement, and
 SARIF evidence gate for the Cyber-Butler release train. It is a sibling project
 to `public-release` (CBS), `cbp-action-release` (CBP), and `cbm`.
 
-Status: **commit 5**. Commit 1 froze the manifest schema, the five CLI
+Status: **commit 6**. Commit 1 froze the manifest schema, the five CLI
 interfaces, and the E2E fixtures. Commit 2 added the manifest validator
 (P0-03). Commit 3 added `enforce-no-bypass` (P0-04), the `RuleSet` shared model,
 `run_e2e.py`, and CBE-01..CBE-04 E2E. Commit 4 added workflow gate-skip
-detection (P0-04.5). Commit 5 adds the static-analysis warnings for dynamic
-workflow conditions and `needs` chains, plus the PyYAML/runtime-dependency and
-CBP-interop boundary notes. `run-provider`, `symbol-index`, and `emit-sarif`
-still return exit 3 `NOT_IMPLEMENTED`; actual rule packs are not part of this
-repository yet.
+detection (P0-04.5). Commit 5 added static-analysis warnings. Commit 6 adds the
+restricted-evaluator security evidence (`env.FOO()` is unknown, never executed),
+`warn_count` in `enforce-no-bypass`, B-32 report/body pending, and the CBE-07a/b
+split with an explicit counted SKIP. `run-provider`, `symbol-index`, and
+`emit-sarif` still return exit 3 `NOT_IMPLEMENTED`; actual rule packs are not
+part of this repository yet.
 
 ## Runtime dependencies
 
 CBE is **not** zero-runtime-dependency. It declares:
 
-- `jsonschema>=4.20` — manifest/report validation.
-- `pyyaml>=6.0` — target GitHub Actions workflow parsing.
+| Dependency | Used by | Notes |
+|---|---|---|
+| `jsonschema>=4.20` | `validate-manifest`; any command that loads a manifest | core dependency |
+| `pyyaml>=6.0` | `enforce-no-bypass --workflows` | target GitHub Actions YAML parsing; currently a core dependency, not an optional extra |
 
 Both are in `pyproject.toml`. The workflow parser reads only the target
-repository's `.github/workflows/`; it does not execute workflow YAML.
+repository's `.github/workflows/`; it does not execute workflow YAML or any
+GitHub expression.
 
 ## Scope of the first commit
 
@@ -77,6 +81,17 @@ No security rule implementation is included in the first commit.
 - B-30 static-analysis limits, B-31 CBP `report_aggregator.py` interop block,
   and CBE-08 “rewrite, not re-assert” wording.
 - Runtime dependencies documented: jsonschema + PyYAML.
+
+## Commit 6 scope
+
+- Restricted condition evaluator evidence: `env.FOO()` and
+  `__import__('os')...` are `UNVERIFIABLE_CONDITION`, never executed.
+- `warn_count` in `enforce-no-bypass` JSON, equal to `len(warnings)`.
+- B-32: `warn_count` must flow into `cbe-report.json` and Release body Section B
+  in P0-05; not claimed before that wiring exists.
+- CBE-07 split: 07a (CBE output `CBE-*`) must PASS; 07b (CBP consumes and
+  preserves) explicit SKIP `CBP_REPORT_AGGREGATOR_NOT_FIXED`, counted in
+  `skip_count`, visible.
 
 `run-provider`, `symbol-index`, and `emit-sarif` remain skeleton stubs in this
 commit.

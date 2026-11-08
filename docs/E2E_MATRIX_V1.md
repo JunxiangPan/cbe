@@ -59,9 +59,9 @@ contract.
   `if: ${{ false }}` in its `needs` chain, an evaluable-false `!true`/`1 == 2`,
   or a commented-out `cbe-gate:` job exits 3 with
   `reason=WORKFLOW_SKIPS_CBE_GATE`; a reachable or statically true `cbe-gate`
-  passes. Dynamic `if`/`needs` conditions exit 0 but emit
+  passes. Dynamic `if`/`needs` conditions and `env.FOO()` exit 0 but emit
   `UNVERIFIABLE_CONDITION` / `UNVERIFIABLE_NEEDS_CHAIN` warnings; they are not
-  silently treated as safe.
+  silently treated as safe. `warn_count` equals `len(warnings)`.
 - Expected: 3 / `FAIL`; clean/reachable = 0; unknown flag = 2; 1/5 = 0; 2/5 = 4.
 
 ## CBE-05 — exemptions
@@ -86,25 +86,25 @@ contract.
   mapping works, unmapped id fails.
 - Expected: 0 / `PASS`; 3 / `FAIL`; timeout 3 / `SKIPPED_INFRA`.
 
-## CBE-07 — SARIF
+## CBE-07 — SARIF (split 07a / 07b)
 
 - File: `tests/e2e/test_cbe_07_sarif.py`
 - Fixtures: `sarif/valid.sarif`, `cbp_namespace.sarif`,
   `bad_rule_index.sarif`, `absolute_path.sarif`, `missing_rule.sarif`,
-  `no_runs.sarif`
-- Check: SARIF 2.1.0 schema; only `CBE-*`; ruleIndex/level/message/location;
-  relative POSIX paths; no runs is invalid; merged output is Code Scanning
-  ingestible.
-- Expected: 0 for valid; 3 for invalid/cross-namespace/absolute path.
-- Interop acceptance (CBP P0-06, not CBE implementation): CBE SARIF must be
-  consumable by CBP `--rules-path`; CBP's custom gate consumes the rules and
-  does not re-emit SARIF; when CBE rules cross into CBP, `CBE-*` IDs are
-  preserved, never rewritten to `CBP-*`. CBE guarantees only `CBE-*` output;
-  CBP owns the consumption check.
-- **Blocked on CBP:** `report_aggregator.py:32/43` currently passes external
-  rule IDs through, so it can put `CBE-*` into CBP's SARIF. Until CBP fixes
-  that, CBE-07 can test only “CBE emits `CBE-*`”, not “CBP consumes and
-  preserves `CBE-*`”. The cross-repo check is a CBP acceptance item.
+  `no_runs.sarif`, `cbp-consumer-skip.json`
+- **CBE-07a — CBE output:** must PASS. SARIF 2.1.0 schema; only `CBE-*`;
+  ruleIndex/level/message/location; relative POSIX paths; no runs is invalid;
+  merged output is Code Scanning ingestible. Expected: 0 for valid; 3 for
+  invalid/cross-namespace/absolute path.
+- **CBE-07b — CBP consumption:** explicit `SKIP` while
+  `report_aggregator.py:32/43` is unfixed. `skip_reason=CBP_REPORT_AGGREGATOR_NOT_FIXED`,
+  `blocking=false`, `applicable=true`, `counted_in_skip_denominator=true`;
+  it appears in `skip_count` and in the Release body. SKIP is not PASS and is
+  not hidden. Once CBP fixes the aggregator, 07b becomes a real assertion:
+  CBP consumes CBE SARIF and preserves `CBE-*`, never rewrites to `CBP-*`.
+- Interop contract: CBE guarantees only `CBE-*` output; CBP's custom gate
+  consumes the rules and does not re-emit SARIF. The consumed-view check belongs
+  to CBP.
 
 ## CBE-08 — F2 denominator
 
@@ -180,7 +180,8 @@ tests/e2e/fixtures/
                     inline_comment.py, not_applicable.txt
   releases/         releases.json, erratum_body.md
   sarif/            valid.sarif, cbp_namespace.sarif, bad_rule_index.sarif,
-                    absolute_path.sarif, missing_rule.sarif, no_runs.sarif
+                    absolute_path.sarif, missing_rule.sarif, no_runs.sarif,
+                    cbp-consumer-skip.json
   release-train/    not-uploaded.json, declared-attached.json,
                     evidence-absent.json
   selfcheck/        baseline-0.0.9/, current-manifest.json, current-output/,

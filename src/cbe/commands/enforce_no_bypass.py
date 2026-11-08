@@ -331,6 +331,12 @@ def _evaluate_condition(value: Any) -> tuple[str, str]:
         "failure(",
         "cancelled(",
         "hashfiles(",
+        "__import__",
+        "system(",
+        "popen(",
+        "subprocess",
+        "eval(",
+        "exec(",
     )
     if any(marker in lowered for marker in dynamic_markers):
         return ("unknown", f"dynamic expression: {expression}")
@@ -625,6 +631,7 @@ def _inspection_failure(inspection: Inspection) -> dict[str, Any] | None:
         "not_applicable_count": 0,
         "skip_ratio": 0.0,
         "blocking_skip": False,
+        "warn_count": 0,
         "error": {
             "code": "MANIFEST_INVALID",
             "message": "manifest failed schema or semantic validation",
@@ -671,6 +678,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             "not_applicable_count": inspection.not_applicable_rule_count or 0,
             "skip_ratio": 0.0,
             "blocking_skip": False,
+            "warn_count": len(inspection.warnings),
             "error": {
                 "code": "EXEMPTIONS_INVALID",
                 "message": "exemption file is invalid",
@@ -752,6 +760,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "skip_ratio": round(skip_ratio, 6),
         "blocking_skip": blocking_skip,
         "blocking_applicable_count": blocking_count,
+        "warn_count": len(state.warnings),
         "error": error,
         "warnings": state.warnings,
     }

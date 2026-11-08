@@ -1,4 +1,4 @@
-# CBE v1.7 boundary ledger (B-00..B-31)
+# CBE v1.7 boundary ledger (B-00..B-32)
 
 Status values:
 
@@ -39,8 +39,9 @@ Status values:
 | B-27 | process | `public-release` HEAD moved past 4a437df (it added §11 Build-once Profiles) | Patch/contract drift; wrong revision may be consumed | **PENDING-CBS**: v1.7.1 applies a rebased patch to the current tip; CBE remains pinned to 4a437df and must not apply it directly |
 | B-28 | F2 / P0-04 | Workflow scanner only detected `continue-on-error`/`|| true`, not a `cbe-gate` job skipped by `if: false`/`needs`/comment | Gate could be bypassed by never running it | **RESOLVED** in P0-04.5: job-graph parsing, exit 3 `reason=WORKFLOW_SKIPS_CBE_GATE`, CBE-04 subcases |
 | B-29 | CBE-08 / v1.7.1 | F2 blocking-set amendment is not yet published; CBE-08 can only assert the v1.7.1 draft | Claiming CBE-08 passed would be a false PASS | **PENDING-CBS v1.7.1**; CBE-08 remains draft and must not be reported as passed. If v1.7.1's final F2 set differs from the draft, CBE-08 must be rewritten, not merely re-asserted |
-| B-30 | P0-04.5 / static workflow analysis | Dynamic conditions (`inputs.*`, `vars.*`, `github.*`, functions) and dynamic `needs` chains cannot be evaluated before the run | A dynamic gate skip could be missed; claiming complete coverage would be false | **RESOLVED CBE-side as warning**: `UNVERIFIABLE_CONDITION` / `UNVERIFIABLE_NEEDS_CHAIN` warnings, never FAIL, never silent. Literal `!true` and `1 == 2` are evaluated and fail as `WORKFLOW_SKIPS_CBE_GATE` |
-| B-31 | CBE-07 / CBP interop | CBP `report_aggregator.py:32/43` passes external rule IDs through; CBE-* can enter CBP SARIF | Cross-namespace violation; CBE-07 cannot test CBP consumption yet | **PENDING-CBP**: fix the aggregator to preserve `CBE-*` without rewriting. Until then CBE-07 tests only CBE output, not CBP's consumed view |
+| B-30 | P0-04.5 / static workflow analysis | Dynamic conditions (`inputs.*`, `vars.*`, `github.*`, functions) and dynamic `needs` chains cannot be evaluated before the run | A dynamic gate skip could be missed; claiming complete coverage would be false | **RESOLVED CBE-side as warning**: `UNVERIFIABLE_CONDITION` / `UNVERIFIABLE_NEEDS_CHAIN` warnings, never FAIL, never silent. The evaluator is a restricted literal parser (booleans, numbers, `==`/`!=`, `&&`/`\|\|`/`!`), not Python `eval`; attribute access, indexing, and function calls are unknown |
+| B-31 | CBE-07 / CBP interop | CBP `report_aggregator.py:32/43` passes external rule IDs through; CBE-* can enter CBP SARIF | Cross-namespace violation; CBE-07 cannot test CBP consumption yet | **PENDING-CBP**: fix the aggregator to preserve `CBE-*` without rewriting. CBE-07 is split: 07a (CBE emits `CBE-*`) must PASS; 07b (CBP consumes and preserves) is explicit SKIP `CBP_REPORT_AGGREGATOR_NOT_FIXED`, non-blocking applicable, counted in `skip_count` and visible |
+| B-32 | §5 report / Release body | `enforce-no-bypass` now emits `warn_count`, but `cbe-report.json` and Release body assembly are not implemented | Unverifiable conditions could be JSON-only and absent from the audited report/body | **PENDING-IMPL P0-05**: report assembly sums command `warn_count`; Section B lists the count and warning codes. Until then CBE must not claim report/body visibility |
 
 ## P0 blockers at start of implementation
 
@@ -83,3 +84,5 @@ applies the amendments.
   `report_aggregator.py`; the consumed-view assertion is blocked.
 - CBE-08 is draft-only until CBS v1.7.1. If the final F2 set differs from the
   draft, rewrite the case rather than adjusting assertions.
+- B-32: `warn_count` is in command JSON but not yet in `cbe-report.json` or the
+  Release body. P0-05 must wire it before anyone claims audit visibility.

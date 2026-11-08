@@ -127,22 +127,38 @@ Static limits:
   `UNVERIFIABLE_CONDITION`; exit stays 0 unless another bypass exists.
 - A `needs` chain containing such a condition emits
   `UNVERIFIABLE_NEEDS_CHAIN`; it is not silently treated as reachable.
+- The evaluator is a **restricted literal parser**, not Python `eval`. It
+  supports booleans, integers, `==`/`!=`, `&&`/`||`/`!`, and parentheses around
+  those literals. Attribute access, indexing, function calls, imports, and
+  arbitrary code are `unknown`, never executed. `env.FOO()` is covered by a
+  test that asserts `UNVERIFIABLE_CONDITION` and no execution.
+- `enforce-no-bypass` emits `warn_count == len(warnings)`. Report assembly must
+  sum it into `cbe-report.json` and Section B must list the codes; this wiring
+  is B-32/PENDING-IMPL, not claimed yet.
 - Warnings mean “not proven”, not “safe”; they must not be described as
   complete workflow coverage.
 
 ### D9. Runtime dependencies
 
 CBE has two runtime dependencies: `jsonschema>=4.20` and `pyyaml>=6.0`.
-PyYAML is required to parse target GitHub Actions workflows. CBE makes no
-“zero runtime dependency” claim; README and `pyproject.toml` must list both.
+
+- `jsonschema`: `validate-manifest`, and any command that loads a manifest.
+- `pyyaml`: `enforce-no-bypass --workflows`; currently shipped as a core
+  dependency because the command module imports it, not an optional extra.
+
+CBE makes no “zero runtime dependency” claim; README and `pyproject.toml` must
+list both and their command mapping.
 
 ### D10. CBP `--rules-path` interop
 
 `--rules-path` is CBP's P0-06, not CBE's. CBE guarantees only that its SARIF
-uses `CBE-*` IDs. The cross-repo check “CBP consumes CBE SARIF and preserves
-`CBE-*`” is blocked on CBP `report_aggregator.py:32/43`, which currently passes
-external rule IDs through. Until CBP fixes it, CBE-07 tests only CBE output;
-the consumed-view test belongs to CBP acceptance.
+uses `CBE-*` IDs. CBE-07 is split:
+
+- **CBE-07a**: CBE emits valid SARIF with `CBE-*`; must PASS.
+- **CBE-07b**: CBP consumes the SARIF and preserves `CBE-*`; blocked on CBP
+  `report_aggregator.py:32/43`. It is an explicit non-blocking applicable SKIP
+  with `CBP_REPORT_AGGREGATOR_NOT_FIXED`, counted in `skip_count` and visible;
+  SKIP is not PASS. Once CBP fixes it, 07b becomes a real assertion.
 
 ## Commit sequence
 
@@ -156,8 +172,11 @@ the consumed-view test belongs to CBP acceptance.
 5. **Commit 5 (done)**: static-analysis warnings (`UNVERIFIABLE_CONDITION`,
    `UNVERIFIABLE_NEEDS_CHAIN`), B-30/B-31, runtime-dependency README, and the
    CBE-08 rewrite wording.
-6. **Commit 6**: P0-05 `run-provider` / `symbol-index` / `emit-sarif` +
-   CBE-05..CBE-07, plus the CBP `--rules-path` interop acceptance.
-7. **Commit 7**: P1-01 CBE-08..CBE-11. CBE-08 stays draft until CBS publishes
+6. **Commit 6 (done)**: restricted evaluator evidence (`env.FOO()` unknown),
+   `warn_count` in `enforce-no-bypass`, B-32 report/body pending, and the
+   CBE-07a/07b split with explicit counted SKIP.
+7. **Commit 7**: P0-05 `run-provider` / `symbol-index` / `emit-sarif` +
+   CBE-05..CBE-07.
+8. **Commit 8**: P1-01 CBE-08..CBE-11. CBE-08 stays draft until CBS publishes
    v1.7.1; P1-04 F4 baseline/self-bootstrap waits for v1.7.1 and a stable CBE
    release.

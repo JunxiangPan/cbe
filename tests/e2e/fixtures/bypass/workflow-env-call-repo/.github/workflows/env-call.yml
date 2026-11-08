@@ -1,0 +1,8 @@
+name: env-call-gate
+on: [push]
+jobs:
+  cbe-gate:
+    if: ${{ env.FOO() }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: cbe validate-manifest --manifest rules.json
