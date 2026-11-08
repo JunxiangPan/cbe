@@ -4,10 +4,10 @@ CBE is the rule-pack manifest, provider execution, no-bypass enforcement, and
 SARIF evidence gate for the Cyber-Butler release train. It is a sibling project
 to `public-release` (CBS), `cbp-action-release` (CBP), and `cbm`.
 
-Status: **skeleton**. The first commit freezes the manifest schema, the five
-CLI interfaces, and the E2E fixtures. Manifest validation and command bodies
-land in the next commit. Actual rule packs are not part of this repository
-yet.
+Status: **commit 2 in progress**. Commit 1 froze the manifest schema, the five
+CLI interfaces, and the E2E fixtures. Commit 2 adds the manifest validator
+(P0-03) and its unit tests. The other four command bodies still return exit 3
+`NOT_IMPLEMENTED`; actual rule packs are not part of this repository yet.
 
 ## Scope of the first commit
 
@@ -19,6 +19,19 @@ yet.
 - `docs/` decisions, contract amendment patches, CLI/manifest/E2E/boundary specs
 
 No security rule implementation is included in the first commit.
+
+## Commit 2 scope
+
+- `src/cbe/manifest.py`: manifest schema + semantic checks S01–S14,
+  applicability, canonical hash.
+- `src/cbe/commands/validate_manifest.py`: P0-03 command, including
+  `blocking_applicable_count` and `gate_errors`.
+- `tests/unit/test_manifest.py`: 34 tests covering valid/invalid fixtures,
+  mixed LF/CRLF hashes, semantic failures, gate failures, duplicate keys, BOM,
+  and version constraints.
+
+`run-provider`, `symbol-index`, `enforce-no-bypass`, and `emit-sarif` remain
+skeleton stubs in this commit.
 
 ## Commands
 

@@ -1,8 +1,8 @@
 # CBE CLI v1
 
-Status: interface frozen in commit 1; command bodies land in commit 2. In the
-skeleton commit every command parses its arguments, supports `--help`, and then
-returns exit 3 `NOT_IMPLEMENTED`. It never returns PASS for unimplemented work.
+Status: interface frozen in commit 1. `validate-manifest` is implemented in
+commit 2; the other four commands still parse arguments, support `--help`, and
+return exit 3 `NOT_IMPLEMENTED`. An unimplemented command never returns PASS.
 
 ## Global contract
 
@@ -79,7 +79,7 @@ cbe validate-manifest --manifest PATH
   `pack_id`, `pack_version`, `rule_count`, `provider_count`,
   `blocking_rule_count`, `blocking_applicable_count`, `advisory_rule_count`,
   `applicable_rule_count`, `not_applicable_rule_count`, `enabled_providers`,
-  `errors`, `warnings`.
+  `errors`, `gate_errors`, `warnings`.
 
 `blocking_rule_count` is the manifest total. `blocking_applicable_count` is the
 count applicable to the supplied package context. S07 makes them equal for a

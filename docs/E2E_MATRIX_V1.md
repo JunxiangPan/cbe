@@ -1,8 +1,9 @@
 # CBE E2E matrix (CBE-01..CBE-11)
 
-Status: fixtures frozen in commit 1; test files and runner land in commit 3.
-The matrix is the authoritative definition until CBS references it from the
-v1.7 execution contract.
+Status: fixtures frozen in commit 1; CBE-02/CBE-03 manifest cases are covered
+by `tests/unit/test_manifest.py` in commit 2; the remaining E2E files and runner
+land in commit 3. The matrix is the authoritative definition until CBS
+references it from the v1.7 execution contract.
 
 ## CBE-01 — CLI contract
 
@@ -28,7 +29,7 @@ v1.7 execution contract.
 - File: `tests/e2e/test_cbe_03_manifest_invalid.py`
 - Fixtures: `manifests/invalid_*.json`, `duplicate_rule_id.json`,
   `blocking_warning.json`, `blocking_partial_scope.json`,
-  `additional_property.json`
+  `blocking_version_not_applicable.json`, `additional_property.json`
 - Check: each missing/invalid required field (`rule_id`, `title`, `severity`,
   `gate`, `provider`, `version_constraint`, `schema_version`) exits 2 with a
   JSON path; CBP namespace, lowercase id, bad pack id, duplicate id,
@@ -87,8 +88,9 @@ v1.7 execution contract.
   `manifests/valid_full.json`; `exemptions/valid.txt`
 - Check: denominator = non-blocking applicable checks only; non-applicable
   rules are SKIPPED but not counted; blocking rules are not counted and may not
-  SKIP; 1/5 passes, 2/5 exits 4, 1/4 exits 4; zero applicable exits 3; exit 3
-  wins over 4.
+  SKIP; a blocking rule excluded by version exits 3
+  `BLOCKING_RULE_NOT_APPLICABLE`; 1/5 passes, 2/5 exits 4, 1/4 exits 4; zero
+  applicable exits 3; exit 3 wins over 4.
 - Expected: 0 / 4 / 3 per case.
 
 ## CBE-09 — F4 baseline
@@ -133,7 +135,8 @@ v1.7 execution contract.
 
 ```text
 tests/e2e/fixtures/
-  manifests/        valid_*.json, invalid_*.json, zero_rules.json
+  manifests/        valid_*.json, invalid_*.json, zero_rules.json,
+                    blocking_version_not_applicable.json
   providers/        sarif_ok.py, sarif_findings.py, empty.py, missing.py,
                     invalid_sarif.py, timeout.py, crash.py, native_ids.py
   bypass/           config/, comments/, env/, workflow/, clean/

@@ -1,0 +1,33 @@
+{
+  "schema_version": "1",
+  "pack_id": "cbe-core",
+  "pack_version": "0.1.0",
+  "description": "Blocking rule excluded by version constraint",
+  "package_types": ["cbs"],
+  "providers": {
+    "builtin-manifest": {
+      "kind": "builtin",
+      "output_formats": ["json"]
+    }
+  },
+  "rules": [
+    {
+      "rule_id": "CBE-SECRET-001",
+      "title": "No hardcoded secrets",
+      "severity": "error",
+      "gate": "blocking",
+      "provider": "builtin-manifest",
+      "version_constraint": ">=2.0.0 <3.0.0",
+      "package_types": ["cbs"]
+    },
+    {
+      "rule_id": "CBE-QUALITY-001",
+      "title": "Manifest quality advisory",
+      "severity": "warning",
+      "gate": "advisory",
+      "provider": "builtin-manifest",
+      "version_constraint": "*",
+      "package_types": ["cbs"]
+    }
+  ]
+}

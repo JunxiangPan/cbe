@@ -118,8 +118,9 @@ set as the three structural checks plus every blocking rule. Until CBS applies
 that amendment, CBE-08 results are implementation-consistent but not
 contract-literal; do not call them F2-conformant.
 
-## Skeleton status
+## Implementation status
 
-The schema and fixtures are frozen in commit 1. The validator implementation
-lands in commit 2. In commit 1, `cbe validate-manifest` returns exit 3
-`NOT_IMPLEMENTED`, never PASS.
+The schema and fixtures are frozen in commit 1. The validator is implemented in
+commit 2 (`src/cbe/manifest.py`, `src/cbe/commands/validate_manifest.py`) with
+unit tests in `tests/unit/test_manifest.py`. The other four command bodies are
+still skeleton stubs and return exit 3 `NOT_IMPLEMENTED`, never PASS.
