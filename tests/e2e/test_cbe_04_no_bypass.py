@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
+
 from _util import fixture, run_cbe
 
 MANIFEST = fixture("manifests", "valid_full.json")
@@ -73,6 +75,43 @@ def test_workflow_disable_attempt_fails() -> None:
     assert data is not None
     assert len(data["bypass_attempts"]) == 1
     assert data["bypass_attempts"][0]["kind"] == "workflow"
+    assert data["scanned"]["workflows"] == 1
+
+
+@pytest.mark.parametrize(
+    "repo",
+    [
+        "workflow-if-false-repo",
+        "workflow-needs-repo",
+        "workflow-commented-repo",
+    ],
+)
+def test_workflow_skips_cbe_gate(repo: str) -> None:
+    code, data, _, _ = run_cbe(
+        *BASE,
+        "--source-root",
+        fixture("bypass", repo),
+        "--workflows",
+    )
+    assert code == 3
+    assert data is not None
+    assert data["gate_status"] == "FAIL"
+    assert any(
+        attempt["reason"] == "WORKFLOW_SKIPS_CBE_GATE" for attempt in data["bypass_attempts"]
+    ), data["bypass_attempts"]
+
+
+def test_reachable_cbe_gate_passes() -> None:
+    code, data, _, _ = run_cbe(
+        *BASE,
+        "--source-root",
+        fixture("bypass", "reachable-repo"),
+        "--workflows",
+    )
+    assert code == 0
+    assert data is not None
+    assert data["gate_status"] == "PASS"
+    assert data["bypass_attempts"] == []
     assert data["scanned"]["workflows"] == 1
 
 

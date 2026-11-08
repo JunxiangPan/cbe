@@ -4,12 +4,15 @@ CBE is the rule-pack manifest, provider execution, no-bypass enforcement, and
 SARIF evidence gate for the Cyber-Butler release train. It is a sibling project
 to `public-release` (CBS), `cbp-action-release` (CBP), and `cbm`.
 
-Status: **commit 3**. Commit 1 froze the manifest schema, the five CLI
+Status: **commit 4**. Commit 1 froze the manifest schema, the five CLI
 interfaces, and the E2E fixtures. Commit 2 added the manifest validator
-(P0-03). Commit 3 adds `enforce-no-bypass` (P0-04), the `RuleSet` shared model,
-`run_e2e.py`, CBE-01..CBE-04 E2E, and the CBE CI workflow. `run-provider`,
-`symbol-index`, and `emit-sarif` still return exit 3 `NOT_IMPLEMENTED`; actual
-rule packs are not part of this repository yet.
+(P0-03). Commit 3 added `enforce-no-bypass` (P0-04), the `RuleSet` shared model,
+`run_e2e.py`, and CBE-01..CBE-04 E2E. Commit 4 adds workflow gate-skip
+detection (P0-04.5): a `cbe-gate` job skipped by `if: false`, an unreachable
+`needs` chain, or a commented-out job now exits 3 with
+`reason=WORKFLOW_SKIPS_CBE_GATE`. `run-provider`, `symbol-index`, and
+`emit-sarif` still return exit 3 `NOT_IMPLEMENTED`; actual rule packs are not
+part of this repository yet.
 
 ## Scope of the first commit
 
@@ -44,6 +47,15 @@ No security rule implementation is included in the first commit.
 - `tests/e2e/run_e2e.py` + CBE-01..CBE-04 E2E; `.github/workflows/cbe-e2e.yml`.
 - Negative sample: `run-provider`, `symbol-index`, and `emit-sarif` return exit 3
   `NOT_IMPLEMENTED`, never `PASS`.
+
+## Commit 4 scope
+
+- PyYAML job-graph parsing for GitHub Actions workflows.
+- Detection of a `cbe-gate` job skipped by literal `if: false`,
+  `${{ false }}` reachability through `needs`, a missing dependency, or a
+  commented-out job. Exit 3 with `reason=WORKFLOW_SKIPS_CBE_GATE`.
+- CBE-04 subcases: direct `if: false`, unreachable `needs`, commented-out job,
+  and a reachable `cbe-gate` control.
 
 `run-provider`, `symbol-index`, and `emit-sarif` remain skeleton stubs in this
 commit.

@@ -101,14 +101,32 @@ never silently scans CBE's own workflow, and it never silently skips an
 un-excluded workflow. CBE-04 includes both the refusal and the excluded-pass
 control case.
 
+### D8. Workflow gate-skip detection (P0-04.5)
+
+`continue-on-error: true` only covers “the job ran but failed quietly”. The
+workflow scanner also detects a gate that never runs:
+
+- a `cbe-gate` / `cbe_gate` job with literal `if: false` (YAML boolean or
+  `${{ false }}` string);
+- a `cbe-gate` job whose `needs` chain reaches an unreachable job;
+- a `cbe-gate` job whose `needs` references a missing job;
+- a commented-out `cbe-gate:` job.
+
+These exit 3 with `bypass_attempts[].reason=WORKFLOW_SKIPS_CBE_GATE`. A
+reachable `cbe-gate` job passes; CBE-04 covers direct `if: false`, an
+unreachable `needs` chain, a commented-out job, and the reachable control.
+
 ## Commit sequence
 
 1. **Commit 1 (done)**: schemas + `src/cbe/` CLI skeleton +
    `tests/e2e/fixtures/` + docs. No rule implementation.
 2. **Commit 2 (done)**: manifest validator (P0-03) + 34 unit tests.
-3. **Commit 3 (this commit)**: P0-04 `enforce-no-bypass` with `RuleSet` reuse,
+3. **Commit 3 (done)**: P0-04 `enforce-no-bypass` with `RuleSet` reuse,
    `run_e2e.py`, and CBE-01..CBE-04 E2E.
-4. **Commit 4**: P0-05 `run-provider` / `symbol-index` / `emit-sarif` +
-   CBE-05..CBE-07.
-5. **Commit 5**: P1-01 CBE-08..CBE-11, then P1-04 F4 baseline/self-bootstrap
-   after CBS publishes v1.7.1 and a stable CBE release exists.
+4. **Commit 4 (done)**: P0-04.5 workflow gate-skip detection
+   (`WORKFLOW_SKIPS_CBE_GATE`) and CBE-04 subcases.
+5. **Commit 5**: P0-05 `run-provider` / `symbol-index` / `emit-sarif` +
+   CBE-05..CBE-07, plus the CBP `--rules-path` interop acceptance.
+6. **Commit 6**: P1-01 CBE-08..CBE-11. CBE-08 stays draft until CBS publishes
+   v1.7.1; P1-04 F4 baseline/self-bootstrap waits for v1.7.1 and a stable CBE
+   release.

@@ -1,0 +1,13 @@
+name: needs-unreachable-gate
+on: [push]
+jobs:
+  never:
+    if: ${{ false }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo never
+  cbe-gate:
+    needs: never
+    runs-on: ubuntu-latest
+    steps:
+      - run: cbe validate-manifest --manifest rules.json

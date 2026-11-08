@@ -1,0 +1,11 @@
+name: commented-gate
+on: [push]
+jobs:
+  # cbe-gate:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - run: cbe validate-manifest --manifest rules.json
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo docs

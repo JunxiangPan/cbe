@@ -1,0 +1,13 @@
+name: if-false-gate
+on: [push]
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo preflight
+  cbe-gate:
+    if: false
+    needs: preflight
+    runs-on: ubuntu-latest
+    steps:
+      - run: cbe validate-manifest --manifest rules.json

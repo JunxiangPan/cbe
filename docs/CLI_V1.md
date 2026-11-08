@@ -156,7 +156,8 @@ Detection matrix:
 | config | CBE-scoped files: `cbe.yml`, `.cbe/config.*`, files with a top-level `cbe:`; keys `disable/skip/ignore/exclude/enabled:false` | exit 3 |
 | comment | source comments `cbe: disable|skip|ignore|off` | exit 3 |
 | env | process env or `--env-file`: `CBE_DISABLE*`, `CBE_SKIP*`, `CBE_IGNORE*`, `CBE_RULES_EXCLUDE`, `NO_CBE` | exit 3 |
-| workflow | target `.github/workflows/*.yml` gate/publish steps with `continue-on-error: true`, `|| true`, `if: always()` | exit 3 |
+| workflow-swallow | target `.github/workflows/*.yml` gate/publish steps with `continue-on-error: true`, `|| true`, `if: always()` | exit 3 |
+| workflow-skip | target `.github/workflows/*.yml` where the `cbe-gate` job is unreachable: literal `if: false`, `if: ${{ false }}`, a `needs` chain that reaches an unreachable job, or a commented-out `cbe-gate:` job | exit 3, `reason=WORKFLOW_SKIPS_CBE_GATE` |
 | cli | `--disable/--skip/--ignore/--exclude-rule` | exit 2 |
 | manifest | `enabled: false`, unknown field | exit 2 |
 
@@ -189,6 +190,9 @@ SKIPPED: CBE-QUALITY-001 reason=legacy fixture, tracked in ISSUE-42
 - Output keys: `bypass_attempts`, `exemptions`, `scanned`,
   `applicable_count`, `skip_count`, `not_applicable_count`, `skip_ratio`,
   `blocking_skip`, `blocking_applicable_count`.
+- Each `bypass_attempts[]` entry includes `reason`. A skipped gate job carries
+  `reason=WORKFLOW_SKIPS_CBE_GATE`; `continue-on-error`/`|| true` entries carry
+  an empty reason and remain generic workflow bypasses.
 
 ## 5. emit-sarif
 
@@ -212,6 +216,12 @@ SARIF requirements:
   `SKIPPED: ...` justification; the result is not deleted.
 - Output keys: `sarif_path`, `sarif_sha256`, `run_count`, `rule_count`,
   `result_count`, `namespaces`, `invalid_results`, `warnings`.
+
+Interop acceptance for P0-05 (CBP side, not a CBE command): CBE SARIF must be
+consumable by CBP `--rules-path`. CBP's custom gate consumes the rules and does
+not re-emit SARIF; CBE-* rule IDs are preserved and never rewritten to CBP-*.
+CBE guarantees the `CBE-*` namespace only; the consumption check belongs to
+CBP's P0-06.
 
 ## Report assembly (not a sixth subcommand)
 

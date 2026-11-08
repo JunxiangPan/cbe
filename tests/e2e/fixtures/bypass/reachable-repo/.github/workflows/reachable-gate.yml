@@ -1,0 +1,12 @@
+name: reachable-gate
+on: [push]
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo preflight
+  cbe-gate:
+    needs: preflight
+    runs-on: ubuntu-latest
+    steps:
+      - run: cbe validate-manifest --manifest rules.json

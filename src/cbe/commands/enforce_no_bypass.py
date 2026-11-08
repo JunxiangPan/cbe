@@ -9,6 +9,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Iterable
 
+import yaml
+
 from ..errors import InputError
 from ..manifest import Inspection, RuleSet, load_and_inspect
 from ..walk import (
@@ -58,6 +60,8 @@ DEFAULT_CONFIG_PATHS = (
     ".cbe/config.json",
 )
 CBE_WORKFLOW = ".github/workflows/cbe-e2e.yml"
+CBE_GATE_JOB_RE = re.compile(r"(?i)^cbe[-_]gate$")
+COMMENTED_GATE_RE = re.compile(r"(?im)^\s*#\s*cbe[-_]gate\s*:")
 
 
 @dataclass
@@ -67,6 +71,7 @@ class BypassAttempt:
     line: int
     rule_id: str
     evidence: str
+    reason: str = ""
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -75,6 +80,7 @@ class BypassAttempt:
             "line": self.line,
             "rule_id": self.rule_id,
             "evidence": self.evidence[:200],
+            "reason": self.reason,
             "action": "FAIL",
         }
 
@@ -250,6 +256,99 @@ def _scan_env(env_files: Iterable[str] | None, state: ScanState) -> None:
                 )
 
 
+def _as_list(value: Any) -> list[Any]:
+    if isinstance(value, list):
+        return value
+    if isinstance(value, str):
+        return [value]
+    return []
+
+
+def _literal_false(value: Any) -> bool:
+    if value is False:
+        return True
+    if isinstance(value, bool):
+        return value is False
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
+        return value == 0
+    if isinstance(value, str):
+        text = value.strip().lower()
+        if text.startswith("${{") and text.endswith("}}"):
+            text = text[3:-2].strip()
+        return text in {"false", "0", "no"}
+    return False
+
+
+def _job_unreachable(job_name: str, jobs: dict[str, Any], seen: set[str] | None = None) -> bool:
+    """A job cannot run if its if is literal false or a dependency is unreachable."""
+
+    visited = set(seen or ())
+    if job_name in visited:
+        return False
+    visited.add(job_name)
+    job = jobs.get(job_name)
+    if not isinstance(job, dict):
+        return True
+    if _literal_false(job.get("if")):
+        return True
+    for dependency in _as_list(job.get("needs")):
+        if not isinstance(dependency, str):
+            continue
+        if dependency not in jobs:
+            return True
+        if _job_unreachable(dependency, jobs, visited):
+            return True
+    return False
+
+
+def _line_for(text: str, needle: str) -> int:
+    for line_no, line in enumerate(text.splitlines(), start=1):
+        if needle in line:
+            return line_no
+    return 0
+
+
+def _scan_workflow_jobs(relative: str, text: str, state: ScanState) -> None:
+    try:
+        document = yaml.safe_load(text)
+    except yaml.YAMLError as exc:
+        _warn(state, "WORKFLOW_PARSE_FAILED", f"cannot parse workflow: {exc}", path=relative)
+        return
+    if not isinstance(document, dict):
+        return
+    jobs = document.get("jobs")
+    if not isinstance(jobs, dict):
+        return
+
+    for job_name in jobs:
+        if not isinstance(job_name, str) or not CBE_GATE_JOB_RE.match(job_name):
+            continue
+        if _job_unreachable(job_name, jobs):
+            state.add(
+                BypassAttempt(
+                    kind="workflow",
+                    path=relative,
+                    line=_line_for(text, f"{job_name}:"),
+                    rule_id="*",
+                    evidence=f"job={job_name} is unreachable",
+                    reason="WORKFLOW_SKIPS_CBE_GATE",
+                )
+            )
+
+    for match in COMMENTED_GATE_RE.finditer(text):
+        line_no = text.count("\n", 0, match.start()) + 1
+        state.add(
+            BypassAttempt(
+                kind="workflow",
+                path=relative,
+                line=line_no,
+                rule_id="*",
+                evidence=match.group(0).strip(),
+                reason="WORKFLOW_SKIPS_CBE_GATE",
+            )
+        )
+
+
 def _scan_workflows(root: Path, patterns: Iterable[str] | None, state: ScanState) -> None:
     excluded = list(patterns or [])
     if is_cbe_repository(root) and not exclude_matches(CBE_WORKFLOW, excluded):
@@ -267,6 +366,7 @@ def _scan_workflows(root: Path, patterns: Iterable[str] | None, state: ScanState
             _warn(state, "WORKFLOW_BINARY_SKIPPED", "workflow is not UTF-8 text", path=relative)
             continue
         state.workflows += 1
+        _scan_workflow_jobs(relative, text, state)
         for line_no, line in enumerate(text.splitlines(), start=1):
             lowered = line.lower()
             if (

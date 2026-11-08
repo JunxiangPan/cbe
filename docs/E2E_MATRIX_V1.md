@@ -1,8 +1,9 @@
 # CBE E2E matrix (CBE-01..CBE-11)
 
-Status: CBE-01..CBE-04 implemented in commit 3 with `run_e2e.py`; CBE-05..CBE-11
-remain fixtures-only until commit 4/5. The matrix is the authoritative definition
-until CBS references it from the v1.7 execution contract.
+Status: CBE-01..CBE-04 implemented; CBE-04 is extended in commit 4 with
+`WORKFLOW_SKIPS_CBE_GATE`. CBE-05..CBE-11 remain fixtures-only until commit
+5/6. The matrix is the authoritative definition until CBS references it from
+the v1.7 execution contract.
 
 ## CBE-01 — CLI contract
 
@@ -43,7 +44,9 @@ until CBS references it from the v1.7 execution contract.
 
 - File: `tests/e2e/test_cbe_04_no_bypass.py`
 - Fixtures: `bypass/config/`, `bypass/comments/`, `bypass/env/`,
-  `bypass/workflow-repo/`, `bypass/clean-repo/`, `exemptions/`,
+  `bypass/workflow-repo/`, `bypass/workflow-if-false-repo/`,
+  `bypass/workflow-needs-repo/`, `bypass/workflow-commented-repo/`,
+  `bypass/reachable-repo/`, `bypass/clean-repo/`, `exemptions/`,
   `manifests/five_advisory.json`
 - Check: config, comment, env, and target-workflow disable attempts exit 3
   with `bypass_attempts[]`; clean control exits 0; CLI has no disable flags
@@ -51,7 +54,10 @@ until CBS references it from the v1.7 execution contract.
   self-scan without `--exclude-workflow .github/workflows/cbe-e2e.yml` exits 2
   `SELF_WORKFLOW_EXCLUSION_REQUIRED`; blocking exemption exits 3; unknown
   exemption rule exits 2; 1/5 advisory skip passes, 2/5 exits 4.
-- Expected: 3 / `FAIL`; clean = 0; unknown flag = 2; 1/5 = 0; 2/5 = 4.
+- Gate-skip subcases: a `cbe-gate` job with literal `if: false`,
+  `if: ${{ false }}` in its `needs` chain, or a commented-out `cbe-gate:` job
+  exits 3 with `reason=WORKFLOW_SKIPS_CBE_GATE`; a reachable `cbe-gate` passes.
+- Expected: 3 / `FAIL`; clean/reachable = 0; unknown flag = 2; 1/5 = 0; 2/5 = 4.
 
 ## CBE-05 — exemptions
 
@@ -85,6 +91,11 @@ until CBS references it from the v1.7 execution contract.
   relative POSIX paths; no runs is invalid; merged output is Code Scanning
   ingestible.
 - Expected: 0 for valid; 3 for invalid/cross-namespace/absolute path.
+- Interop acceptance (CBP P0-06, not CBE implementation): CBE SARIF must be
+  consumable by CBP `--rules-path`; CBP's custom gate consumes the rules and
+  does not re-emit SARIF; when CBE rules cross into CBP, `CBE-*` IDs are
+  preserved, never rewritten to `CBP-*`. CBE guarantees only `CBE-*` output;
+  CBP owns the consumption check.
 
 ## CBE-08 — F2 denominator
 
@@ -97,6 +108,9 @@ until CBS references it from the v1.7 execution contract.
   `BLOCKING_RULE_NOT_APPLICABLE`; 1/5 passes, 2/5 exits 4, 1/4 exits 4; zero
   applicable exits 3; exit 3 wins over 4.
 - Expected: 0 / 4 / 3 per case.
+- **Contract gate: blocked on CBS v1.7.1.** Until v1.7.1 is published with
+  the F2 blocking-set amendment, these are draft assertions only. CBE must not
+  report CBE-08 as passed, and must not claim F2 conformance.
 
 ## CBE-09 — F4 baseline
 
@@ -144,7 +158,9 @@ tests/e2e/fixtures/
                     blocking_version_not_applicable.json
   providers/        sarif_ok.py, sarif_findings.py, empty.py, missing.py,
                     invalid_sarif.py, timeout.py, crash.py, native_ids.py
-  bypass/           config/, comments/, env/, workflow-repo/, clean-repo/
+  bypass/           config/, comments/, env/, workflow-repo/,
+                    workflow-if-false-repo/, workflow-needs-repo/,
+                    workflow-commented-repo/, reachable-repo/, clean-repo/
   exemptions/       valid.txt, missing_reason.txt, blocking.txt,
                     unknown_rule.txt, duplicate.txt, bad_format.txt,
                     inline_comment.py, not_applicable.txt
