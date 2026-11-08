@@ -7,22 +7,36 @@ Target sha256: `a561f19e0a8e4dba92af82400b5696da18e000ba5362571cb0b40243b9a3afca
 Applicable patch: `CONTRACT_AMENDMENTS_PROPOSED.patch`
 Patched preview: `CONTRACT_v1.7.1_PROPOSED.md`
 
-`public-release` is read-only from CBE. CBE has not edited the contract. Apply the
-patch in the CBS repository after review. The patch was generated against
-`4a437df` and was checked with `git apply --check` against that exact blob. It
-will not necessarily apply to later CONTRACT revisions; rebase it instead of
-hand-editing.
+`public-release` is read-only from CBE. CBE has not edited the contract and will
+not apply this patch to `public-release`. The patch is a proposal for the CBS
+thread to apply when it publishes **v1.7.1**. It was generated against
+`4a437df` and checked with `git apply --check` against that exact blob.
+
+The live contract has moved past `4a437df` (it added §11 Build-once Profiles).
+CBS must rebase this proposal onto the current contract tip before applying,
+and must confirm the three amendments do not conflict with §11. Do not apply
+the patch blindly to the live working tree and do not hand-edit `4a437df`.
 
 ## Why this is a new version, not an in-place edit
 
 CONTRACT.md §10 says changes require a new contract version, a
 `docs/v1.7/CHANGELOG.md` entry, updates to affected E2E matrices, and no
 retroactive change to published evidence. The F2 blocking set is a substantive
-semantic change. Do not silently patch `4a437df`.
+semantic change: any consumer that implemented the old “three structural
+checks” reading will change behaviour. The CHANGELOG must mark this as a
+breaking change for consumers, not a clarification.
 
-Recommended version: `v1.7.1` (or `v1.8.0` if CBS treats the blocking-set change
-as breaking). The patch preview is named `CONTRACT_v1.7.1_PROPOSED.md` for
-review only.
+The CBS v1.7.1 release must also update the E2E matrices:
+
+- CBE-08 F2 denominator assertions (blocking rules are excluded; blocking
+  exemption is exit 3; no blocking SKIP).
+- CBE report identity tests (`package_id` = subject, `producer_id` = producer).
+- Any CBP tests that parse the report identity or hash fields.
+
+Do not silently patch `4a437df`; it is published historical evidence.
+
+Recommended version: **v1.7.1**, with a breaking-change note. The preview file
+is named `CONTRACT_v1.7.1_PROPOSED.md` for review only.
 
 ## Amendment 1 — F2 blocking set
 
@@ -128,17 +142,22 @@ conformant until CBS applies this amendment.
 
 ## Application procedure
 
-1. Create a contract branch from `4a437df`.
-2. Apply `CONTRACT_AMENDMENTS_PROPOSED.patch` with `git apply -p1`.
-3. Resolve the two JSON examples by hand if the patch context moved: add
-   `producer_id`, replace the three `sha256:...` placeholders.
-4. Add `docs/v1.7/CHANGELOG.md` entry.
+1. CBS creates a contract branch from the **current** `public-release` contract
+   tip, not from `4a437df`. `4a437df` remains the frozen input CBE was built
+   against.
+2. Rebase `CONTRACT_AMENDMENTS_PROPOSED.patch` onto that tip with `git apply -p1`
+   (or `git apply --3way`), resolving only context drift.
+3. Confirm the three amendments do not conflict with §11 Build-once Profiles.
+4. Add the `docs/v1.7/CHANGELOG.md` entry and mark the F2 blocking-set change as
+   breaking for consumers.
 5. Update `schemas/v1.7/cbe-report.schema.json`,
-   `schemas/v1.7/quality-manifest.schema.json`, and their tests.
-6. Update CBE-01..CBE-11 and CBP-01..CBP-15 matrices.
-7. Publish the new contract version; do not rewrite `4a437df`.
+   `schemas/v1.7/quality-manifest.schema.json`, and their tests: `producer_id`,
+   package enum, bare 64-hex hashes.
+6. Update CBE-08, CBE report identity tests, and CBP-01..CBP-15 where they parse
+   the changed fields.
+7. Publish **v1.7.1**; do not rewrite `4a437df`.
 
 Until step 7, CBE reports must be marked with the contract ref they were built
 against. The current CBE report schema has no `contract_ref` field; adding one
 would be a fourth identity field and is intentionally out of scope for this
-patch.
+patch. CBE must not claim v1.7.1 contract conformance before step 7.

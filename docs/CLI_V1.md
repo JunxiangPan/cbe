@@ -1,8 +1,9 @@
 # CBE CLI v1
 
-Status: interface frozen in commit 1. `validate-manifest` is implemented in
-commit 2; the other four commands still parse arguments, support `--help`, and
-return exit 3 `NOT_IMPLEMENTED`. An unimplemented command never returns PASS.
+Status: interface frozen in commit 1. `validate-manifest` (commit 2) and
+`enforce-no-bypass` (commit 3) are implemented. `run-provider`, `symbol-index`,
+and `emit-sarif` still return exit 3 `NOT_IMPLEMENTED`. An unimplemented command
+never returns PASS.
 
 ## Global contract
 
@@ -162,10 +163,13 @@ Detection matrix:
 Workflow scope:
 
 - `--workflows` scans only the target repository's `.github/workflows/`.
-- It does not implicitly scan CBE's own gate workflow.
-- When CBE scans itself, pass
+- CBE's own gate workflow is never scanned implicitly.
+- When the target is CBE itself (detected by `pyproject.toml` naming `cbe` plus
+  `src/cbe/cli.py`), the command exits 2
+  `SELF_WORKFLOW_EXCLUSION_REQUIRED` unless the caller passes
   `--exclude-workflow .github/workflows/cbe-e2e.yml`.
-- CBE-04 includes a control case for this.
+- It never silently scans CBE's own workflow and never silently skips an
+  un-excluded workflow. CBE-04 covers both refusal and excluded-pass.
 
 Exemption grammar (dedicated file only; inline source comments are not honored):
 
@@ -174,13 +178,17 @@ SKIPPED: CBE-QUALITY-001 reason=legacy fixture, tracked in ISSUE-42
 ```
 
 - One entry per line; `#` starts a comment; blank lines ignored.
-- Unknown rule, duplicate, missing reason, or bad format → exit 2.
+- Unknown rule, duplicate, missing reason, or bad format → exit 2. An exemption
+  for a rule that does not exist is an input error, never a warning.
 - Blocking rule exemption → exit 3, `blocking_skip=true`.
 - Non-applicable exemption → SKIPPED, not in denominator, warning.
 - Applicable advisory exemption → counted in `skip_count`.
+- `applicable_count` is the F2 denominator: applicable advisory rules only.
+  `blocking_applicable_count` is reported separately and never enters the
+  denominator.
 - Output keys: `bypass_attempts`, `exemptions`, `scanned`,
   `applicable_count`, `skip_count`, `not_applicable_count`, `skip_ratio`,
-  `blocking_skip`.
+  `blocking_skip`, `blocking_applicable_count`.
 
 ## 5. emit-sarif
 

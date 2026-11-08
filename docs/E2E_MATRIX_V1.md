@@ -1,9 +1,8 @@
 # CBE E2E matrix (CBE-01..CBE-11)
 
-Status: fixtures frozen in commit 1; CBE-02/CBE-03 manifest cases are covered
-by `tests/unit/test_manifest.py` in commit 2; the remaining E2E files and runner
-land in commit 3. The matrix is the authoritative definition until CBS
-references it from the v1.7 execution contract.
+Status: CBE-01..CBE-04 implemented in commit 3 with `run_e2e.py`; CBE-05..CBE-11
+remain fixtures-only until commit 4/5. The matrix is the authoritative definition
+until CBS references it from the v1.7 execution contract.
 
 ## CBE-01 — CLI contract
 
@@ -11,8 +10,11 @@ references it from the v1.7 execution contract.
 - Fixtures: `fixtures/cli/`
 - Check: all five subcommands exist; each `--help` exits 0; unknown command,
   missing required option, and unknown flag exit 2 with a JSON error; no
-  traceback; `--version` exits 0.
-- Expected: 0 for help/version; 2 for input errors.
+  traceback; `--version` exits 0. `run-provider`, `symbol-index`, and
+  `emit-sarif` are negative samples: each exits 3 `NOT_IMPLEMENTED` with
+  `gate_status=FAIL` and never emits `PASS`.
+- Expected: 0 for help/version; 2 for input errors; 3 `NOT_IMPLEMENTED` for the
+  three unimplemented commands.
 
 ## CBE-02 — manifest valid
 
@@ -41,12 +43,15 @@ references it from the v1.7 execution contract.
 
 - File: `tests/e2e/test_cbe_04_no_bypass.py`
 - Fixtures: `bypass/config/`, `bypass/comments/`, `bypass/env/`,
-  `bypass/workflow/`, `bypass/clean/`
+  `bypass/workflow-repo/`, `bypass/clean-repo/`, `exemptions/`,
+  `manifests/five_advisory.json`
 - Check: config, comment, env, and target-workflow disable attempts exit 3
   with `bypass_attempts[]`; clean control exits 0; CLI has no disable flags
-  (unknown flag = 2); CBE's own `cbe-e2e.yml` is not scanned when passed via
-  `--exclude-workflow`.
-- Expected: 3 / `FAIL`; clean = 0; unknown flag = 2.
+  (unknown flag = 2); CBE's own `cbe-e2e.yml` is not scanned implicitly; a
+  self-scan without `--exclude-workflow .github/workflows/cbe-e2e.yml` exits 2
+  `SELF_WORKFLOW_EXCLUSION_REQUIRED`; blocking exemption exits 3; unknown
+  exemption rule exits 2; 1/5 advisory skip passes, 2/5 exits 4.
+- Expected: 3 / `FAIL`; clean = 0; unknown flag = 2; 1/5 = 0; 2/5 = 4.
 
 ## CBE-05 — exemptions
 
@@ -139,7 +144,7 @@ tests/e2e/fixtures/
                     blocking_version_not_applicable.json
   providers/        sarif_ok.py, sarif_findings.py, empty.py, missing.py,
                     invalid_sarif.py, timeout.py, crash.py, native_ids.py
-  bypass/           config/, comments/, env/, workflow/, clean/
+  bypass/           config/, comments/, env/, workflow-repo/, clean-repo/
   exemptions/       valid.txt, missing_reason.txt, blocking.txt,
                     unknown_rule.txt, duplicate.txt, bad_format.txt,
                     inline_comment.py, not_applicable.txt

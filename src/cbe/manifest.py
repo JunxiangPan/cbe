@@ -110,6 +110,137 @@ def constraint_matches(version: Version, constraint: tuple[str, list[tuple[str, 
     return True
 
 
+@dataclass(frozen=True)
+class Rule:
+    """Validated in-memory rule shared by the manifest validator and P0-04."""
+
+    rule_id: str
+    title: str
+    severity: str
+    gate: str
+    provider: str
+    version_constraint: str
+    package_types: tuple[str, ...]
+    provider_rule_ids: tuple[str, ...]
+    sarif: dict[str, Any] | None
+    raw: dict[str, Any]
+
+
+@dataclass
+class Applicability:
+    package_type: str
+    package_version: str
+    applicable: list[Rule] = field(default_factory=list)
+    not_applicable: list[Rule] = field(default_factory=list)
+    applicable_count: int = 0
+    advisory_applicable_count: int = 0
+    blocking_applicable_count: int = 0
+    gate_errors: list[dict[str, str]] = field(default_factory=list)
+
+
+@dataclass
+class RuleSet:
+    """The single in-memory model produced after manifest validation."""
+
+    manifest: dict[str, Any]
+    manifest_sha256: str
+    rules: list[Rule] = field(default_factory=list)
+    providers: dict[str, dict[str, Any]] = field(default_factory=dict)
+    enabled_providers: list[str] = field(default_factory=list)
+    blocking_rule_count: int = 0
+    advisory_rule_count: int = 0
+    errors: list[dict[str, Any]] = field(default_factory=list)
+    warnings: list[dict[str, Any]] = field(default_factory=list)
+
+    @classmethod
+    def from_manifest(
+        cls,
+        manifest: dict[str, Any],
+        *,
+        manifest_sha256: str,
+        errors: list[dict[str, Any]] | None = None,
+        warnings: list[dict[str, Any]] | None = None,
+    ) -> "RuleSet":
+        raw_rules = manifest.get("rules") if isinstance(manifest.get("rules"), list) else []
+        providers = manifest.get("providers") if isinstance(manifest.get("providers"), dict) else {}
+        rules: list[Rule] = []
+        for item in raw_rules:
+            if not isinstance(item, dict) or not isinstance(item.get("rule_id"), str):
+                continue
+            package_types = item.get("package_types") if isinstance(item.get("package_types"), list) else []
+            native_ids = item.get("provider_rule_ids") if isinstance(item.get("provider_rule_ids"), list) else []
+            rules.append(
+                Rule(
+                    rule_id=item["rule_id"],
+                    title=str(item.get("title", "")),
+                    severity=str(item.get("severity", "")),
+                    gate=str(item.get("gate", "")),
+                    provider=str(item.get("provider", "")),
+                    version_constraint=str(item.get("version_constraint", "")),
+                    package_types=tuple(str(value) for value in package_types),
+                    provider_rule_ids=tuple(str(value) for value in native_ids),
+                    sarif=item.get("sarif") if isinstance(item.get("sarif"), dict) else None,
+                    raw=item,
+                )
+            )
+        return cls(
+            manifest=manifest,
+            manifest_sha256=manifest_sha256,
+            rules=rules,
+            providers=dict(providers),
+            enabled_providers=sorted({rule.provider for rule in rules if rule.provider}),
+            blocking_rule_count=sum(1 for rule in rules if rule.gate == "blocking"),
+            advisory_rule_count=sum(1 for rule in rules if rule.gate == "advisory"),
+            errors=list(errors or []),
+            warnings=list(warnings or []),
+        )
+
+    def rule(self, rule_id: str) -> Rule | None:
+        for rule in self.rules:
+            if rule.rule_id == rule_id:
+                return rule
+        return None
+
+    def applicable(self, package_type: str, package_version: str) -> Applicability:
+        try:
+            version = Version.parse(package_version.lstrip("v"))
+        except ValueError as exc:
+            raise InputError("INVALID_PACKAGE_VERSION", str(exc)) from exc
+
+        result = Applicability(package_type=package_type, package_version=package_version)
+        for rule in self.rules:
+            try:
+                constraint = parse_constraint(rule.version_constraint)
+            except ValueError:
+                continue
+            matches = package_type in rule.package_types and constraint_matches(version, constraint)
+            if matches:
+                result.applicable.append(rule)
+                if rule.gate == "advisory":
+                    result.advisory_applicable_count += 1
+                elif rule.gate == "blocking":
+                    result.blocking_applicable_count += 1
+            else:
+                result.not_applicable.append(rule)
+                if rule.gate == "blocking":
+                    result.gate_errors.append(
+                        _error(
+                            "$.rules",
+                            "BLOCKING_RULE_NOT_APPLICABLE",
+                            f"blocking rule is not applicable to {package_type} {package_version}: {rule.rule_id}",
+                        )
+                    )
+
+        result.applicable_count = len(result.applicable)
+        if not self.rules:
+            result.gate_errors.append(_error("$.rules", "NO_RULES", "manifest has no rules"))
+        elif result.applicable_count == 0:
+            result.gate_errors.append(
+                _error("$.rules", "NO_APPLICABLE_CHECKS", "no applicable rule for the supplied package context")
+            )
+        return result
+
+
 @dataclass
 class Inspection:
     manifest: dict[str, Any]
@@ -129,6 +260,7 @@ class Inspection:
     gate_errors: list[dict[str, Any]] = field(default_factory=list)
     warnings: list[dict[str, Any]] = field(default_factory=list)
     applicable_rules: list[dict[str, Any]] = field(default_factory=list)
+    ruleset: RuleSet | None = None
 
 
 def _json_path(parts: Iterable[Any]) -> str:
@@ -291,80 +423,53 @@ def inspect_manifest(
         )
 
     semantic_errors, warnings = _semantic_errors(manifest) if not schema_errors else ([], [])
-    rules = manifest.get("rules") if isinstance(manifest.get("rules"), list) else []
-    providers = manifest.get("providers") if isinstance(manifest.get("providers"), dict) else {}
+    manifest_sha256 = sha256_json(manifest)
+    ruleset = RuleSet.from_manifest(
+        manifest,
+        manifest_sha256=manifest_sha256,
+        errors=schema_errors + semantic_errors,
+        warnings=warnings,
+    )
     inspection = Inspection(
         manifest=manifest,
-        manifest_sha256=sha256_json(manifest),
+        manifest_sha256=manifest_sha256,
         schema_version_seen=manifest.get("schema_version"),
         pack_id=manifest.get("pack_id"),
         pack_version=manifest.get("pack_version"),
-        rule_count=len(rules),
-        provider_count=len(providers),
-        blocking_rule_count=sum(1 for rule in rules if isinstance(rule, dict) and rule.get("gate") == "blocking"),
-        advisory_rule_count=sum(1 for rule in rules if isinstance(rule, dict) and rule.get("gate") == "advisory"),
-        enabled_providers=sorted(
-            {
-                rule["provider"]
-                for rule in rules
-                if isinstance(rule, dict) and isinstance(rule.get("provider"), str)
-            }
-        ),
-        errors=schema_errors + semantic_errors,
-        warnings=warnings,
+        rule_count=len(ruleset.rules),
+        provider_count=len(ruleset.providers),
+        blocking_rule_count=ruleset.blocking_rule_count,
+        advisory_rule_count=ruleset.advisory_rule_count,
+        enabled_providers=ruleset.enabled_providers,
+        errors=ruleset.errors,
+        warnings=ruleset.warnings,
+        ruleset=ruleset,
     )
 
     if inspection.errors:
         return inspection
-    if not rules:
-        inspection.gate_errors.append(_error("$.rules", "NO_RULES", "manifest has no rules"))
-        return inspection
 
     if package_type is not None and package_version is not None:
         try:
-            version = Version.parse(package_version.lstrip("v"))
-        except ValueError as exc:
-            inspection.errors.append(_error("$.package_version", "INVALID_PACKAGE_VERSION", str(exc)))
+            applicability = ruleset.applicable(package_type, package_version)
+        except InputError as exc:
+            inspection.errors.append(_error("$.package_version", exc.code, exc.message))
             return inspection
 
-        applicable = 0
-        blocking_applicable = 0
-        not_applicable = 0
-        for rule in rules:
-            if not isinstance(rule, dict):
-                continue
-            try:
-                constraint = parse_constraint(str(rule.get("version_constraint", "")))
-            except ValueError:
-                continue
-            types = rule.get("package_types") if isinstance(rule.get("package_types"), list) else []
-            matches = package_type in types and constraint_matches(version, constraint)
-            rule_id = rule.get("rule_id")
-            gate = rule.get("gate")
-            if matches:
-                applicable += 1
-                if gate == "blocking":
-                    blocking_applicable += 1
-                inspection.applicable_rules.append({"rule_id": rule_id, "gate": gate, "status": "APPLICABLE"})
-            else:
-                not_applicable += 1
-                inspection.applicable_rules.append({"rule_id": rule_id, "gate": gate, "status": "NOT_APPLICABLE"})
-                if gate == "blocking":
-                    inspection.gate_errors.append(
-                        _error(
-                            "$.rules",
-                            "BLOCKING_RULE_NOT_APPLICABLE",
-                            f"blocking rule is not applicable to {package_type} {package_version}: {rule_id}",
-                        )
-                    )
-
-        inspection.applicable_rule_count = applicable
-        inspection.blocking_applicable_count = blocking_applicable
-        inspection.not_applicable_rule_count = not_applicable
-        if applicable == 0:
-            inspection.gate_errors.append(
-                _error("$.rules", "NO_APPLICABLE_CHECKS", "no applicable rule for the supplied package context")
+        inspection.applicable_rule_count = applicability.applicable_count
+        inspection.blocking_applicable_count = applicability.blocking_applicable_count
+        inspection.not_applicable_rule_count = len(applicability.not_applicable)
+        inspection.gate_errors.extend(applicability.gate_errors)
+        for rule in applicability.applicable:
+            inspection.applicable_rules.append(
+                {"rule_id": rule.rule_id, "gate": rule.gate, "status": "APPLICABLE"}
             )
+        for rule in applicability.not_applicable:
+            inspection.applicable_rules.append(
+                {"rule_id": rule.rule_id, "gate": rule.gate, "status": "NOT_APPLICABLE"}
+            )
+    elif not ruleset.rules:
+        inspection.gate_errors.append(_error("$.rules", "NO_RULES", "manifest has no rules"))
 
     return inspection
 

@@ -316,7 +316,20 @@ def _validate_args(args: argparse.Namespace) -> None:
             raise InputError("TIMEOUT_INVALID", "--timeout must be a positive integer")
 
 
+def _configure_stdio() -> None:
+    """Force UTF-8 JSON even when Windows pipes use a legacy code page."""
+
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is not None:
+            try:
+                reconfigure(encoding="utf-8")
+            except (OSError, ValueError):
+                pass
+
+
 def main(argv: list[str] | None = None) -> int:
+    _configure_stdio()
     parser = build_parser()
     args = parser.parse_args(argv)
     command = str(args.command)

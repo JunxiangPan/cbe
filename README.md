@@ -4,10 +4,12 @@ CBE is the rule-pack manifest, provider execution, no-bypass enforcement, and
 SARIF evidence gate for the Cyber-Butler release train. It is a sibling project
 to `public-release` (CBS), `cbp-action-release` (CBP), and `cbm`.
 
-Status: **commit 2 in progress**. Commit 1 froze the manifest schema, the five
-CLI interfaces, and the E2E fixtures. Commit 2 adds the manifest validator
-(P0-03) and its unit tests. The other four command bodies still return exit 3
-`NOT_IMPLEMENTED`; actual rule packs are not part of this repository yet.
+Status: **commit 3**. Commit 1 froze the manifest schema, the five CLI
+interfaces, and the E2E fixtures. Commit 2 added the manifest validator
+(P0-03). Commit 3 adds `enforce-no-bypass` (P0-04), the `RuleSet` shared model,
+`run_e2e.py`, CBE-01..CBE-04 E2E, and the CBE CI workflow. `run-provider`,
+`symbol-index`, and `emit-sarif` still return exit 3 `NOT_IMPLEMENTED`; actual
+rule packs are not part of this repository yet.
 
 ## Scope of the first commit
 
@@ -30,8 +32,21 @@ No security rule implementation is included in the first commit.
   mixed LF/CRLF hashes, semantic failures, gate failures, duplicate keys, BOM,
   and version constraints.
 
-`run-provider`, `symbol-index`, `enforce-no-bypass`, and `emit-sarif` remain
-skeleton stubs in this commit.
+## Commit 3 scope
+
+- `src/cbe/manifest.py`: `RuleSet` / `Rule` / `Applicability` shared model; the
+  manifest validator and no-bypass command consume the same in-memory model.
+- `src/cbe/walk.py`: deterministic, bounded source walk with symlink-escape
+  rejection and CBE self-repository detection.
+- `src/cbe/commands/enforce_no_bypass.py`: config/comment/env/workflow
+  detection, strict exemption parser, F2 denominator, blocking skip, and the
+  CBE self-workflow guard.
+- `tests/e2e/run_e2e.py` + CBE-01..CBE-04 E2E; `.github/workflows/cbe-e2e.yml`.
+- Negative sample: `run-provider`, `symbol-index`, and `emit-sarif` return exit 3
+  `NOT_IMPLEMENTED`, never `PASS`.
+
+`run-provider`, `symbol-index`, and `emit-sarif` remain skeleton stubs in this
+commit.
 
 ## Commands
 

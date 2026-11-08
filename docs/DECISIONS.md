@@ -87,21 +87,28 @@ assert that S07 actually ran.
 ### D7. Workflow scan scope
 
 `enforce-no-bypass --workflows` scans only the target repository's
-`.github/workflows/`. It does not implicitly scan CBE's own gate workflow.
-When CBE scans itself, the caller must pass:
+`.github/workflows/`. CBE's own gate workflow is never scanned implicitly.
+
+If the target is CBE itself (detected by `pyproject.toml` naming `cbe` plus
+`src/cbe/cli.py`), the command refuses to scan without an explicit exclusion:
 
 ```text
 --exclude-workflow .github/workflows/cbe-e2e.yml
 ```
 
-CBE-04 includes a control case asserting that CBE's own workflow is not
-flagged when explicitly excluded.
+Without it the command exits 2 with `SELF_WORKFLOW_EXCLUSION_REQUIRED`. It
+never silently scans CBE's own workflow, and it never silently skips an
+un-excluded workflow. CBE-04 includes both the refusal and the excluded-pass
+control case.
 
 ## Commit sequence
 
-1. **Commit 1 (this commit)**: schemas + `src/cbe/` CLI skeleton +
-   `tests/e2e/fixtures/` + docs. No rule implementation; command bodies return
-   `NOT_IMPLEMENTED` (exit 3).
-2. **Commit 2**: framework implementation (manifest validator, no-bypass,
-   provider runner, symbol index, SARIF emitter) + unit tests.
-3. **Commit 3**: E2E tests CBE-01..CBE-11 + CI, then the first rule pack.
+1. **Commit 1 (done)**: schemas + `src/cbe/` CLI skeleton +
+   `tests/e2e/fixtures/` + docs. No rule implementation.
+2. **Commit 2 (done)**: manifest validator (P0-03) + 34 unit tests.
+3. **Commit 3 (this commit)**: P0-04 `enforce-no-bypass` with `RuleSet` reuse,
+   `run_e2e.py`, and CBE-01..CBE-04 E2E.
+4. **Commit 4**: P0-05 `run-provider` / `symbol-index` / `emit-sarif` +
+   CBE-05..CBE-07.
+5. **Commit 5**: P1-01 CBE-08..CBE-11, then P1-04 F4 baseline/self-bootstrap
+   after CBS publishes v1.7.1 and a stable CBE release exists.

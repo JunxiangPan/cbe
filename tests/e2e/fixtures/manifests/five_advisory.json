@@ -1,0 +1,60 @@
+{
+  "schema_version": "1",
+  "pack_id": "cbe-five",
+  "pack_version": "0.1.0",
+  "description": "Five applicable advisory rules for F2 denominator tests",
+  "package_types": ["cbs"],
+  "providers": {
+    "builtin-manifest": {
+      "kind": "builtin",
+      "output_formats": ["json"]
+    }
+  },
+  "rules": [
+    {
+      "rule_id": "CBE-QUALITY-001",
+      "title": "Advisory one",
+      "severity": "warning",
+      "gate": "advisory",
+      "provider": "builtin-manifest",
+      "version_constraint": "*",
+      "package_types": ["cbs"]
+    },
+    {
+      "rule_id": "CBE-QUALITY-002",
+      "title": "Advisory two",
+      "severity": "warning",
+      "gate": "advisory",
+      "provider": "builtin-manifest",
+      "version_constraint": "*",
+      "package_types": ["cbs"]
+    },
+    {
+      "rule_id": "CBE-QUALITY-003",
+      "title": "Advisory three",
+      "severity": "warning",
+      "gate": "advisory",
+      "provider": "builtin-manifest",
+      "version_constraint": "*",
+      "package_types": ["cbs"]
+    },
+    {
+      "rule_id": "CBE-QUALITY-004",
+      "title": "Advisory four",
+      "severity": "warning",
+      "gate": "advisory",
+      "provider": "builtin-manifest",
+      "version_constraint": "*",
+      "package_types": ["cbs"]
+    },
+    {
+      "rule_id": "CBE-QUALITY-005",
+      "title": "Advisory five",
+      "severity": "warning",
+      "gate": "advisory",
+      "provider": "builtin-manifest",
+      "version_constraint": "*",
+      "package_types": ["cbs"]
+    }
+  ]
+}

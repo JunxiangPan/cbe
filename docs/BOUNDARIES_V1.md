@@ -10,7 +10,7 @@ Status values:
 | ID | Source | Boundary | Impact | Status / action |
 |---|---|---|---|---|
 | B-00 | v1.7 | CBE repository and previous stable CBE did not exist | F4/CBE-11 not executable literally | **RESOLVED**: repo created at `D:\qq苏瑾言大肥鱼\cbe`; bootstrap uses `--baseline <commit>` until 0.1.0 ships |
-| B-01 | §8 | “CBE-01..11 as defined in the v1.7 execution contract” — no execution contract at 4a437df | No authoritative acceptance criteria | **RESOLVED CBE-side**: matrix frozen in `docs/E2E_MATRIX_V1.md`; **PENDING-CBS** to reference it from the execution contract |
+| B-01 | §8 | “CBE-01..11 as defined in the v1.7 execution contract” — no execution contract at 4a437df | No authoritative acceptance criteria | **RESOLVED CBE-side**: matrix frozen in `docs/E2E_MATRIX_V1.md`; CBE-01..04 implemented with `run_e2e.py`; CBE-05..11 fixtures-only; **PENDING-CBS** to reference it from the execution contract |
 | B-02 | P0-03 / F2 | `gate` field undefined; F2 names three blocking checks | Blocking set ambiguity | **RESOLVED** by D2; **PENDING-CBS** F2 amendment |
 | B-03 | §5 / schema | CONTRACT shows `sha256:...`; frozen schema accepts 64 hex only | Can’t satisfy both | **RESOLVED** by D3 (bare hex); **PENDING-CBS** §5 amendment + schema test update |
 | B-04 | F6 / §5 | `NOT_UPLOADED` not in CBE report enum and `additionalProperties:false` | F6 cannot live in CBE report | **RESOLVED** by D4; `schemas/v1.7/release-train.schema.json` added; CBE gate unchanged |
@@ -36,7 +36,7 @@ Status values:
 | B-24 | §3/§5 | gate status vs component status are different enums | Enum reuse | **RESOLVED**: release-train schema has its own enum incl. `EVIDENCE_ABSENT` |
 | B-25 | schema `$id` | local `cyber-butler.local` id | Cross-repo resolution | **DEFERRED**: local validation only for P0 |
 | B-26 | release_body_v17.py | `## NOT_UPLOADED` lacks “declared as attached but not uploaded” | P2-04 failure | **PENDING-CBS**: body generator fix; CBE cannot edit public-release |
-| B-27 | process | `public-release` HEAD moved during CBE work; live CONTRACT.md differs from 4a437df | Patch/contract drift; wrong revision may be consumed | **PENDING-CBS**: freeze 4a437df as the only input, or tag the amended contract; CBE patch is checked against 4a437df only |
+| B-27 | process | `public-release` HEAD moved past 4a437df (it added §11 Build-once Profiles) | Patch/contract drift; wrong revision may be consumed | **PENDING-CBS**: v1.7.1 applies a rebased patch to the current tip; CBE remains pinned to 4a437df and must not apply it directly |
 
 ## P0 blockers at start of implementation
 

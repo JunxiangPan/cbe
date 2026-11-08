@@ -1,0 +1,2 @@
+SKIPPED: CBE-QUALITY-001 reason=first accepted advisory
+SKIPPED: CBE-QUALITY-002 reason=second accepted advisory
