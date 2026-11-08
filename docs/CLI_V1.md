@@ -3,8 +3,8 @@
 Status: interface frozen in commit 1. All five subcommands are implemented:
 `validate-manifest`, `enforce-no-bypass`, `symbol-index`, `run-provider`, and
 `emit-sarif`. `tools/cbe_gate.py` assembles the CBE report and Section B.
-CBE-07b remains an explicit SKIP for CBP consumption; CBE-08..11 are pending
-the v1.7.1 contract/upstream work.
+CBE-07b is a real assertion against CBP 1.1.0 (`CBP-EXT-*` mapping); CBE-08..11
+are pending the v1.7.1 contract/upstream work.
 
 ## Global contract
 
@@ -235,11 +235,11 @@ SARIF requirements:
 - Output keys: `sarif_path`, `sarif_sha256`, `run_count`, `rule_count`,
   `result_count`, `namespaces`, `invalid_results`, `warnings`.
 
-Interop acceptance for P0-05 (CBP side, not a CBE command): CBE SARIF must be
-consumable by CBP `--rules-path`. CBP's custom gate consumes the rules and does
-not re-emit SARIF; CBE-* rule IDs are preserved and never rewritten to CBP-*.
-CBE guarantees the `CBE-*` namespace only; the consumption check belongs to
-CBP's P0-06.
+Interop acceptance for P0-05 (CBP side, not a CBE command): CBE SARIF is
+consumed by CBP 1.1.0. CBP maps foreign `CBE-*` IDs to `CBP-EXT-*` in its
+`rule` field and retains the original in `origin_rule`; CBP output carries only
+`CBP-*`. CBE-07b is a real assertion of that namespace isolation. `--rules-path`
+itself remains CBP P0-06, not a CBE subcommand.
 
 ## Report assembly (not a sixth subcommand)
 

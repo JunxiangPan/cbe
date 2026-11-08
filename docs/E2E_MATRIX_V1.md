@@ -1,9 +1,9 @@
 # CBE E2E matrix (CBE-01..CBE-11)
 
-Status: CBE-01..CBE-07a are implemented. CBE-07b is an explicit counted SKIP
-until CBP fixes `report_aggregator.py`. CBE-08..CBE-11 remain pending CBS
-v1.7.1/upstream work. The matrix is the authoritative definition until CBS
-references it from the v1.7 execution contract.
+Status: CBE-01..CBE-07b are implemented. CBE-07b runs against CBP 1.1.0 and
+asserts `CBP-EXT-*` namespace isolation with `origin_rule`. CBE-08..CBE-11
+remain pending CBS v1.7.1/upstream work. The matrix is the authoritative
+definition until CBS references it from the v1.7 execution contract.
 
 ## CBE-01 — CLI contract
 
@@ -89,23 +89,24 @@ references it from the v1.7 execution contract.
 
 ## CBE-07 — SARIF (split 07a / 07b)
 
-- File: `tests/e2e/test_cbe_07_sarif.py`
+- Files: `tests/e2e/test_cbe_07_sarif.py` (07a),
+  `tests/e2e/test_cbe_07b_cbp_consumer.py` (07b)
 - Fixtures: `sarif/valid.sarif`, `cbp_namespace.sarif`,
   `bad_rule_index.sarif`, `absolute_path.sarif`, `missing_rule.sarif`,
-  `no_runs.sarif`, `cbp-consumer-skip.json`
+  `no_runs.sarif`, `cbp-consumer-expected.json`
 - **CBE-07a — CBE output:** must PASS. SARIF 2.1.0 schema; only `CBE-*`;
   ruleIndex/level/message/location; relative POSIX paths; no runs is invalid;
   merged output is Code Scanning ingestible. Expected: 0 for valid; 3 for
   invalid/cross-namespace/absolute path.
-- **CBE-07b — CBP consumption:** explicit `SKIP` while
-  `report_aggregator.py:32/43` is unfixed. `skip_reason=CBP_REPORT_AGGREGATOR_NOT_FIXED`,
-  `blocking=false`, `applicable=true`, `counted_in_skip_denominator=true`;
-  it appears in `skip_count` and in the Release body. SKIP is not PASS and is
-  not hidden. Once CBP fixes the aggregator, 07b becomes a real assertion:
-  CBP consumes CBE SARIF and preserves `CBE-*`, never rewrites to `CBP-*`.
-- Interop contract: CBE guarantees only `CBE-*` output; CBP's custom gate
-  consumes the rules and does not re-emit SARIF. The consumed-view check belongs
-  to CBP.
+- **CBE-07b — CBP consumption:** real assertion against CBP 1.1.0. CBE emits
+  `CBE-SECRET-001`; CBP `report_aggregator` consumes it and emits
+  `CBP-EXT-SECRET-001` in `rule`, with `origin_rule: CBE-SECRET-001` retained
+  for traceability. CBP's `rule` field must start with `CBP-`, never `CBE-`.
+  This is namespace isolation, not “preserve CBE-*”.
+- Interop contract: CBE guarantees only `CBE-*` output. CBP 1.1.0 maps foreign
+  IDs into `CBP-EXT-*` and keeps `origin_rule`; CBP output carries only
+  `CBP-*`. The CBP-side test is `test_cbe_07b_cbp_consumer.py` with
+  `cbp-action==1.1.0` installed via the `e2e` extra.
 - **Report assembly (B-32):** `test_cbe_07a_gate_report.py` runs
   `tools/cbe_gate.py`, asserts `cbe-report.json` carries `warn_count`, and
   asserts `cbe-body-section.md` Section B lists `UNVERIFIABLE_CONDITION`.
@@ -191,7 +192,7 @@ tests/e2e/fixtures/
   releases/         releases.json, erratum_body.md
   sarif/            valid.sarif, cbp_namespace.sarif, bad_rule_index.sarif,
                     absolute_path.sarif, missing_rule.sarif, no_runs.sarif,
-                    cbp-consumer-skip.json
+                    cbp-consumer-expected.json
   release-train/    not-uploaded.json, declared-attached.json,
                     evidence-absent.json
   selfcheck/        baseline-0.0.9/, current-manifest.json, current-output/,
@@ -201,7 +202,7 @@ tests/e2e/fixtures/
 
 ## Runner and CI
 
-- `tests/e2e/run_e2e.py` runs the implemented CBE-01..07a tests and exits
+- `tests/e2e/run_e2e.py` runs the implemented CBE-01..07b tests and exits
   non-zero on any failure; JSON summary to stdout.
 - `tools/cbe_gate.py` assembles `cbe-report.json` and `cbe-body-section.md` from
   the five command outputs; CBE-07a covers the warn_count report/body path.

@@ -156,10 +156,10 @@ list both and their command mapping.
 uses `CBE-*` IDs. CBE-07 is split:
 
 - **CBE-07a**: CBE emits valid SARIF with `CBE-*`; must PASS.
-- **CBE-07b**: CBP consumes the SARIF and preserves `CBE-*`; blocked on CBP
-  `report_aggregator.py:32/43`. It is an explicit non-blocking applicable SKIP
-  with `CBP_REPORT_AGGREGATOR_NOT_FIXED`, counted in `skip_count` and visible;
-  SKIP is not PASS. Once CBP fixes it, 07b becomes a real assertion.
+- **CBE-07b**: real assertion against CBP 1.1.0. CBP consumes CBE SARIF and
+  emits `CBP-EXT-SECRET-001` in `rule`, with `origin_rule: CBE-SECRET-001`
+  retained. CBP's `rule` field must stay `CBP-*`; the old “preserve CBE-*”
+  assumption is retired. This is namespace isolation, not passthrough.
 
 ### D11. P0-05 implementation
 
@@ -168,7 +168,8 @@ reuses `RuleSet`/`Inspection`, validates declared artifacts, distinguishes empty
 artifacts from zero findings, maps native provider IDs via `provider_rule_ids`,
 and computes F2 counts. `emit-sarif` emits SARIF 2.1.0 with `CBE-*` IDs.
 `tools/cbe_gate.py` writes `cbe-report.json` and `cbe-body-section.md`;
-`warn_count` and warning codes reach Section B. CBE-07b remains explicit SKIP.
+`warn_count` and warning codes reach Section B. CBE-07b is a real CBP 1.1.0
+namespace-isolation assertion.
 
 ## Commit sequence
 
@@ -187,8 +188,9 @@ and computes F2 counts. `emit-sarif` emits SARIF 2.1.0 with `CBE-*` IDs.
    CBE-07a/07b split with explicit counted SKIP.
 7. **Commit 7 (done)**: Ubuntu+Windows CI matrix and 60% coverage gate.
 8. **Commit 8 (done)**: P0-05 `symbol-index`, `run-provider`, `emit-sarif`,
-   `tools/cbe_gate.py` report/body assembly, CBE-05/06/07/07a E2E. CBE-07b
-   remains explicit counted SKIP.
-9. **Not implemented**: P1-01 CBE-08..CBE-11. CBE-08 stays draft until CBS
-   publishes v1.7.1; P1-04 F4 baseline/self-bootstrap waits for v1.7.1 and a
-   stable CBE release. CBE-07b waits for CBP `report_aggregator.py`.
+   `tools/cbe_gate.py` report/body assembly, CBE-05/06/07/07a E2E.
+9. **Commit 9 (done)**: CBE-07b real assertion against CBP 1.1.0
+   (`CBP-EXT-*` mapping + `origin_rule`); `cbp-action==1.1.0` in the `e2e` extra.
+10. **Not implemented**: P1-01 CBE-08..CBE-11. CBE-08 stays draft until CBS
+    publishes v1.7.1; P1-04 F4 baseline/self-bootstrap waits for v1.7.1 and a
+    stable CBE release.

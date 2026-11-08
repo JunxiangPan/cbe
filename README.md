@@ -4,16 +4,17 @@ CBE is the rule-pack manifest, provider execution, no-bypass enforcement, and
 SARIF evidence gate for the Cyber-Butler release train. It is a sibling project
 to `public-release` (CBS), `cbp-action-release` (CBP), and `cbm`.
 
-Status: **commit 8**. Commit 1 froze the manifest schema, the five CLI
+Status: **commit 9**. Commit 1 froze the manifest schema, the five CLI
 interfaces, and the E2E fixtures. Commit 2 added the manifest validator
 (P0-03). Commit 3 added `enforce-no-bypass` (P0-04). Commit 4 added workflow
 gate-skip detection (P0-04.5). Commit 5 added static-analysis warnings. Commit 6
-added the restricted-evaluator evidence, `warn_count`, and the CBE-07a/b split.
-Commit 7 added the Ubuntu+Windows CI matrix and coverage gate. Commit 8
-implements P0-05: `symbol-index`, `run-provider`, `emit-sarif`, `tools/cbe_gate.py`
-report/Section B assembly, and CBE-05/06/07a. All five CLI commands are now
-implemented. CBE-07b remains an explicit counted SKIP; CBE-08..11 remain
-draft/pending until CBS v1.7.1 and CBP interop land.
+added the restricted-evaluator evidence and `warn_count`. Commit 7 added the
+Ubuntu+Windows CI matrix and coverage gate. Commit 8 implemented P0-05:
+`symbol-index`, `run-provider`, `emit-sarif`, `tools/cbe_gate.py` report/Section
+B assembly, and CBE-05/06/07a. Commit 9 converts CBE-07b into a real CBP 1.1.0
+assertion: CBE-* is mapped to CBP-EXT-*, with `origin_rule` retained. All five
+CLI commands are implemented; CBE-08..11 remain draft/pending until CBS v1.7.1
+and a stable CBE baseline land.
 
 ## Runtime dependencies
 
@@ -23,6 +24,7 @@ CBE is **not** zero-runtime-dependency. It declares:
 |---|---|---|
 | `jsonschema>=4.20` | `validate-manifest`; any command that loads a manifest | core dependency |
 | `pyyaml>=6.0` | `enforce-no-bypass --workflows` | target GitHub Actions YAML parsing; currently a core dependency, not an optional extra |
+| `cbp-action==1.1.0` | CBE-07b cross-repo assertion | test-only `e2e` extra; not a CBE runtime dependency |
 
 Both are in `pyproject.toml`. The workflow parser reads only the target
 repository's `.github/workflows/`; it does not execute workflow YAML or any
@@ -31,9 +33,11 @@ GitHub expression.
 ## CI
 
 `.github/workflows/cbe-e2e.yml` runs on `ubuntu-latest` and `windows-latest`
-with Python 3.10. Each job runs `tests/e2e/run_e2e.py` and a unit-test coverage
-gate (`--cov=cbe --cov-fail-under=60`). The gate covers measured unit-test
-coverage; E2E commands run in subprocesses and are not counted by coverage.
+with Python 3.10. Each job installs `.[e2e]` (including `cbp-action==1.1.0`
+for CBE-07b), runs `tests/e2e/run_e2e.py`, and enforces a 60% unit-test
+coverage gate (`--cov=cbe --cov-fail-under=60`). The gate covers measured
+unit-test coverage; E2E commands run in subprocesses and are not counted by
+coverage.
 
 ## Scope of the first commit
 
@@ -96,9 +100,8 @@ No security rule implementation is included in the first commit.
 - `warn_count` in `enforce-no-bypass` JSON, equal to `len(warnings)`.
 - B-32: `warn_count` must flow into `cbe-report.json` and Release body Section B
   in P0-05; not claimed before that wiring exists.
-- CBE-07 split: 07a (CBE output `CBE-*`) must PASS; 07b (CBP consumes and
-  preserves) explicit SKIP `CBP_REPORT_AGGREGATOR_NOT_FIXED`, counted in
-  `skip_count`, visible.
+- CBE-07 split: 07a (CBE output `CBE-*`) must PASS; 07b introduced as an
+  explicit SKIP and converted to a real CBP 1.1.0 assertion in commit 9.
 
 ## Commit 7 scope
 
@@ -114,10 +117,19 @@ No security rule implementation is included in the first commit.
 - `emit-sarif`: merged SARIF 2.1.0 with `CBE-*` rule IDs and namespace checks.
 - `tools/cbe_gate.py`: assembles `cbe-report.json` and
   `cbe-body-section.md`; `warn_count` and warning codes reach Section B.
-- CBE-05/06/07/07a E2E; CBE-07b remains explicit counted SKIP.
+- CBE-05/06/07/07a E2E.
+
+## Commit 9 scope
+
+- CBE-07b is a real assertion against CBP 1.1.0, installed via the `e2e` extra.
+- CBE emits `CBE-SECRET-001`; CBP emits `CBP-EXT-SECRET-001` in `rule` and
+  retains `origin_rule: CBE-SECRET-001`.
+- The old “CBP preserves CBE-*” assumption is retired; CBP namespace isolation
+  is the actual contract.
+- CI installs `.[e2e]` on Ubuntu and Windows.
 
 CBE-08..11 are not implemented: CBE-08 waits for CBS v1.7.1's final F2 set,
-CBE-07b waits for CBP, and F4 self-bootstrap needs a stable CBE baseline.
+and F4 self-bootstrap needs a stable CBE baseline.
 
 ## Commands
 

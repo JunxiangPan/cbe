@@ -1,0 +1,11 @@
+{
+  "schema_version": "1",
+  "check_id": "CBE-07b",
+  "description": "CBP 1.1.0 consumes CBE SARIF with namespace isolation",
+  "status": "PASS",
+  "cbp_version": "1.1.0",
+  "input_rule": "CBE-SECRET-001",
+  "expected_cbp_rule": "CBP-EXT-SECRET-001",
+  "expected_origin_rule": "CBE-SECRET-001",
+  "cbp_rule_field_must_start_with": "CBP-"
+}

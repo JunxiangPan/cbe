@@ -103,13 +103,3 @@ def test_invalid_provider_sarif_is_rejected(tmp_path: Path, name: str, error_cod
     assert code == 3
     assert data is not None
     assert data["error"]["code"] == error_code
-
-
-def test_cbe_07b_is_an_explicit_counted_skip() -> None:
-    marker = json.loads(fixture("sarif", "cbp-consumer-skip.json").read_text(encoding="utf-8"))
-    assert marker["check_id"] == "CBE-07b"
-    assert marker["status"] == "SKIP"
-    assert marker["skip_reason"] == "CBP_REPORT_AGGREGATOR_NOT_FIXED"
-    assert marker["blocking"] is False
-    assert marker["applicable"] is True
-    assert marker["counted_in_skip_denominator"] is True

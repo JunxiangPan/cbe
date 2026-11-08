@@ -13,6 +13,13 @@ dependencies = [
   "pyyaml>=6.0",
 ]
 
+[project.optional-dependencies]
+e2e = [
+  "pytest>=8",
+  "pytest-cov>=7",
+  "cbp-action==1.1.0",
+]
+
 [project.scripts]
 cbe = "cbe.cli:main"
 
