@@ -115,6 +115,61 @@ def test_reachable_cbe_gate_passes() -> None:
     assert data["scanned"]["workflows"] == 1
 
 
+@pytest.mark.parametrize(
+    "repo,warning_code",
+    [
+        ("workflow-dynamic-if-repo", "UNVERIFIABLE_CONDITION"),
+        ("workflow-dynamic-needs-repo", "UNVERIFIABLE_NEEDS_CHAIN"),
+    ],
+)
+def test_unverifiable_workflow_conditions_warn_without_failing(repo: str, warning_code: str) -> None:
+    code, data, _, _ = run_cbe(
+        *BASE,
+        "--source-root",
+        fixture("bypass", repo),
+        "--workflows",
+    )
+    assert code == 0
+    assert data is not None
+    assert data["gate_status"] == "PASS"
+    assert data["bypass_attempts"] == []
+    assert any(warning["code"] == warning_code for warning in data["warnings"])
+
+
+@pytest.mark.parametrize(
+    "repo",
+    [
+        "workflow-negated-true-repo",
+        "workflow-comparison-false-repo",
+    ],
+)
+def test_statically_false_expressions_are_gate_skips(repo: str) -> None:
+    code, data, _, _ = run_cbe(
+        *BASE,
+        "--source-root",
+        fixture("bypass", repo),
+        "--workflows",
+    )
+    assert code == 3
+    assert data is not None
+    assert any(
+        attempt["reason"] == "WORKFLOW_SKIPS_CBE_GATE" for attempt in data["bypass_attempts"]
+    )
+
+
+def test_statically_true_gate_condition_passes() -> None:
+    code, data, _, _ = run_cbe(
+        *BASE,
+        "--source-root",
+        fixture("bypass", "workflow-static-true-repo"),
+        "--workflows",
+    )
+    assert code == 0
+    assert data is not None
+    assert data["bypass_attempts"] == []
+    assert data["warnings"] == []
+
+
 def test_clean_repository_passes() -> None:
     code, data, _, _ = run_cbe(
         *BASE,

@@ -1,0 +1,8 @@
+name: negated-true-gate
+on: [push]
+jobs:
+  cbe-gate:
+    if: ${{ !true }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: cbe validate-manifest --manifest rules.json

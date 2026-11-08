@@ -120,6 +120,13 @@ class ScanState:
             self.attempts.append(attempt)
 
 
+@dataclass(frozen=True)
+class Reachability:
+    status: str  # reachable | unreachable | unknown
+    reason: str = ""
+    needs_unknown: bool = False
+
+
 def _warn(state: ScanState, code: str, message: str, *, path: str = "", line: int = 0) -> None:
     item = {"code": code, "message": message}
     if path:
@@ -264,41 +271,136 @@ def _as_list(value: Any) -> list[Any]:
     return []
 
 
-def _literal_false(value: Any) -> bool:
-    if value is False:
+def _strip_expression(value: str) -> str:
+    text = value.strip()
+    if text.startswith("${{") and text.endswith("}}"):
+        text = text[3:-2].strip()
+    return text
+
+
+def _literal_value(token: str) -> Any:
+    text = token.strip()
+    lowered = text.lower()
+    if lowered == "true":
         return True
+    if lowered == "false":
+        return False
+    if re.fullmatch(r"-?[0-9]+", text):
+        return int(text)
+    if len(text) >= 2 and text[0] == text[-1] and text[0] in {"'", '"'}:
+        return text[1:-1]
+    raise ValueError(text)
+
+
+def _evaluate_condition(value: Any) -> tuple[str, str]:
+    """Evaluate a literal GitHub Actions condition.
+
+    Returns ("true" | "false" | "unknown", reason). Dynamic contexts
+    (inputs.*, vars.*, github.*, functions) are unknown, never a silent PASS.
+    """
+
+    if value is None:
+        return ("true", "")
     if isinstance(value, bool):
-        return value is False
+        return ("true" if value else "false", "")
     if isinstance(value, (int, float)) and not isinstance(value, bool):
-        return value == 0
-    if isinstance(value, str):
-        text = value.strip().lower()
-        if text.startswith("${{") and text.endswith("}}"):
-            text = text[3:-2].strip()
-        return text in {"false", "0", "no"}
-    return False
+        return ("true" if value != 0 else "false", "")
+    if not isinstance(value, str):
+        return ("unknown", f"unsupported if value: {type(value).__name__}")
+
+    expression = _strip_expression(value)
+    if not expression:
+        return ("true", "")
+    lowered = expression.lower()
+    if lowered in {"true", "false"}:
+        return (lowered, "")
+    if re.fullmatch(r"-?[0-9]+", expression):
+        return ("true" if int(expression) != 0 else "false", "")
+
+    dynamic_markers = (
+        "inputs.",
+        "vars.",
+        "github.",
+        "secrets.",
+        "env.",
+        "needs.",
+        "matrix.",
+        "steps.",
+        "always(",
+        "success(",
+        "failure(",
+        "cancelled(",
+        "hashfiles(",
+    )
+    if any(marker in lowered for marker in dynamic_markers):
+        return ("unknown", f"dynamic expression: {expression}")
+
+    for separator, combine in (("||", any), ("&&", all)):
+        parts = [part.strip() for part in expression.split(separator)]
+        if len(parts) > 1:
+            values: list[bool] = []
+            for part in parts:
+                status, _reason = _evaluate_condition(part)
+                if status == "unknown":
+                    return ("unknown", f"cannot evaluate: {expression}")
+                values.append(status == "true")
+            return ("true" if combine(values) else "false", "")
+
+    if expression.startswith("!"):
+        status, _reason = _evaluate_condition(expression[1:].strip())
+        if status == "unknown":
+            return ("unknown", f"cannot evaluate: {expression}")
+        return ("false" if status == "true" else "true", "")
+
+    comparison = re.fullmatch(r"(.+?)\s*(==|!=)\s*(.+)", expression)
+    if comparison:
+        left_token, operator, right_token = comparison.groups()
+        try:
+            left = _literal_value(left_token)
+            right = _literal_value(right_token)
+        except ValueError:
+            return ("unknown", f"cannot evaluate comparison: {expression}")
+        equal = left == right
+        result = equal if operator == "==" else not equal
+        return ("true" if result else "false", "")
+
+    return ("unknown", f"cannot evaluate expression: {expression}")
 
 
-def _job_unreachable(job_name: str, jobs: dict[str, Any], seen: set[str] | None = None) -> bool:
-    """A job cannot run if its if is literal false or a dependency is unreachable."""
+def _job_reachability(job_name: str, jobs: dict[str, Any], seen: set[str] | None = None) -> Reachability:
+    """Return whether a job can run, using only statically evaluable conditions."""
 
     visited = set(seen or ())
     if job_name in visited:
-        return False
+        return Reachability("reachable", "dependency cycle")
     visited.add(job_name)
     job = jobs.get(job_name)
     if not isinstance(job, dict):
-        return True
-    if _literal_false(job.get("if")):
-        return True
+        return Reachability("unreachable", f"job not found: {job_name}")
+
+    own_status = "true"
+    own_reason = ""
+    if job.get("if") is not None:
+        own_status, own_reason = _evaluate_condition(job.get("if"))
+        if own_status == "false":
+            return Reachability("unreachable", f"literal false if: {job.get('if')}")
+
+    needs_unknown = False
     for dependency in _as_list(job.get("needs")):
         if not isinstance(dependency, str):
             continue
         if dependency not in jobs:
-            return True
-        if _job_unreachable(dependency, jobs, visited):
-            return True
-    return False
+            return Reachability("unreachable", f"missing needs job: {dependency}")
+        dependency_status = _job_reachability(dependency, jobs, visited)
+        if dependency_status.status == "unreachable":
+            return Reachability("unreachable", f"needs {dependency}: {dependency_status.reason}")
+        if dependency_status.status == "unknown":
+            needs_unknown = True
+
+    if own_status == "unknown" or needs_unknown:
+        reason = own_reason if own_status == "unknown" else "needs chain is unverifiable"
+        return Reachability("unknown", reason, needs_unknown)
+    return Reachability("reachable")
 
 
 def _line_for(text: str, needle: str) -> int:
@@ -320,20 +422,51 @@ def _scan_workflow_jobs(relative: str, text: str, state: ScanState) -> None:
     if not isinstance(jobs, dict):
         return
 
-    for job_name in jobs:
+    for job_name, job in jobs.items():
         if not isinstance(job_name, str) or not CBE_GATE_JOB_RE.match(job_name):
             continue
-        if _job_unreachable(job_name, jobs):
+        line_no = _line_for(text, f"{job_name}:")
+        reachability = _job_reachability(job_name, jobs)
+        if reachability.status == "unreachable":
             state.add(
                 BypassAttempt(
                     kind="workflow",
                     path=relative,
-                    line=_line_for(text, f"{job_name}:"),
+                    line=line_no,
                     rule_id="*",
-                    evidence=f"job={job_name} is unreachable",
+                    evidence=f"job={job_name} is unreachable: {reachability.reason}",
                     reason="WORKFLOW_SKIPS_CBE_GATE",
                 )
             )
+            continue
+        if reachability.status == "unknown":
+            own_status = "true"
+            if isinstance(job, dict) and job.get("if") is not None:
+                own_status, _reason = _evaluate_condition(job.get("if"))
+            if own_status == "unknown":
+                _warn(
+                    state,
+                    "UNVERIFIABLE_CONDITION",
+                    f"{job_name} if condition cannot be statically evaluated: {job.get('if')}",
+                    path=relative,
+                    line=line_no,
+                )
+            if reachability.needs_unknown:
+                _warn(
+                    state,
+                    "UNVERIFIABLE_NEEDS_CHAIN",
+                    f"{job_name} needs chain contains a condition that cannot be statically evaluated",
+                    path=relative,
+                    line=line_no,
+                )
+            if own_status != "unknown" and not reachability.needs_unknown:
+                _warn(
+                    state,
+                    "UNVERIFIABLE_CONDITION",
+                    f"{job_name} reachability cannot be statically determined",
+                    path=relative,
+                    line=line_no,
+                )
 
     for match in COMMENTED_GATE_RE.finditer(text):
         line_no = text.count("\n", 0, match.start()) + 1

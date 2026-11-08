@@ -1,4 +1,4 @@
-# CBE v1.7 boundary ledger (B-00..B-29)
+# CBE v1.7 boundary ledger (B-00..B-31)
 
 Status values:
 
@@ -38,7 +38,9 @@ Status values:
 | B-26 | release_body_v17.py | `## NOT_UPLOADED` lacks “declared as attached but not uploaded” | P2-04 failure | **PENDING-CBS**: body generator fix; CBE cannot edit public-release |
 | B-27 | process | `public-release` HEAD moved past 4a437df (it added §11 Build-once Profiles) | Patch/contract drift; wrong revision may be consumed | **PENDING-CBS**: v1.7.1 applies a rebased patch to the current tip; CBE remains pinned to 4a437df and must not apply it directly |
 | B-28 | F2 / P0-04 | Workflow scanner only detected `continue-on-error`/`|| true`, not a `cbe-gate` job skipped by `if: false`/`needs`/comment | Gate could be bypassed by never running it | **RESOLVED** in P0-04.5: job-graph parsing, exit 3 `reason=WORKFLOW_SKIPS_CBE_GATE`, CBE-04 subcases |
-| B-29 | CBE-08 / v1.7.1 | F2 blocking-set amendment is not yet published; CBE-08 can only assert the v1.7.1 draft | Claiming CBE-08 passed would be a false PASS | **PENDING-CBS v1.7.1**; CBE-08 remains draft and must not be reported as passed |
+| B-29 | CBE-08 / v1.7.1 | F2 blocking-set amendment is not yet published; CBE-08 can only assert the v1.7.1 draft | Claiming CBE-08 passed would be a false PASS | **PENDING-CBS v1.7.1**; CBE-08 remains draft and must not be reported as passed. If v1.7.1's final F2 set differs from the draft, CBE-08 must be rewritten, not merely re-asserted |
+| B-30 | P0-04.5 / static workflow analysis | Dynamic conditions (`inputs.*`, `vars.*`, `github.*`, functions) and dynamic `needs` chains cannot be evaluated before the run | A dynamic gate skip could be missed; claiming complete coverage would be false | **RESOLVED CBE-side as warning**: `UNVERIFIABLE_CONDITION` / `UNVERIFIABLE_NEEDS_CHAIN` warnings, never FAIL, never silent. Literal `!true` and `1 == 2` are evaluated and fail as `WORKFLOW_SKIPS_CBE_GATE` |
+| B-31 | CBE-07 / CBP interop | CBP `report_aggregator.py:32/43` passes external rule IDs through; CBE-* can enter CBP SARIF | Cross-namespace violation; CBE-07 cannot test CBP consumption yet | **PENDING-CBP**: fix the aggregator to preserve `CBE-*` without rewriting. Until then CBE-07 tests only CBE output, not CBP's consumed view |
 
 ## P0 blockers at start of implementation
 
@@ -52,6 +54,10 @@ state:
 - B-08 decided; CBS amendment/schema update pending.
 - B-28 resolved in P0-04.5; workflow gate-skip is now exit 3.
 - B-29 remains pending CBS v1.7.1; CBE-08 is draft-only until then.
+- B-30 is a documented static-analysis limit, surfaced as warnings; it is not
+  complete coverage and must not be described as such.
+- B-31 is pending CBP's `report_aggregator.py`; CBE-07 cannot test CBP
+  consumption until that is fixed.
 
 B-03/B-08 remain **PENDING-CBS** for contract conformance, but they no longer
 block CBE-side implementation because the decisions are frozen and the local
@@ -70,3 +76,10 @@ applies the amendments.
 - The release body generator still expects `infrastructure_failures` and
   `not_uploaded` fields that the strict report schemas forbid. CBE will write
   sibling evidence; CBS must decide how the body consumes it.
+- Workflow analysis is static. Dynamic `if`/`needs` conditions only produce
+  warnings; they do not prove the gate ran. Do not describe the workflow scan
+  as complete bypass coverage.
+- CBE-07 can test only CBE's `CBE-*` output until CBP fixes
+  `report_aggregator.py`; the consumed-view assertion is blocked.
+- CBE-08 is draft-only until CBS v1.7.1. If the final F2 set differs from the
+  draft, rewrite the case rather than adjusting assertions.

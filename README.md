@@ -4,15 +4,25 @@ CBE is the rule-pack manifest, provider execution, no-bypass enforcement, and
 SARIF evidence gate for the Cyber-Butler release train. It is a sibling project
 to `public-release` (CBS), `cbp-action-release` (CBP), and `cbm`.
 
-Status: **commit 4**. Commit 1 froze the manifest schema, the five CLI
+Status: **commit 5**. Commit 1 froze the manifest schema, the five CLI
 interfaces, and the E2E fixtures. Commit 2 added the manifest validator
 (P0-03). Commit 3 added `enforce-no-bypass` (P0-04), the `RuleSet` shared model,
-`run_e2e.py`, and CBE-01..CBE-04 E2E. Commit 4 adds workflow gate-skip
-detection (P0-04.5): a `cbe-gate` job skipped by `if: false`, an unreachable
-`needs` chain, or a commented-out job now exits 3 with
-`reason=WORKFLOW_SKIPS_CBE_GATE`. `run-provider`, `symbol-index`, and
-`emit-sarif` still return exit 3 `NOT_IMPLEMENTED`; actual rule packs are not
-part of this repository yet.
+`run_e2e.py`, and CBE-01..CBE-04 E2E. Commit 4 added workflow gate-skip
+detection (P0-04.5). Commit 5 adds the static-analysis warnings for dynamic
+workflow conditions and `needs` chains, plus the PyYAML/runtime-dependency and
+CBP-interop boundary notes. `run-provider`, `symbol-index`, and `emit-sarif`
+still return exit 3 `NOT_IMPLEMENTED`; actual rule packs are not part of this
+repository yet.
+
+## Runtime dependencies
+
+CBE is **not** zero-runtime-dependency. It declares:
+
+- `jsonschema>=4.20` — manifest/report validation.
+- `pyyaml>=6.0` — target GitHub Actions workflow parsing.
+
+Both are in `pyproject.toml`. The workflow parser reads only the target
+repository's `.github/workflows/`; it does not execute workflow YAML.
 
 ## Scope of the first commit
 
@@ -56,6 +66,17 @@ No security rule implementation is included in the first commit.
   commented-out job. Exit 3 with `reason=WORKFLOW_SKIPS_CBE_GATE`.
 - CBE-04 subcases: direct `if: false`, unreachable `needs`, commented-out job,
   and a reachable `cbe-gate` control.
+
+## Commit 5 scope
+
+- Literal condition evaluation: `!true`, `1 == 2`, `true && false` are
+  evaluated; a statically false gate is `WORKFLOW_SKIPS_CBE_GATE`.
+- Dynamic conditions (`inputs.*`, `vars.*`, `github.*`, functions) emit
+  `UNVERIFIABLE_CONDITION`; dynamic `needs` chains emit
+  `UNVERIFIABLE_NEEDS_CHAIN`. These are warnings, never silent passes.
+- B-30 static-analysis limits, B-31 CBP `report_aggregator.py` interop block,
+  and CBE-08 “rewrite, not re-assert” wording.
+- Runtime dependencies documented: jsonschema + PyYAML.
 
 `run-provider`, `symbol-index`, and `emit-sarif` remain skeleton stubs in this
 commit.

@@ -1,0 +1,13 @@
+name: dynamic-needs-gate
+on: [push]
+jobs:
+  maybe:
+    if: ${{ inputs.enable }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo maybe
+  cbe-gate:
+    needs: maybe
+    runs-on: ubuntu-latest
+    steps:
+      - run: cbe validate-manifest --manifest rules.json

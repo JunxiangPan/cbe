@@ -116,6 +116,34 @@ These exit 3 with `bypass_attempts[].reason=WORKFLOW_SKIPS_CBE_GATE`. A
 reachable `cbe-gate` job passes; CBE-04 covers direct `if: false`, an
 unreachable `needs` chain, a commented-out job, and the reachable control.
 
+Static limits:
+
+- Literal expressions that can be evaluated (`!true`, `1 == 2`,
+  `true && false`) are evaluated. A statically false gate condition is
+  `WORKFLOW_SKIPS_CBE_GATE` exit 3; a statically true one is reachable.
+- Dynamic conditions (`inputs.*`, `vars.*`, `github.*`, `secrets.*`, `env.*`,
+  `needs.*`, matrix/steps, functions such as `always()`) cannot be evaluated
+  before the run. A `cbe-gate` with such an `if` emits warning
+  `UNVERIFIABLE_CONDITION`; exit stays 0 unless another bypass exists.
+- A `needs` chain containing such a condition emits
+  `UNVERIFIABLE_NEEDS_CHAIN`; it is not silently treated as reachable.
+- Warnings mean “not proven”, not “safe”; they must not be described as
+  complete workflow coverage.
+
+### D9. Runtime dependencies
+
+CBE has two runtime dependencies: `jsonschema>=4.20` and `pyyaml>=6.0`.
+PyYAML is required to parse target GitHub Actions workflows. CBE makes no
+“zero runtime dependency” claim; README and `pyproject.toml` must list both.
+
+### D10. CBP `--rules-path` interop
+
+`--rules-path` is CBP's P0-06, not CBE's. CBE guarantees only that its SARIF
+uses `CBE-*` IDs. The cross-repo check “CBP consumes CBE SARIF and preserves
+`CBE-*`” is blocked on CBP `report_aggregator.py:32/43`, which currently passes
+external rule IDs through. Until CBP fixes it, CBE-07 tests only CBE output;
+the consumed-view test belongs to CBP acceptance.
+
 ## Commit sequence
 
 1. **Commit 1 (done)**: schemas + `src/cbe/` CLI skeleton +
@@ -125,8 +153,11 @@ unreachable `needs` chain, a commented-out job, and the reachable control.
    `run_e2e.py`, and CBE-01..CBE-04 E2E.
 4. **Commit 4 (done)**: P0-04.5 workflow gate-skip detection
    (`WORKFLOW_SKIPS_CBE_GATE`) and CBE-04 subcases.
-5. **Commit 5**: P0-05 `run-provider` / `symbol-index` / `emit-sarif` +
+5. **Commit 5 (done)**: static-analysis warnings (`UNVERIFIABLE_CONDITION`,
+   `UNVERIFIABLE_NEEDS_CHAIN`), B-30/B-31, runtime-dependency README, and the
+   CBE-08 rewrite wording.
+6. **Commit 6**: P0-05 `run-provider` / `symbol-index` / `emit-sarif` +
    CBE-05..CBE-07, plus the CBP `--rules-path` interop acceptance.
-6. **Commit 6**: P1-01 CBE-08..CBE-11. CBE-08 stays draft until CBS publishes
+7. **Commit 7**: P1-01 CBE-08..CBE-11. CBE-08 stays draft until CBS publishes
    v1.7.1; P1-04 F4 baseline/self-bootstrap waits for v1.7.1 and a stable CBE
    release.

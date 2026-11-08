@@ -157,9 +157,23 @@ Detection matrix:
 | comment | source comments `cbe: disable|skip|ignore|off` | exit 3 |
 | env | process env or `--env-file`: `CBE_DISABLE*`, `CBE_SKIP*`, `CBE_IGNORE*`, `CBE_RULES_EXCLUDE`, `NO_CBE` | exit 3 |
 | workflow-swallow | target `.github/workflows/*.yml` gate/publish steps with `continue-on-error: true`, `|| true`, `if: always()` | exit 3 |
-| workflow-skip | target `.github/workflows/*.yml` where the `cbe-gate` job is unreachable: literal `if: false`, `if: ${{ false }}`, a `needs` chain that reaches an unreachable job, or a commented-out `cbe-gate:` job | exit 3, `reason=WORKFLOW_SKIPS_CBE_GATE` |
+| workflow-skip | target `.github/workflows/*.yml` where the `cbe-gate` job is unreachable: literal `if: false`, evaluable-false `!true`/`1 == 2`, a `needs` chain that reaches an unreachable job, a missing dependency, or a commented-out `cbe-gate:` job | exit 3, `reason=WORKFLOW_SKIPS_CBE_GATE`; dynamic conditions only warn |
 | cli | `--disable/--skip/--ignore/--exclude-rule` | exit 2 |
 | manifest | `enabled: false`, unknown field | exit 2 |
+
+Static-analysis limits:
+
+- Conditions that need runtime context (`inputs.*`, `vars.*`, `github.*`,
+  `secrets.*`, `env.*`, `needs.*`, matrix/steps, and functions such as
+  `always()`) are not evaluated. A `cbe-gate` job with such an `if` emits
+  warning `UNVERIFIABLE_CONDITION`; exit stays 0 unless another bypass exists.
+- A `needs` chain that contains such a condition emits warning
+  `UNVERIFIABLE_NEEDS_CHAIN`; it is never silently treated as reachable.
+- Literal expressions that can be evaluated (`!true`, `1 == 2`, `true && false`)
+  are evaluated. A statically false gate condition is `WORKFLOW_SKIPS_CBE_GATE`
+  exit 3. A statically true condition is reachable.
+- These warnings mean “not proven”, not “safe”. They do not upgrade the
+  workflow to PASS coverage.
 
 Workflow scope:
 

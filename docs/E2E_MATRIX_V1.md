@@ -1,9 +1,10 @@
 # CBE E2E matrix (CBE-01..CBE-11)
 
 Status: CBE-01..CBE-04 implemented; CBE-04 is extended in commit 4 with
-`WORKFLOW_SKIPS_CBE_GATE`. CBE-05..CBE-11 remain fixtures-only until commit
-5/6. The matrix is the authoritative definition until CBS references it from
-the v1.7 execution contract.
+`WORKFLOW_SKIPS_CBE_GATE` and in commit 5 with the static-analysis warnings.
+CBE-05..CBE-11 remain fixtures-only until commit 6/7. The matrix is the
+authoritative definition until CBS references it from the v1.7 execution
+contract.
 
 ## CBE-01 — CLI contract
 
@@ -55,8 +56,12 @@ the v1.7 execution contract.
   `SELF_WORKFLOW_EXCLUSION_REQUIRED`; blocking exemption exits 3; unknown
   exemption rule exits 2; 1/5 advisory skip passes, 2/5 exits 4.
 - Gate-skip subcases: a `cbe-gate` job with literal `if: false`,
-  `if: ${{ false }}` in its `needs` chain, or a commented-out `cbe-gate:` job
-  exits 3 with `reason=WORKFLOW_SKIPS_CBE_GATE`; a reachable `cbe-gate` passes.
+  `if: ${{ false }}` in its `needs` chain, an evaluable-false `!true`/`1 == 2`,
+  or a commented-out `cbe-gate:` job exits 3 with
+  `reason=WORKFLOW_SKIPS_CBE_GATE`; a reachable or statically true `cbe-gate`
+  passes. Dynamic `if`/`needs` conditions exit 0 but emit
+  `UNVERIFIABLE_CONDITION` / `UNVERIFIABLE_NEEDS_CHAIN` warnings; they are not
+  silently treated as safe.
 - Expected: 3 / `FAIL`; clean/reachable = 0; unknown flag = 2; 1/5 = 0; 2/5 = 4.
 
 ## CBE-05 — exemptions
@@ -96,6 +101,10 @@ the v1.7 execution contract.
   does not re-emit SARIF; when CBE rules cross into CBP, `CBE-*` IDs are
   preserved, never rewritten to `CBP-*`. CBE guarantees only `CBE-*` output;
   CBP owns the consumption check.
+- **Blocked on CBP:** `report_aggregator.py:32/43` currently passes external
+  rule IDs through, so it can put `CBE-*` into CBP's SARIF. Until CBP fixes
+  that, CBE-07 can test only “CBE emits `CBE-*`”, not “CBP consumes and
+  preserves `CBE-*`”. The cross-repo check is a CBP acceptance item.
 
 ## CBE-08 — F2 denominator
 
@@ -110,7 +119,9 @@ the v1.7 execution contract.
 - Expected: 0 / 4 / 3 per case.
 - **Contract gate: blocked on CBS v1.7.1.** Until v1.7.1 is published with
   the F2 blocking-set amendment, these are draft assertions only. CBE must not
-  report CBE-08 as passed, and must not claim F2 conformance.
+  report CBE-08 as passed, and must not claim F2 conformance. If v1.7.1's final
+  F2 set differs from this draft, CBE-08 must be **rewritten** — fixtures and
+  assertions — not merely re-asserted.
 
 ## CBE-09 — F4 baseline
 
@@ -160,7 +171,10 @@ tests/e2e/fixtures/
                     invalid_sarif.py, timeout.py, crash.py, native_ids.py
   bypass/           config/, comments/, env/, workflow-repo/,
                     workflow-if-false-repo/, workflow-needs-repo/,
-                    workflow-commented-repo/, reachable-repo/, clean-repo/
+                    workflow-commented-repo/, reachable-repo/,
+                    workflow-dynamic-if-repo/, workflow-dynamic-needs-repo/,
+                    workflow-negated-true-repo/, workflow-comparison-false-repo/,
+                    workflow-static-true-repo/, clean-repo/
   exemptions/       valid.txt, missing_reason.txt, blocking.txt,
                     unknown_rule.txt, duplicate.txt, bad_format.txt,
                     inline_comment.py, not_applicable.txt

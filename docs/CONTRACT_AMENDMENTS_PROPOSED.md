@@ -154,7 +154,8 @@ conformant until CBS applies this amendment.
    `schemas/v1.7/quality-manifest.schema.json`, and their tests: `producer_id`,
    package enum, bare 64-hex hashes.
 6. Update CBE-08, CBE report identity tests, and CBP-01..CBP-15 where they parse
-   the changed fields.
+   the changed fields. CBE-08 is rewritten against the final F2 set; if v1.7.1
+   differs from the draft, do not merely re-assert the old draft.
 7. Publish **v1.7.1**; do not rewrite `4a437df`.
 
 Until step 7, CBE reports must be marked with the contract ref they were built
