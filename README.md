@@ -4,16 +4,16 @@ CBE is the rule-pack manifest, provider execution, no-bypass enforcement, and
 SARIF evidence gate for the Cyber-Butler release train. It is a sibling project
 to `public-release` (CBS), `cbp-action-release` (CBP), and `cbm`.
 
-Status: **commit 7**. Commit 1 froze the manifest schema, the five CLI
+Status: **commit 8**. Commit 1 froze the manifest schema, the five CLI
 interfaces, and the E2E fixtures. Commit 2 added the manifest validator
-(P0-03). Commit 3 added `enforce-no-bypass` (P0-04), the `RuleSet` shared model,
-`run_e2e.py`, and CBE-01..CBE-04 E2E. Commit 4 added workflow gate-skip
-detection (P0-04.5). Commit 5 added static-analysis warnings. Commit 6 added the
-restricted-evaluator security evidence, `warn_count`, and the CBE-07a/b split.
-Commit 7 adds the dynamic-comparison test, the B-32 consequence text, the
-Ubuntu+Windows CI matrix, and the coverage gate. `run-provider`,
-`symbol-index`, and `emit-sarif` still return exit 3 `NOT_IMPLEMENTED`; actual
-rule packs are not part of this repository yet.
+(P0-03). Commit 3 added `enforce-no-bypass` (P0-04). Commit 4 added workflow
+gate-skip detection (P0-04.5). Commit 5 added static-analysis warnings. Commit 6
+added the restricted-evaluator evidence, `warn_count`, and the CBE-07a/b split.
+Commit 7 added the Ubuntu+Windows CI matrix and coverage gate. Commit 8
+implements P0-05: `symbol-index`, `run-provider`, `emit-sarif`, `tools/cbe_gate.py`
+report/Section B assembly, and CBE-05/06/07a. All five CLI commands are now
+implemented. CBE-07b remains an explicit counted SKIP; CBE-08..11 remain
+draft/pending until CBS v1.7.1 and CBP interop land.
 
 ## Runtime dependencies
 
@@ -100,8 +100,24 @@ No security rule implementation is included in the first commit.
   preserves) explicit SKIP `CBP_REPORT_AGGREGATOR_NOT_FIXED`, counted in
   `skip_count`, visible.
 
-`run-provider`, `symbol-index`, and `emit-sarif` remain skeleton stubs in this
-commit.
+## Commit 7 scope
+
+- Dynamic comparison test `inputs.foo == inputs.bar` -> `UNVERIFIABLE_CONDITION`.
+- B-32 consequence text.
+- Ubuntu+Windows CI matrix and unit coverage gate.
+
+## Commit 8 scope
+
+- `symbol-index`: deterministic Python/PowerShell symbol index with file hashes.
+- `run-provider`: manifest-driven provider execution, SARIF/JSON validation,
+  zero findings vs empty artifact, native ID mapping, exemptions, F2 counts.
+- `emit-sarif`: merged SARIF 2.1.0 with `CBE-*` rule IDs and namespace checks.
+- `tools/cbe_gate.py`: assembles `cbe-report.json` and
+  `cbe-body-section.md`; `warn_count` and warning codes reach Section B.
+- CBE-05/06/07/07a E2E; CBE-07b remains explicit counted SKIP.
+
+CBE-08..11 are not implemented: CBE-08 waits for CBS v1.7.1's final F2 set,
+CBE-07b waits for CBP, and F4 self-bootstrap needs a stable CBE baseline.
 
 ## Commands
 

@@ -1,0 +1,26 @@
+{
+  "schema_version": "1",
+  "pack_id": "cbe-native",
+  "pack_version": "0.1.0",
+  "package_types": ["cbs"],
+  "providers": {
+    "native": {
+      "kind": "exec",
+      "command": ["python", "tests/e2e/fixtures/providers/native_ids.py", "{out}/native.sarif"],
+      "timeout_seconds": 300,
+      "output_formats": ["sarif"]
+    }
+  },
+  "rules": [
+    {
+      "rule_id": "CBE-SECRET-001",
+      "title": "Native provider id mapping",
+      "severity": "error",
+      "gate": "blocking",
+      "provider": "native",
+      "provider_rule_ids": ["generic-api-key"],
+      "version_constraint": "*",
+      "package_types": ["cbs"]
+    }
+  ]
+}

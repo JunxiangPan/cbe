@@ -63,50 +63,13 @@ def test_unknown_disable_flag_is_rejected() -> None:
     assert data["error"]["code"] == "INPUT_INVALID"
 
 
-def test_unimplemented_commands_do_not_fake_pass() -> None:
-    manifest = fixture("manifests", "valid_minimal.json")
-    cases = [
-        (
-            "run-provider",
-            [
-                "--manifest",
-                manifest,
-                "--package-type",
-                "cbe",
-                "--package-version",
-                "v0.1.0",
-                "--source-root",
-                fixture("bypass", "clean-repo"),
-                "--out-dir",
-                fixture("cli", "out"),
-                "--all",
-            ],
-        ),
-        (
-            "symbol-index",
-            ["--source-root", fixture("bypass", "clean-repo"), "--out", fixture("cli", "symbols.json")],
-        ),
-        (
-            "emit-sarif",
-            [
-                "--manifest",
-                manifest,
-                "--run-report",
-                fixture("cli", "run-report.json"),
-                "--source-root",
-                fixture("bypass", "clean-repo"),
-                "--out",
-                fixture("cli", "merged.sarif"),
-            ],
-        ),
-    ]
-    for command, args in cases:
-        code, data, _, _ = run_cbe(command, *args)
-        assert code == 3, command
-        assert data is not None, command
-        assert data["ok"] is False, command
-        assert data["gate_status"] == "FAIL", command
-        assert data["error"]["code"] == "NOT_IMPLEMENTED", command
+def test_no_command_stub_remains() -> None:
+    """All five commands are wired; a stub is a release blocker, not a PASS."""
+
+    for command in COMMANDS:
+        module = ROOT / "src" / "cbe" / "commands" / f"{command.replace('-', '_')}.py"
+        text = module.read_text(encoding="utf-8")
+        assert "not_implemented(" not in text, command
 
 
 def test_enforce_help_does_not_offer_disable_flags() -> None:

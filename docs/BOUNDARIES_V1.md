@@ -41,13 +41,12 @@ Status values:
 | B-29 | CBE-08 / v1.7.1 | F2 blocking-set amendment is not yet published; CBE-08 can only assert the v1.7.1 draft | Claiming CBE-08 passed would be a false PASS | **PENDING-CBS v1.7.1**; CBE-08 remains draft and must not be reported as passed. If v1.7.1's final F2 set differs from the draft, CBE-08 must be rewritten, not merely re-asserted |
 | B-30 | P0-04.5 / static workflow analysis | Dynamic conditions (`inputs.*`, `vars.*`, `github.*`, functions) and dynamic `needs` chains cannot be evaluated before the run | A dynamic gate skip could be missed; claiming complete coverage would be false | **RESOLVED CBE-side as warning**: `UNVERIFIABLE_CONDITION` / `UNVERIFIABLE_NEEDS_CHAIN` warnings, never FAIL, never silent. The evaluator is a restricted literal parser (booleans, numbers, `==`/`!=`, `&&`/`\|\|`/`!`), not Python `eval`; attribute access, indexing, and function calls are unknown |
 | B-31 | CBE-07 / CBP interop | CBP `report_aggregator.py:32/43` passes external rule IDs through; CBE-* can enter CBP SARIF | Cross-namespace violation; CBE-07 cannot test CBP consumption yet | **PENDING-CBP**: fix the aggregator to preserve `CBE-*` without rewriting. CBE-07 is split: 07a (CBE emits `CBE-*`) must PASS; 07b (CBP consumes and preserves) is explicit SKIP `CBP_REPORT_AGGREGATOR_NOT_FIXED`, non-blocking applicable, counted in `skip_count` and visible |
-| B-32 | §5 report / Release body | `enforce-no-bypass` now emits `warn_count`, but `cbe-report.json` and Release body assembly are not implemented | Unverifiable conditions could be JSON-only and absent from the audited report/body | **PENDING-IMPL P0-05**: report assembly sums command `warn_count`; Section B lists the count and warning codes. Until then CBE must not claim report/body visibility |
+| B-32 | §5 report / Release body | CBE-local report/body now carry `warn_count`, but CBS must consume the CBE body fragment | End-to-end Release body visibility is still not guaranteed | **RESOLVED CBE-side**: `tools/cbe_gate.py` writes `cbe-report.json` + `cbe-body-section.md` Section B with warn_count and warning codes. **PENDING-CBS**: the CBS Release body generator must consume the fragment before claiming end-to-end visibility |
 
-**B-32 consequence:** until P0-05 report assembly lands,
-`UNVERIFIABLE_CONDITION` / `UNVERIFIABLE_NEEDS_CHAIN` are visible only in
-per-command JSON, not in `cbe-report.json` or Release body Section B. Auditors
-reading the report/body cannot see workflow conditional-skip risk. Do not claim
-“dynamic conditions are machine-visible” until B-32 is closed.
+**B-32 consequence:** CBE-local report/body visibility is implemented. Until the
+CBS Release body generator consumes `cbe-body-section.md`, an auditor reading
+the final CBS Release body may still see no CBE warning line. Do not claim
+end-to-end “dynamic conditions are machine-visible” until CBS integration lands.
 
 ## P0 blockers at start of implementation
 
@@ -90,5 +89,6 @@ applies the amendments.
   `report_aggregator.py`; the consumed-view assertion is blocked.
 - CBE-08 is draft-only until CBS v1.7.1. If the final F2 set differs from the
   draft, rewrite the case rather than adjusting assertions.
-- B-32: `warn_count` is in command JSON but not yet in `cbe-report.json` or the
-  Release body. P0-05 must wire it before anyone claims audit visibility.
+- B-32: CBE-local `cbe-report.json` / Section B now carry `warn_count`; CBS
+  Release body integration is still pending. Do not claim end-to-end body
+  visibility before CBS consumes the fragment.

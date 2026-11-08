@@ -1,10 +1,9 @@
 # CBE E2E matrix (CBE-01..CBE-11)
 
-Status: CBE-01..CBE-04 implemented; CBE-04 is extended in commit 4 with
-`WORKFLOW_SKIPS_CBE_GATE` and in commit 5 with the static-analysis warnings.
-CBE-05..CBE-11 remain fixtures-only until commit 6/7. The matrix is the
-authoritative definition until CBS references it from the v1.7 execution
-contract.
+Status: CBE-01..CBE-07a are implemented. CBE-07b is an explicit counted SKIP
+until CBP fixes `report_aggregator.py`. CBE-08..CBE-11 remain pending CBS
+v1.7.1/upstream work. The matrix is the authoritative definition until CBS
+references it from the v1.7 execution contract.
 
 ## CBE-01 — CLI contract
 
@@ -12,11 +11,10 @@ contract.
 - Fixtures: `fixtures/cli/`
 - Check: all five subcommands exist; each `--help` exits 0; unknown command,
   missing required option, and unknown flag exit 2 with a JSON error; no
-  traceback; `--version` exits 0. `run-provider`, `symbol-index`, and
-  `emit-sarif` are negative samples: each exits 3 `NOT_IMPLEMENTED` with
-  `gate_status=FAIL` and never emits `PASS`.
-- Expected: 0 for help/version; 2 for input errors; 3 `NOT_IMPLEMENTED` for the
-  three unimplemented commands.
+  traceback; `--version` exits 0. A static guard asserts no command module
+  still returns `NOT_IMPLEMENTED`.
+- Expected: 0 for help/version; 2 for input errors. All five commands are
+  implemented; the old “stub exits 3” negative sample is retired.
 
 ## CBE-02 — manifest valid
 
@@ -68,7 +66,8 @@ contract.
 ## CBE-05 — exemptions
 
 - File: `tests/e2e/test_cbe_05_exemptions.py`
-- Fixtures: `exemptions/*.txt`, `exemptions/inline_comment.py`
+- Fixtures: `exemptions/*.txt`, `exemptions/inline_comment.py`,
+  `manifests/five_advisory.json`, `manifests/valid_blocking_zero.json`
 - Check: exact `SKIPPED: <rule_id> reason=<...>`; advisory applicable exemption
   counts in denominator; blocking exemption exits 3 `blocking_skip=true`;
   unknown/duplicate/missing reason/bad format exit 2; non-applicable exemption
@@ -80,7 +79,8 @@ contract.
 
 - File: `tests/e2e/test_cbe_06_provider_output.py`
 - Fixtures: `providers/sarif_ok.py`, `sarif_findings.py`, `empty.py`,
-  `missing.py`, `invalid_sarif.py`, `timeout.py`, `crash.py`, `native_ids.py`
+  `missing.py`, `invalid_sarif.py`, `timeout.py`, `crash.py`, `native_ids.py`;
+  `manifests/valid_zero_findings.json`, `valid_native_ids.json`
 - Check: every enabled provider has declared artifacts; valid zero-result SARIF
   is PASS; empty/missing/invalid artifact exits 3; provider exit 1 with valid
   artifact is a run; exit >= 2 fails; timeout is `SKIPPED_INFRA`; native id
@@ -106,6 +106,10 @@ contract.
 - Interop contract: CBE guarantees only `CBE-*` output; CBP's custom gate
   consumes the rules and does not re-emit SARIF. The consumed-view check belongs
   to CBP.
+- **Report assembly (B-32):** `test_cbe_07a_gate_report.py` runs
+  `tools/cbe_gate.py`, asserts `cbe-report.json` carries `warn_count`, and
+  asserts `cbe-body-section.md` Section B lists `UNVERIFIABLE_CONDITION`.
+  CBE-local visibility is implemented; CBS Release-body integration is pending.
 
 ## CBE-08 — F2 denominator
 
@@ -167,9 +171,12 @@ contract.
 ```text
 tests/e2e/fixtures/
   manifests/        valid_*.json, invalid_*.json, zero_rules.json,
-                    blocking_version_not_applicable.json
+                    blocking_version_not_applicable.json,
+                    valid_zero_findings.json, valid_native_ids.json,
+                    valid_blocking_zero.json, five_advisory.json
   providers/        sarif_ok.py, sarif_findings.py, empty.py, missing.py,
                     invalid_sarif.py, timeout.py, crash.py, native_ids.py
+  source-tree/      pkg/mod.py, scripts/tool.ps1, README.md, data.json, bad.py
   bypass/           config/, comments/, env/, workflow-repo/,
                     workflow-if-false-repo/, workflow-needs-repo/,
                     workflow-commented-repo/, reachable-repo/,
@@ -194,8 +201,10 @@ tests/e2e/fixtures/
 
 ## Runner and CI
 
-- `tests/e2e/run_e2e.py` runs CBE-01..11 in order and exits non-zero on any
-  failure; JSON summary to stdout.
+- `tests/e2e/run_e2e.py` runs the implemented CBE-01..07a tests and exits
+  non-zero on any failure; JSON summary to stdout.
+- `tools/cbe_gate.py` assembles `cbe-report.json` and `cbe-body-section.md` from
+  the five command outputs; CBE-07a covers the warn_count report/body path.
 - `.github/workflows/cbe-e2e.yml` runs it without `continue-on-error`, `|| true`,
   or `if: always()`.
 - Fixtures are committed; no network. The baseline wheel is hash-pinned.

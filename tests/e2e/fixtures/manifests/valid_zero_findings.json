@@ -1,0 +1,25 @@
+{
+  "schema_version": "1",
+  "pack_id": "cbe-zero",
+  "pack_version": "0.1.0",
+  "package_types": ["cbs"],
+  "providers": {
+    "ok": {
+      "kind": "exec",
+      "command": ["python", "tests/e2e/fixtures/providers/sarif_ok.py", "{out}/ok.sarif"],
+      "timeout_seconds": 300,
+      "output_formats": ["sarif"]
+    }
+  },
+  "rules": [
+    {
+      "rule_id": "CBE-QUALITY-001",
+      "title": "Zero findings SARIF",
+      "severity": "warning",
+      "gate": "advisory",
+      "provider": "ok",
+      "version_constraint": "*",
+      "package_types": ["cbs"]
+    }
+  ]
+}

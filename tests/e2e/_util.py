@@ -59,6 +59,33 @@ def run_cbe(
     return process.returncode, data, process.stdout, process.stderr
 
 
+def run_script(
+    script: str,
+    *args: str | Path,
+    env: dict[str, str] | None = None,
+) -> tuple[int, dict[str, Any] | None, str, str]:
+    merged = clean_environment()
+    if env:
+        merged.update(env)
+    process = subprocess.run(
+        [sys.executable, str(ROOT / script), *[str(arg) for arg in args]],
+        cwd=str(ROOT),
+        env=merged,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        check=False,
+    )
+    data: dict[str, Any] | None = None
+    if process.stdout.lstrip().startswith("{"):
+        try:
+            data = json.loads(process.stdout)
+        except json.JSONDecodeError:
+            data = None
+    return process.returncode, data, process.stdout, process.stderr
+
+
 def fixture(*parts: str) -> Path:
     return FIXTURES.joinpath(*parts)
 

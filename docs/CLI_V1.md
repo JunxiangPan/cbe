@@ -1,9 +1,10 @@
 # CBE CLI v1
 
-Status: interface frozen in commit 1. `validate-manifest` (commit 2) and
-`enforce-no-bypass` (commit 3) are implemented. `run-provider`, `symbol-index`,
-and `emit-sarif` still return exit 3 `NOT_IMPLEMENTED`. An unimplemented command
-never returns PASS.
+Status: interface frozen in commit 1. All five subcommands are implemented:
+`validate-manifest`, `enforce-no-bypass`, `symbol-index`, `run-provider`, and
+`emit-sarif`. `tools/cbe_gate.py` assembles the CBE report and Section B.
+CBE-07b remains an explicit SKIP for CBP consumption; CBE-08..11 are pending
+the v1.7.1 contract/upstream work.
 
 ## Global contract
 
@@ -242,8 +243,10 @@ CBP's P0-06.
 
 ## Report assembly (not a sixth subcommand)
 
-`tools/cbe_gate.py` will call the five commands and assemble the §5 report.
-F2/F4/F5/F6 live there, not in a `cbe` subcommand.
+`tools/cbe_gate.py` calls the five commands and assembles the §5 report.
+F2 skip counts and report/body assembly live there. F4 baseline selection,
+F5 infra classification, and F6 NOT_UPLOADED integration remain pending; they
+are not implemented by this tool yet.
 
 - Report fields (all required, no extra fields):
   `schema_version`, `package_id`, `producer_id`, `version`, `tag`,
@@ -256,13 +259,12 @@ F2/F4/F5/F6 live there, not in a `cbe` subcommand.
 - `skip_count * 5 > applicable_count` → exit 4; exactly 20% passes.
 - `blocking_skip=true` → exit 3.
 - `SKIPPED_INFRA` and `NOT_UPLOADED` never enter the skip ratio.
-- `warn_count` is the sum of the five command outputs' `warn_count` values. It
-  must include `UNVERIFIABLE_CONDITION` / `UNVERIFIABLE_NEEDS_CHAIN`; Release
-  body Section B must list the count and warning codes. This report/body wiring
-  is **PENDING-IMPL** until `tools/cbe_gate.py` and the body generator land;
-  until then, `enforce-no-bypass` emits `warn_count` in JSON but CBE does not
-  claim it is already visible in `cbe-report.json` or the Release body.
+- `warn_count` is the sum of command warnings, including
+  `UNVERIFIABLE_CONDITION` / `UNVERIFIABLE_NEEDS_CHAIN`. `tools/cbe_gate.py`
+  writes it into `cbe-report.json` and Section B of `cbe-body-section.md`.
+  CBS Release-body integration (consuming the CBE fragment) remains a CBS-side
+  pending item; CBE-local report/body visibility is implemented.
 
 F4 baseline and release-train handling are specified in
-`CONTRACT_AMENDMENTS_PROPOSED.md` and `DECISIONS.md`; the implementation lands
-with the framework commit.
+`CONTRACT_AMENDMENTS_PROPOSED.md` and `DECISIONS.md`; F4 self-bootstrap remains
+pending because CBE has no stable predecessor yet.

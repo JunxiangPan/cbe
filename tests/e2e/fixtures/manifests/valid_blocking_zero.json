@@ -1,0 +1,25 @@
+{
+  "schema_version": "1",
+  "pack_id": "cbe-blocking-zero",
+  "pack_version": "0.1.0",
+  "package_types": ["cbs"],
+  "providers": {
+    "ok": {
+      "kind": "exec",
+      "command": ["python", "tests/e2e/fixtures/providers/sarif_ok.py", "{out}/ok.sarif"],
+      "timeout_seconds": 300,
+      "output_formats": ["sarif"]
+    }
+  },
+  "rules": [
+    {
+      "rule_id": "CBE-SECRET-001",
+      "title": "Blocking rule with zero findings",
+      "severity": "error",
+      "gate": "blocking",
+      "provider": "ok",
+      "version_constraint": "*",
+      "package_types": ["cbs"]
+    }
+  ]
+}

@@ -161,6 +161,15 @@ uses `CBE-*` IDs. CBE-07 is split:
   with `CBP_REPORT_AGGREGATOR_NOT_FIXED`, counted in `skip_count` and visible;
   SKIP is not PASS. Once CBP fixes it, 07b becomes a real assertion.
 
+### D11. P0-05 implementation
+
+`symbol-index`, `run-provider`, and `emit-sarif` are implemented. `run-provider`
+reuses `RuleSet`/`Inspection`, validates declared artifacts, distinguishes empty
+artifacts from zero findings, maps native provider IDs via `provider_rule_ids`,
+and computes F2 counts. `emit-sarif` emits SARIF 2.1.0 with `CBE-*` IDs.
+`tools/cbe_gate.py` writes `cbe-report.json` and `cbe-body-section.md`;
+`warn_count` and warning codes reach Section B. CBE-07b remains explicit SKIP.
+
 ## Commit sequence
 
 1. **Commit 1 (done)**: schemas + `src/cbe/` CLI skeleton +
@@ -176,8 +185,10 @@ uses `CBE-*` IDs. CBE-07 is split:
 6. **Commit 6 (done)**: restricted evaluator evidence (`env.FOO()` unknown),
    `warn_count` in `enforce-no-bypass`, B-32 report/body pending, and the
    CBE-07a/07b split with explicit counted SKIP.
-7. **Commit 7**: P0-05 `run-provider` / `symbol-index` / `emit-sarif` +
-   CBE-05..CBE-07.
-8. **Commit 8**: P1-01 CBE-08..CBE-11. CBE-08 stays draft until CBS publishes
-   v1.7.1; P1-04 F4 baseline/self-bootstrap waits for v1.7.1 and a stable CBE
-   release.
+7. **Commit 7 (done)**: Ubuntu+Windows CI matrix and 60% coverage gate.
+8. **Commit 8 (done)**: P0-05 `symbol-index`, `run-provider`, `emit-sarif`,
+   `tools/cbe_gate.py` report/body assembly, CBE-05/06/07/07a E2E. CBE-07b
+   remains explicit counted SKIP.
+9. **Not implemented**: P1-01 CBE-08..CBE-11. CBE-08 stays draft until CBS
+   publishes v1.7.1; P1-04 F4 baseline/self-bootstrap waits for v1.7.1 and a
+   stable CBE release. CBE-07b waits for CBP `report_aggregator.py`.
