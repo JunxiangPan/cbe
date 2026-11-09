@@ -89,5 +89,36 @@
       "warnings": []
     },
     "wheel_sha256": "30dd950e1b2b3b6087ba6d777cc432f81da66baa809a1f77f3404f458b4df38e"
+  },
+  "rc2_final_wheel_bootstrap": {
+    "exit": 0,
+    "data": {
+      "schema_version": "1",
+      "command": "cbe-selfcheck",
+      "ok": true,
+      "exit_code": 0,
+      "gate_status": "PASS",
+      "baseline": {
+        "label": "cbe-0.1.0-rc2-final-wheel",
+        "python": "D:\\tmp\\cbe-rc2-venv\\Scripts\\python.exe",
+        "version": "0.1.0",
+        "bootstrap": true
+      },
+      "steps": [
+        {
+          "step": "validate-manifest",
+          "exit_code": 0,
+          "stderr": ""
+        },
+        {
+          "step": "run-provider",
+          "exit_code": 0,
+          "stderr": ""
+        }
+      ],
+      "error": null,
+      "warnings": []
+    },
+    "wheel_sha256": "8fdb2df007d5c5e04d6e6cb49d6d0df862f754e1f18742534a208617acfdd6b3"
   }
 }

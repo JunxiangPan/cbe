@@ -1,0 +1,10 @@
+{
+  "schema_version": "1",
+  "schema_sha256": "2b3e1c5a77a7f520b80d01fefa328c9353fffc5d65e87782ca90d193839c0e74",
+  "validation_errors": [],
+  "report_path": "cbe-report-rc2.report.json",
+  "report_gate_status": "PASS",
+  "report_package_id": "cbe",
+  "report_producer_id": "cbe",
+  "not_uploaded_schema_supported": true
+}

@@ -77,7 +77,33 @@ def test_cbp_body_scope_full_is_rejected() -> None:
     assert any("body_hash_scope" in item for item in data["error"]["details"])
 
 
-def test_cbp_contract_object_repository_is_rejected_against_120_shape() -> None:
+def test_cbp_rc2_object_repository_is_canonical() -> None:
+    code, data, _, _ = run_script(
+        "tools/cbe_train.py",
+        "--release-train",
+        TRAIN / "not-uploaded.json",
+        "--cbp-manifest",
+        CBP_V12,
+    )
+    assert code == 0
+    assert data is not None
+    assert data["cbp_manifest_checked"] is True
+
+
+def test_cbp_rc2_bare_string_repository_is_rejected() -> None:
+    code, data, _, _ = run_script(
+        "tools/cbe_train.py",
+        "--release-train",
+        TRAIN / "not-uploaded.json",
+        "--cbp-manifest",
+        TRAIN / "cbp-quality-manifest-string-repo.json",
+    )
+    assert code == 2
+    assert data is not None
+    assert any("artifact_repository" in item for item in data["error"]["details"])
+
+
+def test_cbp_rc2_incomplete_object_is_rejected() -> None:
     code, data, _, _ = run_script(
         "tools/cbe_train.py",
         "--release-train",
@@ -87,7 +113,20 @@ def test_cbp_contract_object_repository_is_rejected_against_120_shape() -> None:
     )
     assert code == 2
     assert data is not None
-    assert any("artifact_repository" in item for item in data["error"]["details"])
+    assert any("run_id" in item for item in data["error"]["details"])
+
+
+def test_cbp_schema_version_must_be_string_one() -> None:
+    code, data, _, _ = run_script(
+        "tools/cbe_train.py",
+        "--release-train",
+        TRAIN / "not-uploaded.json",
+        "--cbp-manifest",
+        TRAIN / "cbp-quality-manifest-schema-version-number.json",
+    )
+    assert code == 2
+    assert data is not None
+    assert any("schema_version" in item for item in data["error"]["details"])
 
 
 def test_cbc_event_is_not_a_private_manifest_field() -> None:

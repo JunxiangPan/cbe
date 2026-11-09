@@ -171,12 +171,14 @@ and computes F2 counts. `emit-sarif` emits SARIF 2.1.0 with `CBE-*` IDs.
 `warn_count` and warning codes reach Section B. CBE-07b is a real CBP
 namespace-isolation assertion, re-run on released CBP 1.2.0.
 
-### D12. CBP 1.2.0 `artifact_repository` shape
+### D12. Contract RC2 `artifact_repository` shape
 
-CBP 1.2.0 (`5ebd0eb`) treats `artifact_repository` as an `owner/repo` string.
-The CBS v1.7.1 RC contract sketches an object. CBE follows the CBP 1.2.0
-shape and rejects the object; it does not define a union or a private variant.
-This mismatch is B-33 and must be resolved upstream before the contract freezes.
+Contract RC2 makes `artifact_repository` the object
+`{repository, run_id, artifact_name}`. CBE accepts that object and rejects bare
+`owner/repo` strings and incomplete objects; it does not define a union or a
+private variant. CBP 1.2.2 is not released yet, so the object shape is
+fixture-tested only and is not claimed as a CBP 1.2.2 PASS. B-33 is resolved on
+the contract side; CBP 1.2.2 adoption remains pending.
 
 ### D13. CBE 0.1.0 RC boundary
 
@@ -184,13 +186,13 @@ CBE 0.1.0 is an RC candidate only: no tag, no GitHub release, no PyPI upload.
 CBE-07b is real on released CBP 1.2.0 (`5ebd0eb`). CBE-09/10/11 have
 implementation evidence, but there is no previous stable CBE, so F4/CBE-11
 evidence is explicitly `bootstrap=true`. CBE-08 remains DRAFT against CBS
-`contract/v1.7.1` RC `3de93ae`: declared/observed hash both `c1653c…` and
+`contract/v1.7.1` RC2 `6835789`: declared/observed hash both `209d75b4…` and
 `vm-proof.yml` is clean, but the contract is still not frozen.
 
 ### D14. Contract hash guard
 
-CBE pins CBS `contract/v1.7.1` to commit `3de93ae` and contract SHA256
-`c1653c…` in `tests/e2e/fixtures/contract/v1.7.1-pin.json`. The guard fetches
+CBE pins CBS `contract/v1.7.1` to commit `6835789` and contract SHA256
+`209d75b4…` in `tests/e2e/fixtures/contract/v1.7.1-pin.json`. The guard fetches
 the branch head and fails with `CONTRACT_CHANGED` when the commit, contract
 bytes, or `vm-proof.yml` cleanliness changes. A guard result of `PINNED` means
 the pin is intact; it is not CBE-08 PASS and does not imply the contract is
@@ -238,3 +240,6 @@ CBE-07b runs with the installed official wheel and still maps `CBE-*` to
 13. **Commit 13 (CBP 1.2.0 official, done)**: `cbp-action==1.2.0` in the `e2e`
     extra; PyPI wheel/sdist hashes recorded; CBE-07b re-run on the official
     wheel; audit package refreshed. No tag/release.
+14. **Commit 14 (contract RC2, done)**: pin `6835789` / `209d75b4…`; RC2 CBE
+    report schema; object `artifact_repository`; NOT_UPLOADED schema support;
+    CBE-08 still DRAFT. CBP 1.2.2 adoption pending release.

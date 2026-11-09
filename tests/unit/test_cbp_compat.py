@@ -1,7 +1,8 @@
-"""Unit tests for CBP 1.2.0 manifest compatibility."""
+"""Unit tests for CBP quality-manifest compatibility under contract RC2."""
 
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 
@@ -24,9 +25,19 @@ def test_full_body_scope_is_rejected() -> None:
     assert any("body_hash_scope" in item for item in problems)
 
 
-def test_object_artifact_repository_is_rejected_against_cbp_120_shape() -> None:
-    problems = validate_cbp_manifest(_load("cbp-quality-manifest-object-repo.json"))
+def test_bare_string_artifact_repository_is_rejected() -> None:
+    problems = validate_cbp_manifest(_load("cbp-quality-manifest-string-repo.json"))
     assert any("artifact_repository" in item for item in problems)
+
+
+def test_incomplete_object_artifact_repository_is_rejected() -> None:
+    problems = validate_cbp_manifest(_load("cbp-quality-manifest-object-repo.json"))
+    assert any("run_id" in item for item in problems)
+
+
+def test_schema_version_must_be_string_one() -> None:
+    problems = validate_cbp_manifest(_load("cbp-quality-manifest-schema-version-number.json"))
+    assert any("schema_version" in item for item in problems)
 
 
 def test_cbc_event_is_not_a_manifest_field() -> None:
@@ -35,4 +46,8 @@ def test_cbc_event_is_not_a_manifest_field() -> None:
 
 
 def test_schemas_are_bundled_in_package() -> None:
-    assert schema_path("v1.7", "cbe-report.schema.json").is_file()
+    path = schema_path("v1.7", "cbe-report.schema.json")
+    assert path.is_file()
+    assert hashlib.sha256(path.read_bytes()).hexdigest() == (
+        "2b3e1c5a77a7f520b80d01fefa328c9353fffc5d65e87782ca90d193839c0e74"
+    )

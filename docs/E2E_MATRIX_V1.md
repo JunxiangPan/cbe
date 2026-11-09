@@ -1,7 +1,7 @@
 # CBE E2E matrix (CBE-01..CBE-11)
 
 Status: CBE-01..CBE-07b, CBE-09, CBE-10, and CBE-11 are implemented. CBE-08
-is a DRAFT against CBS `contract/v1.7.1` RC `3de93ae` and is not PASS. CBE-07b
+is a DRAFT against CBS `contract/v1.7.1` RC2 `6835789` and is not PASS. CBE-07b
 runs against the released CBP 1.2.0 (and historically 1.1.0/1.2.0 RC). The
 matrix is the authoritative definition until CBS references it from the v1.7
 execution contract.
@@ -120,7 +120,7 @@ execution contract.
 - Guard: `tests/e2e/test_cbe_08_contract_guard.py`,
   `tools/cbe_contract_guard.py`,
   `tests/e2e/fixtures/contract/v1.7.1-pin.json`
-- Guard check: pinned commit `3de93ae`, contract SHA256 `c1653c…`,
+- Guard check: pinned commit `6835789`, contract SHA256 `209d75b4…`,
   `vm-proof.yml` clean. Drift exits 3 `CONTRACT_CHANGED`; a successful guard
   says `PINNED`, never `CBE-08 PASS`.
 - Fixtures: manifest combinations from `manifests/five_advisory.json`,
@@ -129,12 +129,15 @@ execution contract.
 - Check: denominator = non-blocking applicable checks only; blocking rules are
   not counted and may not SKIP; blocking exemption exits 3; zero rules exits 3;
   1/5 advisory skip passes; 2/5 would exit 4.
-- **Status: DRAFT.** Target is CBS `contract/v1.7.1` RC commit `3de93ae`.
+- **Status: DRAFT.** Target is CBS `contract/v1.7.1` RC2 commit `6835789`.
   The declared contract SHA256 in `RC_STATUS.md` and the observed bytes both
-  equal `c1653c…`; `vm-proof.yml` has no conflict markers. The contract is
-  still **RC, NOT FROZEN**. CBE-08 is **not PASS** and cannot become PASS until
+  equal `209d75b4…`; `vm-proof.yml` has no conflict markers. The contract is
+  still **RC2, NOT FROZEN**. CBE-08 is **not PASS** and cannot become PASS until
   CBS freezes the contract. If the frozen F2 set differs, rewrite
   fixtures/assertions, not just re-label.
+- **CBE report schema:** `test_cbe_report_rc2_schema.py` generates a real CBE
+  report and validates it against the RC2 CBE report schema; the schema also
+  accepts `gate_status=NOT_UPLOADED`.
 
 ## CBE-09 — F4 baseline
 
@@ -149,7 +152,7 @@ execution contract.
 - Expected: 0 / 3 `PRECONDITION_FAIL` / 2. There is no stable CBE release yet,
   so RC evidence uses an explicit bootstrap, never a fake “stable” label.
 
-## CBE-10 — F5/F6 + CBP 1.2.0 manifest
+## CBE-10 — F5/F6 + contract RC2 manifest
 
 - File: `tests/e2e/test_cbe_10_f5_f6.py`
 - Tool: `tools/cbe_train.py`
@@ -157,17 +160,19 @@ execution contract.
   `evidence-absent.json`, `infra.json`; CBP quality manifest fixtures
   `cbp-quality-manifest-v12.json`, `cbp-quality-manifest-full.json`,
   `cbp-quality-manifest-object-repo.json`,
+  `cbp-quality-manifest-string-repo.json`,
+  `cbp-quality-manifest-schema-version-number.json`,
   `cbp-quality-manifest-cbc-event-field.json`
 - Check F5: infra exits 3 `SKIPPED_INFRA`, not counted in 20%, dedicated body
   section, never PASS.
 - Check F6: `NOT_UPLOADED` is not PASS/SKIP and not counted; does not block CBS
   by itself; `declared_attached=true` emits the exact phrase
   `declared as attached but not uploaded`; `EVIDENCE_ABSENT` is visible.
-- CBP 1.2.0 fields: `body_hash_scope` must be exactly `base`; `full` exits 2;
-  `artifact_repository` uses CBP 1.2.0's `owner/repo` string shape, so the CBS
-  RC contract's object sketch is rejected and recorded as an upstream mismatch;
-  `cbc_event` is an event stream, not a manifest field, so a private
-  `cbc_event` manifest key is rejected.
+- Contract RC2 fields: `schema_version` must be the string `"1"`;
+  `body_hash_scope` must be exactly `base`; `artifact_repository` must be the
+  object `{repository, run_id, artifact_name}`. Bare strings and incomplete
+  objects exit 2. CBP 1.2.2 is not released, so this is fixture evidence only,
+  not a CBP 1.2.2 PASS. `cbc_event` is an event stream, not a manifest field.
 - Expected: 0 for NOT_UPLOADED/EVIDENCE_ABSENT; 3 `SKIPPED_INFRA`; 2 for
   invalid CBP manifest fields.
 
@@ -215,6 +220,8 @@ tests/e2e/fixtures/
                     cbp-quality-manifest-v12.json,
                     cbp-quality-manifest-full.json,
                     cbp-quality-manifest-object-repo.json,
+                    cbp-quality-manifest-string-repo.json,
+                    cbp-quality-manifest-schema-version-number.json,
                     cbp-quality-manifest-cbc-event-field.json
   contract/         v1.7.1-pin.json
   cli/              .keep

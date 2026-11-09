@@ -14,8 +14,7 @@
   },
   "artifact_repository": {
     "repository": "JunxiangPan/Cyber-Butler-Security",
-    "run_id": "42539271566",
-    "artifact_name": "cbp-rc"
+    "artifact_name": "build-once-artifact"
   },
   "release_body_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
   "body_hash_scope": "base",

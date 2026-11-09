@@ -14,7 +14,8 @@ Commit 8 implemented P0-05 (`symbol-index`, `run-provider`, `emit-sarif`,
 `tools/cbe_gate.py`). Commit 9 made CBE-07b a real CBP 1.1.0 assertion. Commit
 10 is the 0.1.0 RC candidate: CBE-07b re-run on CBP 1.2.0 RC, CBE-09/10/11
 implemented, CBE-08 kept DRAFT, CBP 1.2.0 manifest fields aligned, and schemas
-bundled in the wheel. Commit 13 pins the released CBP 1.2.0 from PyPI. CBE-08 is
+bundled in the wheel. Commit 13 pins the released CBP 1.2.0 from PyPI; commit
+14 follows contract RC2 and the object `artifact_repository` shape. CBE-08 is
 **not PASS**; no tag/release exists.
 
 ## 0.1.0 RC inputs
@@ -24,8 +25,8 @@ bundled in the wheel. Commit 13 pins the released CBP 1.2.0 from PyPI. CBE-08 is
   sdist `08392b2af6b3ff29dc21cfe5db0f23d628307ccac06b9035639f32da6343defd`.
   CBE-07b passes with the installed official wheel; the project pin is
   `cbp-action==1.2.0`. Earlier 1.2.0 RC candidates also passed.
-- CBS `contract/v1.7.1` RC: commit `3de93ae`; declared and observed contract
-  SHA256 both `c1653c…`; `vm-proof.yml` is clean. The contract is still
+- CBS `contract/v1.7.1` RC2: commit `6835789`; declared and observed contract
+  SHA256 both `209d75b4…`; `vm-proof.yml` is clean. The contract is still
   **NOT FROZEN**. CBE-08 remains DRAFT.
 - CBE: `0.1.0` package version, no tag, no release.
 
@@ -179,6 +180,18 @@ No security rule implementation is included in the first commit.
 - CBE-07b re-run with the installed official 1.2.0: `CBE-SECRET-001` →
   `CBP-EXT-SECRET-001`, `origin_rule: CBE-SECRET-001`.
 - Audit package records the official dependency evidence; CBE-08 remains DRAFT.
+
+## Commit 14 scope (contract RC2)
+
+- Contract pin updated to `6835789` / `209d75b4…`; CBE-08 stays DRAFT.
+- CBE report schema replaced with RC2 exact schema; real CBE report validates
+  against it, including the `NOT_UPLOADED` gate status.
+- `artifact_repository` canonical shape is the RC2 object
+  `{repository, run_id, artifact_name}`; bare `owner/repo` strings are rejected.
+- CBP 1.2.2 is not released; object-shape behavior is fixture-tested only and
+  is **not** claimed as a CBP 1.2.2 PASS. The `cbp-action==1.2.0` pin remains
+  until 1.2.2 ships.
+- B-33 is resolved on the contract side; CBP 1.2.2 adoption remains pending.
 
 ## Commands
 

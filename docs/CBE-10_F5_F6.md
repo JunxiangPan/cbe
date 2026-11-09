@@ -1,6 +1,6 @@
-# CBE-10 — F5/F6 release train and CBP 1.2.0 manifest fields
+# CBE-10 — F5/F6 release train and contract RC2 manifest fields
 
-Status: implemented.
+Status: implemented; RC2 object shape fixture-tested, CBP 1.2.2 adoption pending.
 
 `tools/cbe_train.py` reads a `release-train.json` and produces JSON plus a
 Markdown body fragment:
@@ -14,17 +14,20 @@ Markdown body fragment:
 - `skip_count=0`, `applicable_count=0`, `counted_in_skip_denominator=false` for
   the release-train section; CBM/CBC are not part of the CBE F2 denominator.
 
-## CBP 1.2.0 fields
+## Contract RC2 fields
 
-The optional `--cbp-manifest` check follows CBP 1.2.0 (`5ebd0eb`):
+The optional `--cbp-manifest` check follows contract RC2 (`6835789`):
 
+- `schema_version` must be the string `"1"`; numeric `1` is rejected.
 - `body_hash_scope` must be exactly `base`; `full` exits 2.
-- `artifact_repository` is a non-empty `owner/repo` string. The CBS v1.7.1 RC
-  contract currently sketches an object; CBE rejects the object against the
-  CBP 1.2.0 shape and records the mismatch instead of inventing a union type.
+- `artifact_repository` is the object
+  `{repository, run_id, artifact_name}`. A bare `owner/repo` string, a missing
+  `run_id`, or an unqualified artifact name is rejected.
 - `cbc-event` is an event stream (`cbc-event-dir`, JSONL hash chain), not a
   manifest field. A private `cbc_event` manifest key is rejected as unexpected;
   CBE does not define a private variant.
 
-This module is a CBE-side consumer/compatibility check, not a replacement for
-CBP 1.2.0's own validator.
+CBP 1.2.2 has not been released at the time of this RC. The object shape is
+verified with fixtures only; CBE does not claim a CBP 1.2.2 PASS. The
+`cbp-action==1.2.0` pin remains until 1.2.2 ships. This module is a CBE-side
+consumer/compatibility check, not a replacement for CBP's own validator.

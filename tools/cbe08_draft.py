@@ -13,10 +13,10 @@ from cbe.jsonio import print_json
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "tests" / "e2e" / "fixtures"
-CONTRACT_REF = "3de93aed99cf81c4408cb160dcf5846a8d2bacfe"
-CONTRACT_SHORT_REF = "3de93ae"
-CONTRACT_DECLARED_SHA256 = "c1653cfe1adbc74d2523d2fa12c965ab761fce978061c8e55443eb8b6db3a7e5"
-CONTRACT_OBSERVED_SHA256 = "c1653cfe1adbc74d2523d2fa12c965ab761fce978061c8e55443eb8b6db3a7e5"
+CONTRACT_REF = "683578964fb14518b2bd81d3fd49766b66feb851"
+CONTRACT_SHORT_REF = "6835789"
+CONTRACT_DECLARED_SHA256 = "209d75b4c900f9a2d1ad8f5c377ac1b8a868cf3e4cd449970e61e3ff380c18f1"
+CONTRACT_OBSERVED_SHA256 = "209d75b4c900f9a2d1ad8f5c377ac1b8a868cf3e4cd449970e61e3ff380c18f1"
 
 
 def _run(args: list[str], out_dir: Path) -> tuple[int, dict | None]:
@@ -128,7 +128,7 @@ def main() -> int:
             "contract_declared_sha256": CONTRACT_DECLARED_SHA256,
             "contract_observed_sha256": CONTRACT_OBSERVED_SHA256,
             "contract_hash_match": CONTRACT_DECLARED_SHA256 == CONTRACT_OBSERVED_SHA256,
-            "contract_status": "RC_NOT_FROZEN",
+            "contract_status": "RC2_NOT_FROZEN",
             "vm_proof_conflict_markers": False,
             "freeze_required": True,
             "reason": "CBS contract/v1.7.1 is RC and not frozen; hash and vm-proof are aligned but human freeze is still required",

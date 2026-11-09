@@ -1,5 +1,5 @@
 {
-  "not_uploaded": {
+  "not_uploaded_object": {
     "exit": 0,
     "data": {
       "schema_version": "1",
@@ -76,6 +76,49 @@
         "code": "SKIPPED_INFRA",
         "message": "release train has an infrastructure or precondition failure",
         "details": []
+      },
+      "warnings": []
+    }
+  },
+  "bare_string_rejected": {
+    "exit": 2,
+    "data": {
+      "schema_version": "1",
+      "command": "cbe-release-train",
+      "ok": false,
+      "exit_code": 2,
+      "gate_status": "FAIL",
+      "components": [
+        {
+          "name": "cbm",
+          "declared_attached": false,
+          "status": "NOT_UPLOADED",
+          "reason": ""
+        },
+        {
+          "name": "cbc",
+          "declared_attached": false,
+          "status": "NOT_UPLOADED",
+          "reason": ""
+        }
+      ],
+      "not_uploaded": [
+        "cbm",
+        "cbc"
+      ],
+      "evidence_absent": [],
+      "infrastructure_failures": [],
+      "skip_count": 0,
+      "applicable_count": 0,
+      "skip_ratio": 0.0,
+      "counted_in_skip_denominator": false,
+      "body_section_md": "## NOT_UPLOADED\n\n- cbm: NOT_UPLOADED\n- cbc: NOT_UPLOADED\n\nNOT_UPLOADED is not PASS, not SKIP, and is not counted in any denominator.\n",
+      "error": {
+        "code": "CBP_MANIFEST_INVALID",
+        "message": "artifact_repository: object {repository, run_id, artifact_name} required; a bare owner/repo string is not canonical under contract RC2",
+        "details": [
+          "artifact_repository: object {repository, run_id, artifact_name} required; a bare owner/repo string is not canonical under contract RC2"
+        ]
       },
       "warnings": []
     }

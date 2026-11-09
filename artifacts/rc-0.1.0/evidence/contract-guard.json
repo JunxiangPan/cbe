@@ -9,13 +9,13 @@
     "pin": {
       "repo": "JunxiangPan/Cyber-Butler-Security",
       "branch": "contract/v1.7.1",
-      "commit": "3de93aed99cf81c4408cb160dcf5846a8d2bacfe",
-      "contract_sha256": "c1653cfe1adbc74d2523d2fa12c965ab761fce978061c8e55443eb8b6db3a7e5",
+      "commit": "683578964fb14518b2bd81d3fd49766b66feb851",
+      "contract_sha256": "209d75b4c900f9a2d1ad8f5c377ac1b8a868cf3e4cd449970e61e3ff380c18f1",
       "frozen": false
     },
     "observed": {
-      "commit": "3de93aed99cf81c4408cb160dcf5846a8d2bacfe",
-      "contract_sha256": "c1653cfe1adbc74d2523d2fa12c965ab761fce978061c8e55443eb8b6db3a7e5",
+      "commit": "683578964fb14518b2bd81d3fd49766b66feb851",
+      "contract_sha256": "209d75b4c900f9a2d1ad8f5c377ac1b8a868cf3e4cd449970e61e3ff380c18f1",
       "vm_proof_clean": true
     },
     "error": null,

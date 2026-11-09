@@ -1,4 +1,4 @@
-"""CBE-08 contract-hash guard: pin 3de93ae / c1653c, fail on drift."""
+"""CBE-08 contract-hash guard: pin 6835789 / 209d75b4, fail on drift."""
 
 from __future__ import annotations
 
@@ -15,8 +15,8 @@ def test_guard_matches_pinned_contract() -> None:
     assert code == 0
     assert data is not None
     assert data["gate_status"] == "PINNED"
-    assert data["pin"]["commit"] == "3de93aed99cf81c4408cb160dcf5846a8d2bacfe"
-    assert data["pin"]["contract_sha256"] == "c1653cfe1adbc74d2523d2fa12c965ab761fce978061c8e55443eb8b6db3a7e5"
+    assert data["pin"]["commit"] == "683578964fb14518b2bd81d3fd49766b66feb851"
+    assert data["pin"]["contract_sha256"] == "209d75b4c900f9a2d1ad8f5c377ac1b8a868cf3e4cd449970e61e3ff380c18f1"
     assert data["observed"]["commit"] == data["pin"]["commit"]
     assert data["observed"]["contract_sha256"] == data["pin"]["contract_sha256"]
     assert data["observed"]["vm_proof_clean"] is True

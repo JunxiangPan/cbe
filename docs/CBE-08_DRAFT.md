@@ -2,14 +2,14 @@
 
 Status: **DRAFT — NOT PASS**
 
-- Contract ref: CBS `contract/v1.7.1` commit
-  `3de93aed99cf81c4408cb160dcf5846a8d2bacfe` (`3de93ae`)
+- Contract ref: CBS `contract/v1.7.1` RC2 commit
+  `683578964fb14518b2bd81d3fd49766b66feb851` (`6835789`)
 - Declared candidate SHA256 in `docs/v1.7/RC_STATUS.md`:
-  `c1653cfe1adbc74d2523d2fa12c965ab761fce978061c8e55443eb8b6db3a7e5`
-- Observed raw SHA256 of `docs/v1.7/CONTRACT.md` at `3de93ae`:
-  `c1653cfe1adbc74d2523d2fa12c965ab761fce978061c8e55443eb8b6db3a7e5`
-- The hashes now match, and `vm-proof.yml` has no conflict markers. The contract
-  still says **RC, NOT FROZEN**; human freeze has not happened. CBE-08 remains
+  `209d75b4c900f9a2d1ad8f5c377ac1b8a868cf3e4cd449970e61e3ff380c18f1`
+- Observed raw SHA256 of `docs/v1.7/CONTRACT.md` at `6835789`:
+  `209d75b4c900f9a2d1ad8f5c377ac1b8a868cf3e4cd449970e61e3ff380c18f1`
+- The hashes match, and `vm-proof.yml` has no conflict markers. The contract
+  still says **RC2, NOT FROZEN**; human freeze has not happened. CBE-08 remains
   DRAFT.
 
 ## Draft assertions (not evidence of CBE-08 PASS)
@@ -23,7 +23,7 @@ Status: **DRAFT — NOT PASS**
 | zero rules | exit 3 `NO_RULES` | zero rules is a gate failure |
 
 The script always emits `"status": "DRAFT"`, `"not_pass": true`,
-`"contract_hash_match": true`, and `"contract_status": "RC_NOT_FROZEN"`. It is
+`"contract_hash_match": true`, and `"contract_status": "RC2_NOT_FROZEN"`. It is
 not included in the E2E pass count and must not be quoted as CBE-08 PASS.
 
 ## Contract hash guard
@@ -33,8 +33,8 @@ not included in the E2E pass count and must not be quoted as CBE-08 PASS.
 ```text
 repo:              JunxiangPan/Cyber-Butler-Security
 branch:            contract/v1.7.1
-commit:            3de93aed99cf81c4408cb160dcf5846a8d2bacfe
-contract_sha256:   c1653cfe1adbc74d2523d2fa12c965ab761fce978061c8e55443eb8b6db3a7e5
+commit:            683578964fb14518b2bd81d3fd49766b66feb851
+contract_sha256:   209d75b4c900f9a2d1ad8f5c377ac1b8a868cf3e4cd449970e61e3ff380c18f1
 frozen:            false
 ```
 

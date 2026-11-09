@@ -1,8 +1,9 @@
-"""CBP 1.2.0 quality-manifest compatibility checks.
+"""CBP quality-manifest compatibility checks for contract RC2.
 
-The field shapes follow the CBP 1.2.0 RC code (``artifact_repository`` is an
-``owner/repo`` string). The CBS v1.7.1 RC contract currently sketches an object;
-that upstream mismatch is recorded in docs/BOUNDARIES_V1.md, not hidden here.
+Contract RC2 makes ``artifact_repository`` an object:
+``{repository, run_id, artifact_name}``. A bare ``owner/repo`` string is no
+longer canonical. CBP 1.2.2 is not released yet, so the object shape is verified
+with fixtures only, not claimed as a CBP 1.2.2 PASS.
 """
 
 from __future__ import annotations
@@ -53,7 +54,7 @@ def validate_cbp_manifest(
         if field not in manifest:
             problems.append(f"{field}: required field is missing")
     if manifest.get("schema_version") != "1":
-        problems.append("schema_version: must be '1'")
+        problems.append("schema_version: must be the string '1'")
     if manifest.get("producer_id") not in (None, "cbp"):
         problems.append("producer_id: must be 'cbp' when present")
     package_id = manifest.get("package_id")
@@ -84,10 +85,28 @@ def validate_cbp_manifest(
 
     repository = manifest.get("artifact_repository")
     if repository is not None:
-        if not isinstance(repository, str) or not repository.strip() or "/" not in repository:
-            problems.append("artifact_repository: owner/repo string required (CBP 1.2.0 RC)")
-        elif expected_repository and repository != expected_repository:
-            problems.append(f"artifact_repository: {repository!r} != expected {expected_repository!r}")
+        if not isinstance(repository, dict):
+            problems.append(
+                "artifact_repository: object {repository, run_id, artifact_name} required; "
+                "a bare owner/repo string is not canonical under contract RC2"
+            )
+        else:
+            extra = sorted(set(repository) - {"repository", "run_id", "artifact_name"})
+            if extra:
+                problems.append("artifact_repository: unexpected key(s) " + ", ".join(extra))
+            repo_name = repository.get("repository")
+            if not isinstance(repo_name, str) or not repo_name.strip() or "/" not in repo_name:
+                problems.append("artifact_repository.repository: owner/repo string required")
+            run_id = repository.get("run_id")
+            if not isinstance(run_id, (str, int)) or isinstance(run_id, bool) or not str(run_id).strip():
+                problems.append("artifact_repository.run_id: non-empty string or integer required")
+            artifact_name = repository.get("artifact_name")
+            if not isinstance(artifact_name, str) or not artifact_name.strip():
+                problems.append("artifact_repository.artifact_name: non-empty string required")
+            if expected_repository and isinstance(repo_name, str) and repo_name != expected_repository:
+                problems.append(
+                    f"artifact_repository.repository: {repo_name!r} != expected {expected_repository!r}"
+                )
 
     hashes = manifest.get("artifact_hashes")
     if not isinstance(hashes, dict):

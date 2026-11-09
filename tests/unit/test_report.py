@@ -44,6 +44,12 @@ def test_warning_counts_and_body_section() -> None:
     assert "`UNVERIFIABLE_CONDITION`: 2" in body
 
 
+def test_report_schema_accepts_not_uploaded_status() -> None:
+    report = _report()
+    report["gate_status"] = "NOT_UPLOADED"
+    validate_report(report)
+
+
 def test_report_schema_accepts_valid_and_rejects_missing() -> None:
     report = _report()
     validate_report(report)

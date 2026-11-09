@@ -12,7 +12,11 @@
   "artifact_hashes": {
     "wheel": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
   },
-  "artifact_repository": "JunxiangPan/Cyber-Butler-Security",
+  "artifact_repository": {
+    "repository": "JunxiangPan/Cyber-Butler-Security",
+    "run_id": "42605114400",
+    "artifact_name": "build-once-artifact"
+  },
   "release_body_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
   "body_hash_scope": "base",
   "evidence_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
