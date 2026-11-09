@@ -1,0 +1,27 @@
+{
+  "schema_version": "1",
+  "check_id": "CBE-07b",
+  "cbp_version": "1.2.0-rc",
+  "cbp_code_ref": "5da8b87bc92d5fbac5d24f434e97c672ed1bbd68",
+  "rc_run_url": "https://github.com/JunxiangPan/cbp-action/actions/runs/42539271566",
+  "wheel_sha256": "40b0f5f827acefe4f5f9a5891a5d70be9d53557435acd721706c6a9f01fff320",
+  "sdist_sha256": "e30fa8319103e31ec85e9c1f514c9a14de267c35067c263ae245d7eec5c32604",
+  "label": "CBP 1.2.0 RC code candidate / requested baseline",
+  "findings": [
+    {
+      "path": "src/a.py",
+      "line": 1,
+      "rule": "CBP-EXT-SECRET-001",
+      "origin_rule": "CBE-SECRET-001",
+      "message": "fixture secret finding",
+      "severity": "error",
+      "tool": "CBE/gitleaks"
+    }
+  ],
+  "assertions": {
+    "rule_starts_with_CBP": true,
+    "rule_equals": "CBP-EXT-SECRET-001",
+    "origin_rule_equals": "CBE-SECRET-001",
+    "no_CBE_prefix_in_rule": true
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "schema_version": "1",
+  "components": {
+    "cbm": {
+      "declared_attached": false,
+      "status": "SKIPPED_INFRA",
+      "reason": "runner network timeout"
+    },
+    "cbc": {
+      "declared_attached": false,
+      "status": "NOT_UPLOADED"
+    }
+  }
+}

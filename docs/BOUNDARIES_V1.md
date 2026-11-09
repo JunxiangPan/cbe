@@ -1,4 +1,4 @@
-# CBE v1.7 boundary ledger (B-00..B-32)
+# CBE v1.7 boundary ledger (B-00..B-34)
 
 Status values:
 
@@ -38,10 +38,12 @@ Status values:
 | B-26 | release_body_v17.py | `## NOT_UPLOADED` lacks “declared as attached but not uploaded” | P2-04 failure | **PENDING-CBS**: body generator fix; CBE cannot edit public-release |
 | B-27 | process | `public-release` HEAD moved past 4a437df (it added §11 Build-once Profiles) | Patch/contract drift; wrong revision may be consumed | **PENDING-CBS**: v1.7.1 applies a rebased patch to the current tip; CBE remains pinned to 4a437df and must not apply it directly |
 | B-28 | F2 / P0-04 | Workflow scanner only detected `continue-on-error`/`|| true`, not a `cbe-gate` job skipped by `if: false`/`needs`/comment | Gate could be bypassed by never running it | **RESOLVED** in P0-04.5: job-graph parsing, exit 3 `reason=WORKFLOW_SKIPS_CBE_GATE`, CBE-04 subcases |
-| B-29 | CBE-08 / v1.7.1 | F2 blocking-set amendment is not yet published; CBE-08 can only assert the v1.7.1 draft | Claiming CBE-08 passed would be a false PASS | **PENDING-CBS v1.7.1**; CBE-08 remains draft and must not be reported as passed. If v1.7.1's final F2 set differs from the draft, CBE-08 must be rewritten, not merely re-asserted |
-| B-30 | P0-04.5 / static workflow analysis | Dynamic conditions (`inputs.*`, `vars.*`, `github.*`, functions) and dynamic `needs` chains cannot be evaluated before the run | A dynamic gate skip could be missed; claiming complete coverage would be false | **RESOLVED CBE-side as warning**: `UNVERIFIABLE_CONDITION` / `UNVERIFIABLE_NEEDS_CHAIN` warnings, never FAIL, never silent. The evaluator is a restricted literal parser (booleans, numbers, `==`/`!=`, `&&`/`\|\|`/`!`), not Python `eval`; attribute access, indexing, and function calls are unknown |
-| B-31 | CBE-07 / CBP interop | The old assumption was “CBP preserves CBE-*”; CBP 1.1.0 actually enforces namespace isolation | A test asserting CBE-* preservation would be wrong | **RESOLVED** against CBP 1.1.0: CBE-07b is a real assertion. CBP consumes CBE SARIF and emits `CBP-EXT-SECRET-001` in `rule`, with `origin_rule: CBE-SECRET-001` for traceability; CBP output carries only `CBP-*` |
+| B-29 | CBE-08 / v1.7.1 | CBS `contract/v1.7.1` is RC at `04c9f8b`; declared contract hash `19b37f…` != observed `c1653c…`, and `vm-proof.yml` has conflict markers | Claiming CBE-08 passed would be a false PASS | **PENDING-CBS freeze**: CBE-08 remains DRAFT (`tools/cbe08_draft.py`, `docs/CBE-08_DRAFT.md`). If the frozen F2 set differs, rewrite fixtures/assertions |
+| B-30 | P0-04.5 / static workflow analysis | Dynamic conditions (`inputs.*`, `vars.*`, `github.*`, functions) and dynamic `needs` chains cannot be evaluated before the run | A dynamic gate skip could be missed; claiming complete coverage would be false | **RESOLVED CBE-side as warning**: `UNVERIFIABLE_CONDITION` / `UNVERIFIABLE_NEEDS_CHAIN` warnings, never FAIL, never silent. The evaluator is a restricted literal parser, not Python `eval` |
+| B-31 | CBE-07 / CBP interop | Old assumption “CBP preserves CBE-*” was wrong; CBP 1.1.0 and 1.2.0 RC enforce namespace isolation | A test asserting CBE-* preservation would be wrong | **RESOLVED** against CBP 1.1.0 and 1.2.0 RC (`5da8b87`): CBE-07b emits `CBE-SECRET-001`; CBP emits `CBP-EXT-SECRET-001` in `rule`, with `origin_rule: CBE-SECRET-001`. CBE-07b passes with the 1.2.0 RC wheel |
 | B-32 | §5 report / Release body | CBE-local report/body now carry `warn_count`, but CBS must consume the CBE body fragment | End-to-end Release body visibility is still not guaranteed | **RESOLVED CBE-side**: `tools/cbe_gate.py` writes `cbe-report.json` + `cbe-body-section.md` Section B with warn_count and warning codes. **PENDING-CBS**: the CBS Release body generator must consume the fragment before claiming end-to-end visibility |
+| B-33 | CBP 1.2.0 RC vs CBS v1.7.1 RC | CBP 1.2.0 RC treats `artifact_repository` as an `owner/repo` string; the CBS RC contract sketches an object | A CBE private union would hide the mismatch | **PENDING-UPSTREAM**: CBE follows CBP 1.2.0 RC's string shape and rejects the object; recorded, not hidden. No private variant |
+| B-34 | CBE wheel | Schemas lived outside the package; an installed wheel failed with `SCHEMA_UNAVAILABLE` | CBE 0.1.0 RC would not be installable | **RESOLVED**: schemas bundled under `src/cbe/schemas` with package-data; installed-wheel smoke test passes |
 
 **B-32 consequence:** CBE-local report/body visibility is implemented. Until the
 CBS Release body generator consumes `cbe-body-section.md`, an auditor reading
@@ -59,11 +61,16 @@ state:
 - B-04 resolved; release-train schema added.
 - B-08 decided; CBS amendment/schema update pending.
 - B-28 resolved in P0-04.5; workflow gate-skip is now exit 3.
-- B-29 remains pending CBS v1.7.1; CBE-08 is draft-only until then.
+- B-29 remains pending CBS freeze; CBE-08 is DRAFT against `04c9f8b`, with a
+  contract-hash mismatch and `vm-proof.yml` conflict markers.
 - B-30 is a documented static-analysis limit, surfaced as warnings; it is not
   complete coverage and must not be described as such.
-- B-31 resolved against CBP 1.1.0: CBE-07b is a real assertion of
+- B-31 resolved against CBP 1.1.0 and 1.2.0 RC: CBE-07b is a real assertion of
   `CBP-EXT-*` namespace isolation with `origin_rule` traceability.
+- B-33 is an upstream shape mismatch: CBE follows CBP 1.2.0 RC's string
+  `artifact_repository`; do not union it with the CBS RC object.
+- B-34 resolved: schemas are bundled in the package; installed-wheel smoke test
+  passes.
 
 B-03/B-08 remain **PENDING-CBS** for contract conformance, but they no longer
 block CBE-side implementation because the decisions are frozen and the local

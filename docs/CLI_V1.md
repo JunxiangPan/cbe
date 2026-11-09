@@ -3,8 +3,9 @@
 Status: interface frozen in commit 1. All five subcommands are implemented:
 `validate-manifest`, `enforce-no-bypass`, `symbol-index`, `run-provider`, and
 `emit-sarif`. `tools/cbe_gate.py` assembles the CBE report and Section B.
-CBE-07b is a real assertion against CBP 1.1.0 (`CBP-EXT-*` mapping); CBE-08..11
-are pending the v1.7.1 contract/upstream work.
+CBE-07b is a real assertion against CBP 1.2.0 RC (`CBP-EXT-*` mapping);
+`tools/cbe_baseline.py`, `tools/cbe_train.py`, and `tools/cbe_selfcheck.py`
+cover CBE-09/10/11. CBE-08 remains DRAFT against CBS `contract/v1.7.1` RC.
 
 ## Global contract
 

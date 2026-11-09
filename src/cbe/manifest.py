@@ -14,7 +14,9 @@ from jsonschema import Draft202012Validator
 from .errors import InputError
 from .jsonio import load_json, sha256_json
 
-SCHEMA_PATH = Path(__file__).resolve().parents[2] / "schemas" / "rule-pack-manifest.v1.schema.json"
+from .paths import schema_path
+
+SCHEMA_PATH = schema_path("rule-pack-manifest.v1.schema.json")
 
 PACKAGE_TYPES = ("cbs", "cbe", "cbp", "cbm", "cbc", "cbg")
 GATE_VALUES = {"blocking", "advisory"}

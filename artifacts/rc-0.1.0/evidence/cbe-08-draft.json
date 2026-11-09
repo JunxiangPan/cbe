@@ -1,0 +1,114 @@
+{
+  "exit": 0,
+  "data": {
+    "schema_version": "1",
+    "command": "cbe-08-draft",
+    "status": "DRAFT",
+    "not_pass": true,
+    "contract_ref": "04c9f8b",
+    "contract_declared_sha256": "19b37fd4f2def25a6945bd59affae3128fe466cc0bfd1809d522ba8291b3c12b",
+    "contract_observed_sha256": "c1653cfe1adbc74d2523d2fa12c965ab761fce978061c8e55443eb8b6db3a7e5",
+    "contract_hash_match": false,
+    "freeze_required": true,
+    "reason": "CBS contract/v1.7.1 is RC and not frozen; vm-proof.yml also has conflict markers",
+    "checks": [
+      {
+        "check": "five_advisory_valid",
+        "exit_code": 0,
+        "data": {
+          "schema_version": "1",
+          "command": "validate-manifest",
+          "ok": true,
+          "exit_code": 0,
+          "gate_status": "PASS",
+          "error": null,
+          "warnings": [],
+          "manifest_path": "D:\\qq\ufffd\ufffd\ufffd\ufffd\u0534\ufffd\ufffd\ufffd\ufffd\\cbe\\tests\\e2e\\fixtures\\manifests\\five_advisory.json",
+          "manifest_sha256": "8248a65ea61578714b8c85f201c017421e593c6c21be3acc69d44794833ff6a1",
+          "schema_version_seen": "1",
+          "pack_id": "cbe-five",
+          "pack_version": "0.1.0",
+          "rule_count": 5,
+          "provider_count": 1,
+          "blocking_rule_count": 0,
+          "blocking_applicable_count": null,
+          "advisory_rule_count": 5,
+          "applicable_rule_count": null,
+          "not_applicable_rule_count": null,
+          "enabled_providers": [
+            "builtin-manifest"
+          ],
+          "errors": [],
+          "gate_errors": []
+        }
+      },
+      {
+        "check": "non_blocking_1_of_5_skip",
+        "exit_code": 0,
+        "applicable_count": 5,
+        "skip_count": 1,
+        "skip_ratio": 0.2
+      },
+      {
+        "check": "blocking_skip_exits_3",
+        "exit_code": 3,
+        "blocking_skip": true
+      },
+      {
+        "check": "zero_rules_exits_3",
+        "exit_code": 3,
+        "data": {
+          "schema_version": "1",
+          "command": "validate-manifest",
+          "ok": false,
+          "exit_code": 3,
+          "gate_status": "FAIL",
+          "error": {
+            "code": "NO_RULES",
+            "message": "manifest has no rules",
+            "details": [
+              {
+                "path": "$.rules",
+                "code": "NO_RULES",
+                "message": "manifest has no rules"
+              }
+            ]
+          },
+          "warnings": [
+            {
+              "path": "$.providers.builtin-manifest",
+              "code": "UNUSED_PROVIDER",
+              "message": "provider is not referenced by any rule: builtin-manifest"
+            },
+            {
+              "path": "$.providers.gitleaks",
+              "code": "UNUSED_PROVIDER",
+              "message": "provider is not referenced by any rule: gitleaks"
+            }
+          ],
+          "manifest_path": "D:\\qq\ufffd\ufffd\ufffd\ufffd\u0534\ufffd\ufffd\ufffd\ufffd\\cbe\\tests\\e2e\\fixtures\\manifests\\zero_rules.json",
+          "manifest_sha256": "4bf2ce46f11928b87182e896d547f57779840d6681dea52c58635e66091add0d",
+          "schema_version_seen": "1",
+          "pack_id": "cbe-core",
+          "pack_version": "0.1.0",
+          "rule_count": 0,
+          "provider_count": 2,
+          "blocking_rule_count": 0,
+          "blocking_applicable_count": null,
+          "advisory_rule_count": 0,
+          "applicable_rule_count": null,
+          "not_applicable_rule_count": null,
+          "enabled_providers": [],
+          "errors": [],
+          "gate_errors": [
+            {
+              "path": "$.rules",
+              "code": "NO_RULES",
+              "message": "manifest has no rules"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

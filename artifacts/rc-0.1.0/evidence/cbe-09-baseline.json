@@ -1,0 +1,62 @@
+{
+  "stable_fixture": {
+    "exit": 0,
+    "data": {
+      "schema_version": "1",
+      "command": "cbe-baseline",
+      "ok": true,
+      "exit_code": 0,
+      "gate_status": "PASS",
+      "current_version": "v0.1.0",
+      "baseline": {
+        "tag": "v0.0.9",
+        "version": "0.0.9",
+        "commit": "ffffffffffffffffffffffffffffffffffffffff",
+        "source": "stable",
+        "published_at": "2026-10-06T00:00:00Z",
+        "eligible": true,
+        "reason": ""
+      },
+      "error": null,
+      "warnings": []
+    }
+  },
+  "no_eligible": {
+    "exit": 3,
+    "data": {
+      "schema_version": "1",
+      "command": "cbe-baseline",
+      "ok": false,
+      "exit_code": 3,
+      "gate_status": "PRECONDITION_FAIL",
+      "error": {
+        "code": "NO_ELIGIBLE_BASELINE",
+        "message": "no eligible previous stable release and no explicit --baseline",
+        "details": []
+      },
+      "warnings": []
+    }
+  },
+  "explicit_commit": {
+    "exit": 0,
+    "data": {
+      "schema_version": "1",
+      "command": "cbe-baseline",
+      "ok": true,
+      "exit_code": 0,
+      "gate_status": "PASS",
+      "current_version": "v0.1.0",
+      "baseline": {
+        "tag": null,
+        "version": null,
+        "commit": "70faad86dd1c2eca4bd67afe6a5659491ca49c80",
+        "source": "explicit_commit",
+        "published_at": "",
+        "eligible": true,
+        "reason": "explicit commit bootstrap; not a previous stable version"
+      },
+      "error": null,
+      "warnings": []
+    }
+  }
+}

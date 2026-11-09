@@ -168,8 +168,23 @@ reuses `RuleSet`/`Inspection`, validates declared artifacts, distinguishes empty
 artifacts from zero findings, maps native provider IDs via `provider_rule_ids`,
 and computes F2 counts. `emit-sarif` emits SARIF 2.1.0 with `CBE-*` IDs.
 `tools/cbe_gate.py` writes `cbe-report.json` and `cbe-body-section.md`;
-`warn_count` and warning codes reach Section B. CBE-07b is a real CBP 1.1.0
-namespace-isolation assertion.
+`warn_count` and warning codes reach Section B. CBE-07b is a real CBP
+namespace-isolation assertion, re-run on CBP 1.2.0 RC.
+
+### D12. CBP 1.2.0 RC `artifact_repository` shape
+
+CBP 1.2.0 RC `5da8b87` treats `artifact_repository` as an `owner/repo` string.
+The CBS v1.7.1 RC contract sketches an object. CBE follows the CBP 1.2.0 RC
+shape and rejects the object; it does not define a union or a private variant.
+This mismatch is B-33 and must be resolved upstream before the contract freezes.
+
+### D13. CBE 0.1.0 RC boundary
+
+CBE 0.1.0 is an RC candidate only: no tag, no GitHub release, no PyPI upload.
+CBE-07b is real on CBP 1.2.0 RC. CBE-09/10/11 have implementation evidence, but
+there is no previous stable CBE, so F4/CBE-11 evidence is explicitly
+`bootstrap=true`. CBE-08 remains DRAFT against `04c9f8b`; its declared contract
+hash does not match the observed bytes and the contract is not frozen.
 
 ## Commit sequence
 
@@ -191,6 +206,6 @@ namespace-isolation assertion.
    `tools/cbe_gate.py` report/body assembly, CBE-05/06/07/07a E2E.
 9. **Commit 9 (done)**: CBE-07b real assertion against CBP 1.1.0
    (`CBP-EXT-*` mapping + `origin_rule`); `cbp-action==1.1.0` in the `e2e` extra.
-10. **Not implemented**: P1-01 CBE-08..CBE-11. CBE-08 stays draft until CBS
-    publishes v1.7.1; P1-04 F4 baseline/self-bootstrap waits for v1.7.1 and a
-    stable CBE release.
+10. **Commit 10 (RC candidate, done)**: CBE-07b on CBP 1.2.0 RC; CBE-09/10/11;
+    CBE-08 DRAFT; CBP 1.2.0 manifest alignment; package schemas; RC audit
+    package. No tag/release. CBE-08 remains DRAFT until CBS freezes v1.7.1.

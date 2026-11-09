@@ -86,6 +86,32 @@ def run_script(
     return process.returncode, data, process.stdout, process.stderr
 
 
+def run_cbp_consumer(root: str | Path, report: str | Path) -> list[dict[str, Any]]:
+    """Run tools/cbp_consume.py with the configured CBP interpreter."""
+
+    python = os.environ.get("CBE_CBP_CONSUMER_PYTHON") or sys.executable
+    process = subprocess.run(
+        [
+            python,
+            str(ROOT / "tools" / "cbp_consume.py"),
+            "--root",
+            str(root),
+            "--report",
+            str(report),
+        ],
+        cwd=str(ROOT),
+        env=clean_environment(),
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        check=False,
+    )
+    if process.returncode != 0:
+        raise AssertionError(f"CBP consumer failed: {process.stderr[-1000:]}")
+    return json.loads(process.stdout)
+
+
 def fixture(*parts: str) -> Path:
     return FIXTURES.joinpath(*parts)
 

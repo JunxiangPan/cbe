@@ -12,7 +12,9 @@ from jsonschema import Draft202012Validator
 from .errors import InputError
 from .jsonio import sha256_file, sha256_json, write_json_atomic
 
-REPORT_SCHEMA = Path(__file__).resolve().parents[2] / "schemas" / "v1.7" / "cbe-report.schema.json"
+from .paths import schema_path
+
+REPORT_SCHEMA = schema_path("v1.7", "cbe-report.schema.json")
 
 
 def warning_counts(warnings: list[dict[str, Any]]) -> dict[str, int]:

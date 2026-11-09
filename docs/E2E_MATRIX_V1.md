@@ -1,8 +1,8 @@
 # CBE E2E matrix (CBE-01..CBE-11)
 
-Status: CBE-01..CBE-07b are implemented. CBE-07b runs against CBP 1.1.0 and
-asserts `CBP-EXT-*` namespace isolation with `origin_rule`. CBE-08..CBE-11
-remain pending CBS v1.7.1/upstream work. The matrix is the authoritative
+Status: CBE-01..CBE-07b, CBE-09, CBE-10, and CBE-11 are implemented. CBE-08
+is a DRAFT against CBS `contract/v1.7.1` RC `04c9f8b` and is not PASS. CBE-07b
+runs against CBP 1.1.0 and CBP 1.2.0 RC. The matrix is the authoritative
 definition until CBS references it from the v1.7 execution contract.
 
 ## CBE-01 — CLI contract
@@ -112,60 +112,68 @@ definition until CBS references it from the v1.7 execution contract.
   asserts `cbe-body-section.md` Section B lists `UNVERIFIABLE_CONDITION`.
   CBE-local visibility is implemented; CBS Release-body integration is pending.
 
-## CBE-08 — F2 denominator
+## CBE-08 — F2 denominator (DRAFT)
 
-- File: `tests/e2e/test_cbe_08_skip_denominator.py`
-- Fixtures: manifest combinations built in the test from
-  `manifests/valid_full.json`; `exemptions/valid.txt`
-- Check: denominator = non-blocking applicable checks only; non-applicable
-  rules are SKIPPED but not counted; blocking rules are not counted and may not
-  SKIP; a blocking rule excluded by version exits 3
-  `BLOCKING_RULE_NOT_APPLICABLE`; 1/5 passes, 2/5 exits 4, 1/4 exits 4; zero
-  applicable exits 3; exit 3 wins over 4.
-- Expected: 0 / 4 / 3 per case.
-- **Contract gate: blocked on CBS v1.7.1.** Until v1.7.1 is published with
-  the F2 blocking-set amendment, these are draft assertions only. CBE must not
-  report CBE-08 as passed, and must not claim F2 conformance. If v1.7.1's final
-  F2 set differs from this draft, CBE-08 must be **rewritten** — fixtures and
-  assertions — not merely re-asserted.
+- File: `tools/cbe08_draft.py` (no PASS assertion)
+- Fixtures: manifest combinations from `manifests/five_advisory.json`,
+  `valid_blocking_zero.json`, `zero_rules.json`; `exemptions/valid.txt`,
+  `exemptions/blocking.txt`
+- Check: denominator = non-blocking applicable checks only; blocking rules are
+  not counted and may not SKIP; blocking exemption exits 3; zero rules exits 3;
+  1/5 advisory skip passes; 2/5 would exit 4.
+- **Status: DRAFT.** Target is CBS `contract/v1.7.1` RC commit `04c9f8b`.
+  The declared contract SHA256 in `RC_STATUS.md` (`19b37f…`) does not match the
+  observed bytes (`c1653c…`), and `vm-proof.yml` still has conflict markers.
+  CBE-08 is **not PASS** and cannot become PASS until CBS freezes the contract.
+  If the frozen F2 set differs, rewrite fixtures/assertions, not just re-label.
 
 ## CBE-09 — F4 baseline
 
 - File: `tests/e2e/test_cbe_09_baseline.py`
-- Fixtures: `releases/releases.json`, `releases/erratum_body.md`
-- Check: highest eligible non-prerelease, no ERRATUM, both gates PASS, not
-  current; v0.0.9 is selected for current v0.1.0; v0.0.7 body `ERRATUM:` and
-  v0.0.8 label `erratum` are excluded; v0.0.6 CBP FAIL is excluded; v0.0.4
-  missing CBP evidence is excluded; v0.1.0-rc.1 is excluded; no eligible and
-  no `--baseline` exits 3 `PRECONDITION_FAIL`; explicit `--baseline` works;
-  current version as baseline exits 2.
-- Expected: 0 / 3 `PRECONDITION_FAIL` / 2.
+- Tool: `tools/cbe_baseline.py`
+- Fixtures: `releases/releases.json`, `releases/releases_no_baseline.json`
+- Check: highest eligible non-prerelease, no ERRATUM, CBE/CBP gates PASS, not
+  current; v0.0.9 is selected for current v0.1.0; ERRATUM/prerelease/failed
+  gates are excluded; no eligible and no `--baseline` exits 3
+  `PRECONDITION_FAIL`; explicit tag is `explicit_tag`; explicit 40-hex commit is
+  `explicit_commit` bootstrap; current version as baseline exits 2.
+- Expected: 0 / 3 `PRECONDITION_FAIL` / 2. There is no stable CBE release yet,
+  so RC evidence uses an explicit bootstrap, never a fake “stable” label.
 
-## CBE-10 — F5/F6
+## CBE-10 — F5/F6 + CBP 1.2.0 manifest
 
-- File: `tests/e2e/test_cbe_10_infra_not_uploaded.py`
-- Fixtures: `providers/timeout.py`, `release-train/not-uploaded.json`,
-  `release-train/declared-attached.json`,
-  `release-train/evidence-absent.json`
-- Check F5: infra exits 3 `SKIPPED_INFRA`, not counted in 20%, publish blocked,
-  dedicated section, never PASS.
+- File: `tests/e2e/test_cbe_10_f5_f6.py`
+- Tool: `tools/cbe_train.py`
+- Fixtures: `release-train/not-uploaded.json`, `declared-attached.json`,
+  `evidence-absent.json`, `infra.json`; CBP quality manifest fixtures
+  `cbp-quality-manifest-v12.json`, `cbp-quality-manifest-full.json`,
+  `cbp-quality-manifest-object-repo.json`,
+  `cbp-quality-manifest-cbc-event-field.json`
+- Check F5: infra exits 3 `SKIPPED_INFRA`, not counted in 20%, dedicated body
+  section, never PASS.
 - Check F6: `NOT_UPLOADED` is not PASS/SKIP and not counted; does not block CBS
-  by itself; `declared_attached=true` + `NOT_UPLOADED` without the exact phrase
-  `declared as attached but not uploaded` is a P2-04 failure in the release-
-  train artifact, not a CBE gate failure.
-- Expected: 3 `SKIPPED_INFRA`; release-train status separate.
+  by itself; `declared_attached=true` emits the exact phrase
+  `declared as attached but not uploaded`; `EVIDENCE_ABSENT` is visible.
+- CBP 1.2.0 RC fields: `body_hash_scope` must be exactly `base`; `full` exits 2;
+  `artifact_repository` uses CBP 1.2.0's `owner/repo` string shape, so the CBS
+  RC contract's object sketch is rejected and recorded as an upstream mismatch;
+  `cbc_event` is an event stream, not a manifest field, so a private
+  `cbc_event` manifest key is rejected.
+- Expected: 0 for NOT_UPLOADED/EVIDENCE_ABSENT; 3 `SKIPPED_INFRA`; 2 for
+  invalid CBP manifest fields.
 
 ## CBE-11 — self-bootstrap
 
 - File: `tests/e2e/test_cbe_11_self_bootstrap.py`
-- Fixtures: `selfcheck/baseline-0.0.9/`, `current-manifest.json`,
-  `current-output/expected-findings.json`, `baseline-2.json`,
-  `baseline-3.json`, `baseline-4.json`
-- Check: previous stable CBE validates current manifest/output and must exit 0;
-  baseline 2/3/4 is an E2E failure; current new rules do not fire on the current
-  version; no baseline and no `--baseline` exits 3 `PRECONDITION_FAIL`;
-  isolated environment and hash-pinned baseline.
-- Expected: 0 for compatible; 3 for baseline 2/3/4; 3 for no baseline.
+- Tool: `tools/cbe_selfcheck.py`
+- Fixtures: `manifests/valid_minimal.json`, `manifests/invalid_missing_rule_id.json`,
+  `bypass/clean-repo/`
+- Check: baseline CBE `validate-manifest` and `run-provider` must both exit 0;
+  missing baseline interpreter exits 3 `PRECONDITION_FAIL`; baseline exit 2/3/4
+  makes self-check exit 3 FAIL; `--bootstrap` is recorded explicitly.
+- Expected: 0 for compatible; 3 for missing/failing baseline. There is no
+  previous stable CBE; RC evidence uses a wheel/source bootstrap of `70faad8`
+  and records `bootstrap=true`, not a stable release claim.
 
 ## Fixture inventory
 
@@ -189,25 +197,30 @@ tests/e2e/fixtures/
   exemptions/       valid.txt, missing_reason.txt, blocking.txt,
                     unknown_rule.txt, duplicate.txt, bad_format.txt,
                     inline_comment.py, not_applicable.txt
-  releases/         releases.json, erratum_body.md
+  releases/         releases.json, releases_no_baseline.json, erratum_body.md
   sarif/            valid.sarif, cbp_namespace.sarif, bad_rule_index.sarif,
                     absolute_path.sarif, missing_rule.sarif, no_runs.sarif,
                     cbp-consumer-expected.json
   release-train/    not-uploaded.json, declared-attached.json,
-                    evidence-absent.json
-  selfcheck/        baseline-0.0.9/, current-manifest.json, current-output/,
-                    baseline-2.json, baseline-3.json, baseline-4.json
+                    evidence-absent.json, infra.json,
+                    cbp-quality-manifest-v12.json,
+                    cbp-quality-manifest-full.json,
+                    cbp-quality-manifest-object-repo.json,
+                    cbp-quality-manifest-cbc-event-field.json
   cli/              .keep
 ```
 
 ## Runner and CI
 
-- `tests/e2e/run_e2e.py` runs the implemented CBE-01..07b tests and exits
-  non-zero on any failure; JSON summary to stdout.
-- `tools/cbe_gate.py` assembles `cbe-report.json` and `cbe-body-section.md` from
-  the five command outputs; CBE-07a covers the warn_count report/body path.
+- `tests/e2e/run_e2e.py` runs CBE-01..07b and CBE-09..11; CBE-08 is a DRAFT
+  tool (`tools/cbe08_draft.py`) and is deliberately not counted as a passing
+  E2E. Non-zero exit on any failure; JSON summary to stdout.
+- Tools: `tools/cbe_gate.py` (report/body), `tools/cbe_baseline.py` (F4),
+  `tools/cbe_train.py` (F5/F6 + CBP manifest), `tools/cbe_selfcheck.py`
+  (CBE-11), `tools/cbe08_draft.py` (DRAFT only).
 - `.github/workflows/cbe-e2e.yml` runs it without `continue-on-error`, `|| true`,
   or `if: always()`.
-- Fixtures are committed; no network. The baseline wheel is hash-pinned.
+- Fixtures are committed; no network. The CBE baseline wheel/source used in the
+  RC audit is recorded with its SHA-256 in the audit package.
 - `enforce-no-bypass --workflows` scans the target repo; when scanning CBE
   itself, pass `--exclude-workflow .github/workflows/cbe-e2e.yml`.

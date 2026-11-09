@@ -1,0 +1,23 @@
+{
+  "schema_version": "1",
+  "package_id": "cbs",
+  "producer_id": "cbp",
+  "version": "v1.7.0",
+  "gate_status": "PASS",
+  "applicable_gate_count": 12,
+  "skip_count": 0,
+  "skip_ratio": 0.0,
+  "blocking_skip": false,
+  "gates": [],
+  "artifact_hashes": {
+    "wheel": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "artifact_repository": {
+    "repository": "JunxiangPan/Cyber-Butler-Security",
+    "run_id": "42539271566",
+    "artifact_name": "cbp-rc"
+  },
+  "release_body_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "body_hash_scope": "base",
+  "evidence_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+}

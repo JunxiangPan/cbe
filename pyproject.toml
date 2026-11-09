@@ -26,6 +26,9 @@ cbe = "cbe.cli:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+cbe = ["schemas/*.json", "schemas/v1.7/*.json"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"

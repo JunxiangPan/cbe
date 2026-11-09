@@ -1,16 +1,14 @@
-"""CBE-07b: CBP 1.1.0 consumes CBE SARIF with namespace isolation."""
+"""CBE-07b: CBP 1.1.0+ consumes CBE SARIF with namespace isolation."""
 
 from __future__ import annotations
 
 import json
 from pathlib import Path
 
-from cbp.report_aggregator import aggregate
-
-from _util import ROOT, fixture, run_cbe
+from _util import ROOT, fixture, run_cbe, run_cbp_consumer
 
 
-def test_cbp_110_consumes_cbe_sarif_without_leaking_cbe_namespace(outside_tmp: Path) -> None:
+def test_cbp_consumes_cbe_sarif_without_leaking_cbe_namespace(outside_tmp: Path) -> None:
     out = outside_tmp / "out"
     out.mkdir()
     code, run_report, _, _ = run_cbe(
@@ -47,7 +45,7 @@ def test_cbp_110_consumes_cbe_sarif_without_leaking_cbe_namespace(outside_tmp: P
     assert data is not None
     assert data["namespaces"] == ["CBE"]
 
-    findings = aggregate(out, ["cbe.sarif"])
+    findings = run_cbp_consumer(out, "cbe.sarif")
     assert len(findings) == 1
     finding = findings[0]
     assert finding["rule"] == "CBP-EXT-SECRET-001"
@@ -57,6 +55,6 @@ def test_cbp_110_consumes_cbe_sarif_without_leaking_cbe_namespace(outside_tmp: P
     assert finding["tool"] == "CBE/gitleaks"
 
     expected = json.loads(fixture("sarif", "cbp-consumer-expected.json").read_text(encoding="utf-8"))
-    assert expected["cbp_version"] == "1.1.0"
+    assert expected["cbp_version_min"] == "1.1.0"
     assert expected["expected_cbp_rule"] == finding["rule"]
     assert expected["expected_origin_rule"] == finding["origin_rule"]

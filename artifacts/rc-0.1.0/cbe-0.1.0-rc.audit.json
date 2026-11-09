@@ -1,0 +1,79 @@
+{
+  "schema_version": "1",
+  "product": "cbe",
+  "version": "0.1.0",
+  "status": "RC_CANDIDATE",
+  "released": false,
+  "tag": null,
+  "release": null,
+  "pypi": false,
+  "human_audit_required": true,
+  "inputs": {
+    "cbp_1_2_0_rc": {
+      "code_ref": "5da8b87bc92d5fbac5d24f434e97c672ed1bbd68",
+      "wheel_sha256": "40b0f5f827acefe4f5f9a5891a5d70be9d53557435acd721706c6a9f01fff320",
+      "sdist_sha256": "e30fa8319103e31ec85e9c1f514c9a14de267c35067c263ae245d7eec5c32604"
+    },
+    "cbp_1_2_0_rc_latest": {
+      "code_ref": "bb8d4d6da786f93ddbb3df18d2e398c34e01c55f",
+      "wheel_sha256": "06f8c3d383d39ae4e42cee2a69abdaebdc15cae9fce63a65baf05da4d0998285",
+      "sdist_sha256": "49592d6bd5ae90450cfa6e7e6f2487829d40c97e77d8f2b7d0f4fe6c7113d844"
+    },
+    "cbs_contract_rc": {
+      "ref": "04c9f8bebbcce96ed77f5f71d6bbf6b34d88255e",
+      "declared_sha256": "19b37fd4f2def25a6945bd59affae3128fe466cc0bfd1809d522ba8291b3c12b",
+      "observed_sha256": "c1653cfe1adbc74d2523d2fa12c965ab761fce978061c8e55443eb8b6db3a7e5",
+      "hash_match": false,
+      "frozen": false,
+      "vm_proof_conflict_markers": true
+    }
+  },
+  "checks": {
+    "CBE-07b": {
+      "status": "PASS",
+      "cbp_versions": [
+        "1.1.0",
+        "1.2.0-rc"
+      ],
+      "cbp_rc_refs": [
+        "5da8b87",
+        "bb8d4d6"
+      ],
+      "rule": "CBP-EXT-SECRET-001",
+      "origin_rule": "CBE-SECRET-001"
+    },
+    "CBE-08": {
+      "status": "DRAFT",
+      "not_pass": true,
+      "reason": "contract not frozen; declared and observed hashes differ; vm-proof conflict markers"
+    },
+    "CBE-09": {
+      "status": "IMPLEMENTED_BOOTSTRAP_ONLY",
+      "stable_baseline": false,
+      "explicit_commit": "70faad86dd1c2eca4bd67afe6a5659491ca49c80"
+    },
+    "CBE-10": {
+      "status": "PASS",
+      "not_uploaded_not_counted": true,
+      "infra_not_counted": true,
+      "cbp_body_hash_scope": "base",
+      "cbp_artifact_repository_shape": "owner/repo string",
+      "private_cbc_event_field": "rejected"
+    },
+    "CBE-11": {
+      "status": "BOOTSTRAP_PASS",
+      "stable_baseline": false,
+      "baseline": "CBE 0.1.0 wheel/source bootstrap"
+    }
+  },
+  "ci": {
+    "status": "PENDING",
+    "run_url": null,
+    "head_sha": null
+  },
+  "cbe_wheel": {
+    "sha256": "30dd950e1b2b3b6087ba6d777cc432f81da66baa809a1f77f3404f458b4df38e",
+    "install_smoke": "PASS",
+    "schemas_bundled": true
+  }
+}

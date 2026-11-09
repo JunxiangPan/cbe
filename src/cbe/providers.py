@@ -17,7 +17,9 @@ from .exemptions import Exemption, parse_exemptions
 from .jsonio import load_json, sha256_json
 from .manifest import Inspection, Rule, RuleSet
 
-PROVIDER_SCHEMA_PATH = Path(__file__).resolve().parents[2] / "schemas" / "provider-output.v1.schema.json"
+from .paths import schema_path
+
+PROVIDER_SCHEMA_PATH = schema_path("provider-output.v1.schema.json")
 
 
 class ProviderError(Exception):
