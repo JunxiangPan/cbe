@@ -123,16 +123,22 @@
     }
   },
   "ci": {
-    "status": "PENDING",
-    "run_url": null,
-    "head_sha": null,
-    "ubuntu": null,
-    "windows": null
+    "status": "SUCCESS",
+    "run_url": "https://github.com/JunxiangPan/cbe/actions/runs/42617711567",
+    "head_sha": "f4a65e987ec632e33269b75d9c3b5cf899e2d0e5",
+    "ubuntu": "success",
+    "windows": "success",
+    "unit_tests": 74,
+    "e2e_tests": 100,
+    "total_tests": 174,
+    "coverage": "71.89%",
+    "dependency": "cbp-action==1.2.0",
+    "installed_cbp_version": "1.2.0"
   },
   "cbe_wheel": {
-    "sha256": "8fdb2df007d5c5e04d6e6cb49d6d0df862f754e1f18742534a208617acfdd6b3",
+    "sha256": "04e0b915da9d282d5dc4d6c8f79fd216d14be93c5d1136ab641494ed24adfe5a",
     "install_smoke": "PASS",
     "schemas_bundled": true,
-    "built_from": "RC2 candidate"
+    "built_from": "f4a65e9"
   }
 }

@@ -1,4 +1,4 @@
-# CBE-08 DRAFT — F2 denominator against CBS contract/v1.7.1 RC
+# CBE-08 DRAFT — F2 denominator against CBS contract/v1.7.1 RC2
 
 Status: **DRAFT — NOT PASS**
 

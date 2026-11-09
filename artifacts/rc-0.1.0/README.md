@@ -49,7 +49,13 @@ evidence only.
 
 ## CI
 
-Status: **PENDING** — fill after the RC2 commit is pushed.
+- Ubuntu: success
+- Windows: success
+- Run: https://github.com/JunxiangPan/cbe/actions/runs/42617711567
+- 174 tests = 74 unit + 100 E2E
+- Coverage: 71.89% (gate 60%)
+- Installed dependency: `cbp-action==1.2.0` (official)
+- CBE wheel: `04e0b915da9d282d5dc4d6c8f79fd216d14be93c5d1136ab641494ed24adfe5a`
 
 ## Release discipline
 
