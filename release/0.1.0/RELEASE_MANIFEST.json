@@ -5,9 +5,9 @@
   "status": "AWAITING_HUMAN_APPROVAL",
   "created_at": "2026-11-09",
   "source_commit": "4561e8338a09a7e681b08fc0c2b38fcff2d56e70",
-  "release_package_commit": null,
+  "release_package_commit": "13f7ddc8af947a6bae10b4251beb2406e2d31f30",
   "tag": "v0.1.0",
-  "tag_target": "4561e8338a09a7e681b08fc0c2b38fcff2d56e70",
+  "tag_target": "13f7ddc8af947a6bae10b4251beb2406e2d31f30",
   "tag_created": false,
   "release_created": false,
   "pypi_uploaded": false,
@@ -70,11 +70,16 @@
     "available_at_preparation": true,
     "old_name": "cbe",
     "old_name_owner": "azizo-b/CBE",
-    "note": "do not upload cbe; cbe-review requires human approval"
+    "note": "do not upload cbe; cbe-review requires human approval",
+    "old_name_never_used": true
   },
   "distribution_name": "cbe-review",
   "import_package": "cbe",
   "cli": "cbe",
   "package_id": "cbe",
-  "producer_id": "cbe"
+  "producer_id": "cbe",
+  "tag_target_contains_release_package": true,
+  "tag_choice": "B",
+  "source_commit_role": "artifact source commit; tag target is the later release-package commit",
+  "metadata_correction_note": "This manifest is corrected in a docs-only commit after 13f7ddc; artifacts and source_commit do not change."
 }

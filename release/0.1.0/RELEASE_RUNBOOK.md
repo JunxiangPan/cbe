@@ -3,6 +3,9 @@
 Status: **DRAFT — NOT EXECUTED. Human approval is mandatory.**
 The release package is prepared; no tag, GitHub Release, or PyPI upload exists.
 Distribution name: `cbe-review`; import package and CLI remain `cbe`.
+Tag choice: **B — tag `13f7ddc`, which includes the complete release package.**
+Artifacts were built from `4561e83`; metadata corrections after `13f7ddc` are
+docs-only and do not change the artifacts.
 
 ## 0. Approval record
 
@@ -12,8 +15,9 @@ Complete this before running any release command.
 |---|---|
 | Approver | _pending_ |
 | Approval date | _pending_ |
-| Scope approved | GitHub Release only / GitHub + PyPI |
+| Scope approved | GitHub Release only / GitHub + PyPI (`cbe-review`) |
 | Release source commit | `4561e8338a09a7e681b08fc0c2b38fcff2d56e70` |
+| Release package commit / tag target | `13f7ddc8af947a6bae10b4251beb2406e2d31f30` |
 | Wheel SHA256 | `87f0ad40a6cffdf4f9c657e6cc972a0f93787259c52445a1c112a5c7753599a7` |
 | Sdist SHA256 | `a77c653d178d5d0ab179da73c92184d9a54d5104ca5202f41574588979b68854` |
 | PyPI distribution | `cbe-review` (available at preparation time; pending approval) |
@@ -26,8 +30,11 @@ Run from the CBE repository after approval:
 
 ```bash
 git status --porcelain              # must be empty
-git rev-parse HEAD                  # record the release-package commit
+git rev-parse HEAD                  # must be the approved metadata commit
+git rev-parse 13f7ddc8af947a6bae10b4251beb2406e2d31f30
 git rev-parse 4561e8338a09a7e681b08fc0c2b38fcff2d56e70
+git diff --stat 13f7ddc8af947a6bae10b4251beb2406e2d31f30..HEAD
+# expected: only release/0.1.0 metadata files, no code or artifacts
 git tag --list v0.1.0               # must be empty
 gh release view v0.1.0              # must not exist
 python -m pip index versions cbe-review   # must not exist yet
@@ -48,11 +55,13 @@ Abort on any mismatch. Do not “fix” a tag or release in place.
 
 ## 2. Tag (only after approval)
 
-Tag the recorded release source commit, not a moving branch and not a later
-docs commit:
+Tag the release-package commit `13f7ddc`, which includes the complete release
+package. Do not tag the artifact source commit `4561e83`; that commit does not
+contain the release package.
 
 ```bash
-RELEASE_COMMIT=4561e8338a09a7e681b08fc0c2b38fcff2d56e70
+RELEASE_COMMIT=13f7ddc8af947a6bae10b4251beb2406e2d31f30
+SOURCE_COMMIT=4561e8338a09a7e681b08fc0c2b38fcff2d56e70
 git tag -a v0.1.0 "$RELEASE_COMMIT" -m "CBE 0.1.0"
 git push origin refs/tags/v0.1.0
 ```
@@ -60,7 +69,8 @@ git push origin refs/tags/v0.1.0
 Verify:
 
 ```bash
-git rev-parse v0.1.0^{}    # must equal RELEASE_COMMIT
+git rev-parse v0.1.0^{}    # must equal RELEASE_COMMIT (13f7ddc)
+git merge-base --is-ancestor "$SOURCE_COMMIT" "$RELEASE_COMMIT"  # must be true
 git ls-remote --tags origin v0.1.0
 ```
 

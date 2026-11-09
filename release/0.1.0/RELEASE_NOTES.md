@@ -44,7 +44,12 @@ Coverage:   71.89% (gate 60%)
 CI:         Ubuntu + Windows success
 Run:        https://github.com/JunxiangPan/cbe/actions/runs/42648086977
 Source:     4561e8338a09a7e681b08fc0c2b38fcff2d56e70
+Package/tag target: 13f7ddc8af947a6bae10b4251beb2406e2d31f30
 ```
+
+Tag choice **B**: `v0.1.0` targets `13f7ddc`, the release-package commit.
+Artifacts are built from `4561e83`; metadata corrections after `13f7ddc` are
+docs-only and do not change artifact hashes.
 
 Contract and upstream pins:
 

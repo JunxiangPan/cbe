@@ -3,6 +3,8 @@
 Status: **AWAITING HUMAN APPROVAL — no tag, no GitHub Release, no PyPI upload.**
 
 Distribution: `cbe-review`; import package and CLI remain `cbe`.
+Tag target: `13f7ddc` (option B: tag includes the full release package); artifact
+source is `4561e83`.
 PyPI status: **PENDING APPROVAL** for `cbe-review` (unclaimed). The old `cbe`
 name belongs to `azizo-b/CBE` and must never be uploaded.
 
