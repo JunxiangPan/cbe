@@ -33,6 +33,18 @@ CBE-08 is **PASS**. No tag/release exists.
   F2 checks match; all four match, so CBE-08 is PASS.
 - CBE: `0.1.0` package version, no tag, no release.
 
+## 0.1.0 release package
+
+Status: **awaiting human approval; no tag, no release, no PyPI upload.**
+
+- [Release notes](release/0.1.0/RELEASE_NOTES.md)
+- [Release runbook](release/0.1.0/RELEASE_RUNBOOK.md)
+- [Release manifest](release/0.1.0/RELEASE_MANIFEST.json)
+- [Evidence index](release/0.1.0/EVIDENCE.md)
+- [Artifacts and SHA256SUMS](release/0.1.0/)
+
+Do not run the runbook until a human completes its approval record.
+
 ## Runtime dependencies
 
 CBE is **not** zero-runtime-dependency. It declares:

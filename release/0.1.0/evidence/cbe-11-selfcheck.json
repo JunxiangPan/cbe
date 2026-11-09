@@ -1,0 +1,220 @@
+{
+  "wheel_bootstrap": {
+    "exit": 0,
+    "data": {
+      "schema_version": "1",
+      "command": "cbe-selfcheck",
+      "ok": true,
+      "exit_code": 0,
+      "gate_status": "PASS",
+      "baseline": {
+        "label": "cbe-0.1.0-rc-wheel-bootstrap",
+        "python": "D:\\tmp\\cbe-wheel-venv\\Scripts\\python.exe",
+        "version": "0.1.0",
+        "bootstrap": true
+      },
+      "steps": [
+        {
+          "step": "validate-manifest",
+          "exit_code": 0,
+          "stderr": ""
+        },
+        {
+          "step": "run-provider",
+          "exit_code": 0,
+          "stderr": ""
+        }
+      ],
+      "error": null,
+      "warnings": []
+    }
+  },
+  "source_bootstrap": {
+    "exit": 0,
+    "data": {
+      "schema_version": "1",
+      "command": "cbe-selfcheck",
+      "ok": true,
+      "exit_code": 0,
+      "gate_status": "PASS",
+      "baseline": {
+        "label": "cbe-70faad8-source-bootstrap",
+        "python": "D:\\tmp\\cbe-baseline-venv\\Scripts\\python.exe",
+        "version": "0.1.0",
+        "bootstrap": true
+      },
+      "steps": [
+        {
+          "step": "validate-manifest",
+          "exit_code": 0,
+          "stderr": ""
+        },
+        {
+          "step": "run-provider",
+          "exit_code": 0,
+          "stderr": ""
+        }
+      ],
+      "error": null,
+      "warnings": []
+    }
+  },
+  "final_wheel_bootstrap": {
+    "exit": 0,
+    "data": {
+      "schema_version": "1",
+      "command": "cbe-selfcheck",
+      "ok": true,
+      "exit_code": 0,
+      "gate_status": "PASS",
+      "baseline": {
+        "label": "cbe-0.1.0-rc-final-wheel",
+        "python": "D:\\tmp\\cbe-final-venv\\Scripts\\python.exe",
+        "version": "0.1.0",
+        "bootstrap": true
+      },
+      "steps": [
+        {
+          "step": "validate-manifest",
+          "exit_code": 0,
+          "stderr": ""
+        },
+        {
+          "step": "run-provider",
+          "exit_code": 0,
+          "stderr": ""
+        }
+      ],
+      "error": null,
+      "warnings": []
+    },
+    "wheel_sha256": "30dd950e1b2b3b6087ba6d777cc432f81da66baa809a1f77f3404f458b4df38e"
+  },
+  "rc2_final_wheel_bootstrap": {
+    "exit": 0,
+    "data": {
+      "schema_version": "1",
+      "command": "cbe-selfcheck",
+      "ok": true,
+      "exit_code": 0,
+      "gate_status": "PASS",
+      "baseline": {
+        "label": "cbe-0.1.0-rc2-final-wheel",
+        "python": "D:\\tmp\\cbe-rc2-venv\\Scripts\\python.exe",
+        "version": "0.1.0",
+        "bootstrap": true
+      },
+      "steps": [
+        {
+          "step": "validate-manifest",
+          "exit_code": 0,
+          "stderr": ""
+        },
+        {
+          "step": "run-provider",
+          "exit_code": 0,
+          "stderr": ""
+        }
+      ],
+      "error": null,
+      "warnings": []
+    },
+    "wheel_sha256": "8fdb2df007d5c5e04d6e6cb49d6d0df862f754e1f18742534a208617acfdd6b3"
+  },
+  "rc2_final_commit_wheel_bootstrap": {
+    "exit": 0,
+    "data": {
+      "schema_version": "1",
+      "command": "cbe-selfcheck",
+      "ok": true,
+      "exit_code": 0,
+      "gate_status": "PASS",
+      "baseline": {
+        "label": "cbe-0.1.0-rc2-final-commit-wheel",
+        "python": "D:\\tmp\\cbe-rc2-final-venv\\Scripts\\python.exe",
+        "version": "0.1.0",
+        "bootstrap": true
+      },
+      "steps": [
+        {
+          "step": "validate-manifest",
+          "exit_code": 0,
+          "stderr": ""
+        },
+        {
+          "step": "run-provider",
+          "exit_code": 0,
+          "stderr": ""
+        }
+      ],
+      "error": null,
+      "warnings": []
+    },
+    "wheel_sha256": "04e0b915da9d282d5dc4d6c8f79fd216d14be93c5d1136ab641494ed24adfe5a",
+    "commit": "f4a65e9"
+  },
+  "freeze_final_wheel_bootstrap": {
+    "exit": 0,
+    "data": {
+      "schema_version": "1",
+      "command": "cbe-selfcheck",
+      "ok": true,
+      "exit_code": 0,
+      "gate_status": "PASS",
+      "baseline": {
+        "label": "cbe-0.1.0-freeze-final-wheel",
+        "python": "D:\\tmp\\cbe-freeze-venv\\Scripts\\python.exe",
+        "version": "0.1.0",
+        "bootstrap": true
+      },
+      "steps": [
+        {
+          "step": "validate-manifest",
+          "exit_code": 0,
+          "stderr": ""
+        },
+        {
+          "step": "run-provider",
+          "exit_code": 0,
+          "stderr": ""
+        }
+      ],
+      "error": null,
+      "warnings": []
+    },
+    "wheel_sha256": "4e8abc21c1600d9ce231d14ccee0effda65c570c5548bd49b37c51981019c0c7",
+    "commit": "ee7eb74"
+  },
+  "cbe08_pass_final_wheel_bootstrap": {
+    "exit": 0,
+    "data": {
+      "schema_version": "1",
+      "command": "cbe-selfcheck",
+      "ok": true,
+      "exit_code": 0,
+      "gate_status": "PASS",
+      "baseline": {
+        "label": "cbe-0.1.0-cbe08-pass-wheel",
+        "python": "D:\\tmp\\cbe-pass-venv\\Scripts\\python.exe",
+        "version": "0.1.0",
+        "bootstrap": true
+      },
+      "steps": [
+        {
+          "step": "validate-manifest",
+          "exit_code": 0,
+          "stderr": ""
+        },
+        {
+          "step": "run-provider",
+          "exit_code": 0,
+          "stderr": ""
+        }
+      ],
+      "error": null,
+      "warnings": []
+    },
+    "wheel_sha256": "b1f3807c1d65a28c3238e8bae9066c4af42e2c9713973753d0f3d67cb335c707",
+    "commit": "4041169"
+  }
+}

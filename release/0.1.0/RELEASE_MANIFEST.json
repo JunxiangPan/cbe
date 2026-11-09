@@ -1,0 +1,65 @@
+{
+  "schema_version": "1",
+  "product": "cbe",
+  "version": "0.1.0",
+  "status": "AWAITING_HUMAN_APPROVAL",
+  "created_at": "2026-11-09",
+  "source_commit": "d820001ec1120408b4d76db323e9153465359805",
+  "release_package_commit": null,
+  "tag": "v0.1.0",
+  "tag_target": "d820001ec1120408b4d76db323e9153465359805",
+  "tag_created": false,
+  "release_created": false,
+  "pypi_uploaded": false,
+  "artifacts": [
+    {
+      "name": "cbe-0.1.0-py3-none-any.whl",
+      "sha256": "966fabf110eb2909722670f23c4b22efdca773b1cd1381bd4fcc90e02266fa6e",
+      "size": 51764
+    },
+    {
+      "name": "cbe-0.1.0.tar.gz",
+      "sha256": "bc474810fabce42397f75fa68dace3182f9308ab0681b53597c56220493daaff",
+      "size": 45983
+    }
+  ],
+  "verification": {
+    "tests_total": 176,
+    "unit": 74,
+    "e2e": 102,
+    "coverage": "71.89%",
+    "ci_run": "https://github.com/JunxiangPan/cbe/actions/runs/42634308910",
+    "ubuntu": "success",
+    "windows": "success"
+  },
+  "contract": {
+    "tag": "contract-v1.7.1",
+    "commit": "c2b5e9292552685cc40bd21b3ac2252847856715",
+    "sha256": "209d75b4c900f9a2d1ad8f5c377ac1b8a868cf3e4cd449970e61e3ff380c18f1",
+    "frozen": true,
+    "addendum_commit": "e318cbdac748a3a88057bd882e897f50c364bd97",
+    "addendum_sha256": "51604f56b18cdd2fe388c9ca0e9977f703d32fb15c684f73a172b9380eb5faaf"
+  },
+  "dependency": {
+    "cbp_action": "1.2.2",
+    "wheel_sha256": "2b73b4a4c387e4eb0700a339235249d62accfbe0a14c505188c53c484df7d046",
+    "sdist_sha256": "91974398ea0bc850633919e287f546d48b53f08d0ca57befce3a4a091de092d5",
+    "quality_manifest_sha256": "228594d07d7a9906280e7b5ff12fa0b1bf70b22ffff4b3d25983a4bcc072a2c6"
+  },
+  "checks": {
+    "CBE-08": "PASS",
+    "CBE-07b": "PASS",
+    "CBE-10": "PASS",
+    "B-33": "RESOLVED",
+    "issue_1": "CLOSED"
+  },
+  "approval": {
+    "required": true,
+    "approved": false,
+    "approver": null,
+    "approved_at": null,
+    "scope": null
+  },
+  "runbook": "RELEASE_RUNBOOK.md",
+  "notes": "RELEASE_NOTES.md"
+}

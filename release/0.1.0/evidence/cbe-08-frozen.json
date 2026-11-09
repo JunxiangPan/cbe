@@ -1,0 +1,130 @@
+{
+  "exit": 0,
+  "data": {
+    "schema_version": "1",
+    "command": "cbe-08-draft",
+    "status": "PASS",
+    "not_pass": false,
+    "cbe08_pass": true,
+    "contract_ref": "c2b5e9292552685cc40bd21b3ac2252847856715",
+    "contract_short_ref": "contract-v1.7.1",
+    "contract_declared_sha256": "209d75b4c900f9a2d1ad8f5c377ac1b8a868cf3e4cd449970e61e3ff380c18f1",
+    "contract_observed_sha256": "209d75b4c900f9a2d1ad8f5c377ac1b8a868cf3e4cd449970e61e3ff380c18f1",
+    "contract_hash_match": true,
+    "contract_status": "FROZEN_BY_TAG_ADDENDUM",
+    "contract_tag": "contract-v1.7.1",
+    "vm_proof_conflict_markers": false,
+    "freeze_required": false,
+    "freeze_notice_path": "docs/v1.7/FREEZE_NOTICE.md",
+    "addendum_commit": "e318cbdac748a3a88057bd882e897f50c364bd97",
+    "addendum_sha256": "51604f56b18cdd2fe388c9ca0e9977f703d32fb15c684f73a172b9380eb5faaf",
+    "addendum_authorizes_pass": true,
+    "expected_exit_codes": {
+      "five_advisory_valid": 0,
+      "non_blocking_1_of_5_skip": 0,
+      "blocking_skip_exits_3": 3,
+      "zero_rules_exits_3": 3
+    },
+    "failed_checks": [],
+    "reason": "four frozen F2 checks match the addendum-authorized expectations",
+    "checks": [
+      {
+        "check": "five_advisory_valid",
+        "exit_code": 0,
+        "data": {
+          "schema_version": "1",
+          "command": "validate-manifest",
+          "ok": true,
+          "exit_code": 0,
+          "gate_status": "PASS",
+          "error": null,
+          "warnings": [],
+          "manifest_path": "D:\\qq苏瑾言大肥鱼\\cbe\\tests\\e2e\\fixtures\\manifests\\five_advisory.json",
+          "manifest_sha256": "8248a65ea61578714b8c85f201c017421e593c6c21be3acc69d44794833ff6a1",
+          "schema_version_seen": "1",
+          "pack_id": "cbe-five",
+          "pack_version": "0.1.0",
+          "rule_count": 5,
+          "provider_count": 1,
+          "blocking_rule_count": 0,
+          "blocking_applicable_count": null,
+          "advisory_rule_count": 5,
+          "applicable_rule_count": null,
+          "not_applicable_rule_count": null,
+          "enabled_providers": [
+            "builtin-manifest"
+          ],
+          "errors": [],
+          "gate_errors": []
+        }
+      },
+      {
+        "check": "non_blocking_1_of_5_skip",
+        "exit_code": 0,
+        "applicable_count": 5,
+        "skip_count": 1,
+        "skip_ratio": 0.2
+      },
+      {
+        "check": "blocking_skip_exits_3",
+        "exit_code": 3,
+        "blocking_skip": true
+      },
+      {
+        "check": "zero_rules_exits_3",
+        "exit_code": 3,
+        "data": {
+          "schema_version": "1",
+          "command": "validate-manifest",
+          "ok": false,
+          "exit_code": 3,
+          "gate_status": "FAIL",
+          "error": {
+            "code": "NO_RULES",
+            "message": "manifest has no rules",
+            "details": [
+              {
+                "path": "$.rules",
+                "code": "NO_RULES",
+                "message": "manifest has no rules"
+              }
+            ]
+          },
+          "warnings": [
+            {
+              "path": "$.providers.builtin-manifest",
+              "code": "UNUSED_PROVIDER",
+              "message": "provider is not referenced by any rule: builtin-manifest"
+            },
+            {
+              "path": "$.providers.gitleaks",
+              "code": "UNUSED_PROVIDER",
+              "message": "provider is not referenced by any rule: gitleaks"
+            }
+          ],
+          "manifest_path": "D:\\qq苏瑾言大肥鱼\\cbe\\tests\\e2e\\fixtures\\manifests\\zero_rules.json",
+          "manifest_sha256": "4bf2ce46f11928b87182e896d547f57779840d6681dea52c58635e66091add0d",
+          "schema_version_seen": "1",
+          "pack_id": "cbe-core",
+          "pack_version": "0.1.0",
+          "rule_count": 0,
+          "provider_count": 2,
+          "blocking_rule_count": 0,
+          "blocking_applicable_count": null,
+          "advisory_rule_count": 0,
+          "applicable_rule_count": null,
+          "not_applicable_rule_count": null,
+          "enabled_providers": [],
+          "errors": [],
+          "gate_errors": [
+            {
+              "path": "$.rules",
+              "code": "NO_RULES",
+              "message": "manifest has no rules"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

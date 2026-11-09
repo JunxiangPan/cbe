@@ -1,0 +1,165 @@
+{
+  "not_uploaded_object": {
+    "exit": 0,
+    "data": {
+      "schema_version": "1",
+      "command": "cbe-release-train",
+      "ok": true,
+      "exit_code": 0,
+      "gate_status": "PASS",
+      "components": [
+        {
+          "name": "cbm",
+          "declared_attached": false,
+          "status": "NOT_UPLOADED",
+          "reason": ""
+        },
+        {
+          "name": "cbc",
+          "declared_attached": false,
+          "status": "NOT_UPLOADED",
+          "reason": ""
+        }
+      ],
+      "not_uploaded": [
+        "cbm",
+        "cbc"
+      ],
+      "evidence_absent": [],
+      "infrastructure_failures": [],
+      "skip_count": 0,
+      "applicable_count": 0,
+      "skip_ratio": 0.0,
+      "counted_in_skip_denominator": false,
+      "cbp_manifest_checked": true,
+      "body_section_md": "## NOT_UPLOADED\n\n- cbm: NOT_UPLOADED\n- cbc: NOT_UPLOADED\n\nNOT_UPLOADED is not PASS, not SKIP, and is not counted in any denominator.\n",
+      "error": null,
+      "warnings": []
+    }
+  },
+  "infra": {
+    "exit": 3,
+    "data": {
+      "schema_version": "1",
+      "command": "cbe-release-train",
+      "ok": false,
+      "exit_code": 3,
+      "gate_status": "SKIPPED_INFRA",
+      "components": [
+        {
+          "name": "cbm",
+          "declared_attached": false,
+          "status": "SKIPPED_INFRA",
+          "reason": "runner network timeout"
+        },
+        {
+          "name": "cbc",
+          "declared_attached": false,
+          "status": "NOT_UPLOADED",
+          "reason": ""
+        }
+      ],
+      "not_uploaded": [
+        "cbc"
+      ],
+      "evidence_absent": [],
+      "infrastructure_failures": [
+        "cbm"
+      ],
+      "skip_count": 0,
+      "applicable_count": 0,
+      "skip_ratio": 0.0,
+      "counted_in_skip_denominator": false,
+      "cbp_manifest_checked": false,
+      "body_section_md": "## Infrastructure failures\n\n- cbm: SKIPPED_INFRA\n\n## NOT_UPLOADED\n\n- cbc: NOT_UPLOADED\n\nNOT_UPLOADED is not PASS, not SKIP, and is not counted in any denominator.\n",
+      "error": {
+        "code": "SKIPPED_INFRA",
+        "message": "release train has an infrastructure or precondition failure",
+        "details": []
+      },
+      "warnings": []
+    }
+  },
+  "bare_string_rejected": {
+    "exit": 2,
+    "data": {
+      "schema_version": "1",
+      "command": "cbe-release-train",
+      "ok": false,
+      "exit_code": 2,
+      "gate_status": "FAIL",
+      "components": [
+        {
+          "name": "cbm",
+          "declared_attached": false,
+          "status": "NOT_UPLOADED",
+          "reason": ""
+        },
+        {
+          "name": "cbc",
+          "declared_attached": false,
+          "status": "NOT_UPLOADED",
+          "reason": ""
+        }
+      ],
+      "not_uploaded": [
+        "cbm",
+        "cbc"
+      ],
+      "evidence_absent": [],
+      "infrastructure_failures": [],
+      "skip_count": 0,
+      "applicable_count": 0,
+      "skip_ratio": 0.0,
+      "counted_in_skip_denominator": false,
+      "body_section_md": "## NOT_UPLOADED\n\n- cbm: NOT_UPLOADED\n- cbc: NOT_UPLOADED\n\nNOT_UPLOADED is not PASS, not SKIP, and is not counted in any denominator.\n",
+      "error": {
+        "code": "CBP_MANIFEST_INVALID",
+        "message": "artifact_repository: object {repository, run_id, artifact_name} required; a bare owner/repo string is not canonical under contract RC2",
+        "details": [
+          "artifact_repository: object {repository, run_id, artifact_name} required; a bare owner/repo string is not canonical under contract RC2"
+        ]
+      },
+      "warnings": []
+    }
+  },
+  "real_cbp_1_2_2_manifest": {
+    "exit": 0,
+    "data": {
+      "schema_version": "1",
+      "command": "cbe-release-train",
+      "ok": true,
+      "exit_code": 0,
+      "gate_status": "PASS",
+      "components": [
+        {
+          "name": "cbm",
+          "declared_attached": false,
+          "status": "NOT_UPLOADED",
+          "reason": ""
+        },
+        {
+          "name": "cbc",
+          "declared_attached": false,
+          "status": "NOT_UPLOADED",
+          "reason": ""
+        }
+      ],
+      "not_uploaded": [
+        "cbm",
+        "cbc"
+      ],
+      "evidence_absent": [],
+      "infrastructure_failures": [],
+      "skip_count": 0,
+      "applicable_count": 0,
+      "skip_ratio": 0.0,
+      "counted_in_skip_denominator": false,
+      "cbp_manifest_checked": true,
+      "body_section_md": "## NOT_UPLOADED\n\n- cbm: NOT_UPLOADED\n- cbc: NOT_UPLOADED\n\nNOT_UPLOADED is not PASS, not SKIP, and is not counted in any denominator.\n",
+      "error": null,
+      "warnings": []
+    },
+    "manifest_sha256": "228594d07d7a9906280e7b5ff12fa0b1bf70b22ffff4b3d25983a4bcc072a2c6"
+  }
+}
