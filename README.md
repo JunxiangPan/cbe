@@ -35,7 +35,9 @@ CBE-08 is **PASS**. No tag/release exists.
 
 ## 0.1.0 release package
 
-Status: **awaiting human approval; no tag, no release, no PyPI upload.**
+Status: **awaiting human approval; no tag, no release, no PyPI upload.** PyPI is
+separately **BLOCKED** because the `cbe` project name is owned by another
+package (`azizo-b/CBE`).
 
 - [Release notes](release/0.1.0/RELEASE_NOTES.md)
 - [Release runbook](release/0.1.0/RELEASE_RUNBOOK.md)

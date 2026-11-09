@@ -61,5 +61,16 @@
     "scope": null
   },
   "runbook": "RELEASE_RUNBOOK.md",
-  "notes": "RELEASE_NOTES.md"
+  "notes": "RELEASE_NOTES.md",
+  "pypi": {
+    "status": "BLOCKED_NAME_COLLISION",
+    "uploaded": false,
+    "requested_name": "cbe",
+    "observed_owner": "azizo-b/CBE",
+    "observed_versions": [
+      "0.1.7",
+      "0.1.8"
+    ],
+    "action": "do not upload; resolve package name/ownership and rebuild/re-audit first"
+  }
 }

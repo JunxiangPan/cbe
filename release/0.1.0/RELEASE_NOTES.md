@@ -68,6 +68,14 @@ Test-only `e2e` extra pins `cbp-action==1.2.2`.
 - [CBE-10 F5/F6 + RC2 fields](evidence/cbe-10-f5-f6.json)
 - [Real CBE report vs RC2 schema](evidence/cbe-report-rc2.validation.json)
 
+## PyPI status: BLOCKED
+
+The PyPI project `cbe` is already owned by a different package:
+`azizo-b/CBE` (Crossroads Bank for Enterprises), versions 0.1.7/0.1.8. It is
+**not** this Cyber-Butler Enforcement gate. Do not run `twine upload cbe`.
+Publishing requires a human decision on a new distribution name/ownership,
+followed by a rebuild and re-audit.
+
 ## Release boundary
 
 No release tag, GitHub Release, or PyPI upload exists. Human approval is
