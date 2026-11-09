@@ -40,7 +40,11 @@
         "bb8d4d6"
       ],
       "rule": "CBP-EXT-SECRET-001",
-      "origin_rule": "CBE-SECRET-001"
+      "origin_rule": "CBE-SECRET-001",
+      "evidence": [
+        "evidence/cbp-1.2.0-rc-5da8b87.json",
+        "evidence/cbp-1.2.0-rc-bb8d4d6.json"
+      ]
     },
     "CBE-08": {
       "status": "DRAFT",
@@ -50,7 +54,8 @@
     "CBE-09": {
       "status": "IMPLEMENTED_BOOTSTRAP_ONLY",
       "stable_baseline": false,
-      "explicit_commit": "70faad86dd1c2eca4bd67afe6a5659491ca49c80"
+      "explicit_commit": "70faad86dd1c2eca4bd67afe6a5659491ca49c80",
+      "evidence": "evidence/cbe-09-baseline.json"
     },
     "CBE-10": {
       "status": "PASS",
@@ -58,18 +63,26 @@
       "infra_not_counted": true,
       "cbp_body_hash_scope": "base",
       "cbp_artifact_repository_shape": "owner/repo string",
-      "private_cbc_event_field": "rejected"
+      "private_cbc_event_field": "rejected",
+      "evidence": "evidence/cbe-10-f5-f6.json"
     },
     "CBE-11": {
       "status": "BOOTSTRAP_PASS",
       "stable_baseline": false,
-      "baseline": "CBE 0.1.0 wheel/source bootstrap"
+      "baseline": "CBE 0.1.0 wheel/source bootstrap",
+      "evidence": "evidence/cbe-11-selfcheck.json"
     }
   },
   "ci": {
-    "status": "PENDING",
-    "run_url": null,
-    "head_sha": null
+    "status": "SUCCESS",
+    "run_url": "https://github.com/JunxiangPan/cbe/actions/runs/42544634996",
+    "head_sha": "e0421169c4c3a6b1461e754e20bfa8717117f4ba",
+    "ubuntu": "success",
+    "windows": "success",
+    "unit_tests": 71,
+    "e2e_tests": 93,
+    "total_tests": 164,
+    "coverage": "71.82%"
   },
   "cbe_wheel": {
     "sha256": "30dd950e1b2b3b6087ba6d777cc432f81da66baa809a1f77f3404f458b4df38e",

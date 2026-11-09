@@ -10,3 +10,4 @@
 *.yaml text eol=lf
 *.toml text eol=lf
 .gitignore text eol=lf
+SHA256SUMS text eol=lf

@@ -39,6 +39,14 @@ CBP RC wheels were installed only in temporary venvs. The project
 - There is no previous stable CBE, so CBE-09/CBE-11 evidence is explicit
   `bootstrap=true`, never a fake stable baseline.
 
+## CI
+
+- Ubuntu: success
+- Windows: success
+- Run: https://github.com/JunxiangPan/cbe/actions/runs/42544634996
+- 164 tests = 71 unit + 93 E2E
+- Coverage: 71.82% (gate 60%)
+
 ## Release discipline
 
 No tag, no GitHub release, no PyPI upload was created. Do not create one until
