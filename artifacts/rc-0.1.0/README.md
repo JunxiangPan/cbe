@@ -51,11 +51,12 @@ claimed by CBE.
 
 - Ubuntu: success
 - Windows: success
-- Run: https://github.com/JunxiangPan/cbe/actions/runs/42617711567
+- Run: https://github.com/JunxiangPan/cbe/actions/runs/42629122113
 - 174 tests = 74 unit + 100 E2E
 - Coverage: 71.89% (gate 60%)
-- Installed dependency: `cbp-action==1.2.0` (official)
-- CBE wheel: `04e0b915da9d282d5dc4d6c8f79fd216d14be93c5d1136ab641494ed24adfe5a`
+- Installed dependency: `cbp-action==1.2.2` (official)
+- CBE wheel: `4e8abc21c1600d9ce231d14ccee0effda65c570c5548bd49b37c51981019c0c7`
+- CBE issue #1: CLOSED (CBP 1.2.2 / RC2 consumer upgrade)
 
 ## Release discipline
 
