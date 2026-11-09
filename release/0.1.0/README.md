@@ -1,12 +1,12 @@
 # CBE 0.1.0 Release Package
 
-Status: **AWAITING HUMAN APPROVAL — no tag, no GitHub Release, no PyPI upload.**
+Status: **RELEASED on GitHub — PyPI NOT uploaded.**
 
 Distribution: `cbe-review`; import package and CLI remain `cbe`.
-Tag target: `13f7ddc` (option B: tag includes the full release package); artifact
-source is `4561e83`.
-PyPI status: **PENDING APPROVAL** for `cbe-review` (unclaimed). The old `cbe`
-name belongs to `azizo-b/CBE` and must never be uploaded.
+Tag: `v0.1.0` → `13f7ddc` (option B: tag includes the full release package);
+artifact source is `4561e83`.
+GitHub Release: <https://github.com/JunxiangPan/cbe/releases/tag/v0.1.0>
+PyPI status: **NOT UPLOADED** for `cbe-review`; old `cbe` is never used.
 
 - [Release notes](RELEASE_NOTES.md)
 - [Release runbook](RELEASE_RUNBOOK.md)

@@ -1,7 +1,8 @@
 # CBE 0.1.0 Release Runbook
 
-Status: **DRAFT — NOT EXECUTED. Human approval is mandatory.**
-The release package is prepared; no tag, GitHub Release, or PyPI upload exists.
+Status: **GITHUB RELEASE EXECUTED — PyPI NOT EXECUTED.**
+Tag `v0.1.0` → `13f7ddc`; GitHub Release:
+<https://github.com/JunxiangPan/cbe/releases/tag/v0.1.0>.
 Distribution name: `cbe-review`; import package and CLI remain `cbe`.
 Tag choice: **B — tag `13f7ddc`, which includes the complete release package.**
 Artifacts were built from `4561e83`; metadata corrections after `13f7ddc` are
@@ -53,7 +54,7 @@ Required evidence:
 
 Abort on any mismatch. Do not “fix” a tag or release in place.
 
-## 2. Tag (only after approval)
+## 2. Tag (EXECUTED — do not move/recreate)
 
 Tag the release-package commit `13f7ddc`, which includes the complete release
 package. Do not tag the artifact source commit `4561e83`; that commit does not
@@ -77,7 +78,7 @@ git ls-remote --tags origin v0.1.0
 Never force-update or move the tag. If the tag is wrong, stop and create a new
 version/ERRATUM; do not rewrite it.
 
-## 3. GitHub Release
+## 3. GitHub Release (EXECUTED)
 
 Create the release from the annotated tag with the two artifacts:
 
@@ -99,7 +100,7 @@ gh release view v0.1.0 --repo JunxiangPan/cbe \
 
 The asset digests must equal the hashes above.
 
-## 4. PyPI (optional; requires separate approval)
+## 4. PyPI (NOT EXECUTED; requires explicit approval and credentials)
 
 Only if the approval record explicitly includes PyPI **and** `cbe-review` is
 still unclaimed:

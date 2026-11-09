@@ -2,14 +2,14 @@
   "schema_version": "1",
   "product": "cbe",
   "version": "0.1.0",
-  "status": "APPROVED_FOR_GITHUB_RELEASE",
+  "status": "RELEASED",
   "created_at": "2026-11-09",
   "source_commit": "4561e8338a09a7e681b08fc0c2b38fcff2d56e70",
   "release_package_commit": "13f7ddc8af947a6bae10b4251beb2406e2d31f30",
   "tag": "v0.1.0",
   "tag_target": "13f7ddc8af947a6bae10b4251beb2406e2d31f30",
-  "tag_created": false,
-  "release_created": false,
+  "tag_created": true,
+  "release_created": true,
   "pypi_uploaded": false,
   "artifacts": [
     {
@@ -31,7 +31,9 @@
     "ci_run": "https://github.com/JunxiangPan/cbe/actions/runs/42648086977",
     "head_sha": "4561e8338a09a7e681b08fc0c2b38fcff2d56e70",
     "ubuntu": "success",
-    "windows": "success"
+    "windows": "success",
+    "release_install": "PASS; cbe-review==0.1.0 from GitHub Release asset",
+    "cli": "cbe 0.1.0; five subcommands --help OK"
   },
   "contract": {
     "tag": "contract-v1.7.1",
@@ -83,5 +85,8 @@
   "tag_target_contains_release_package": true,
   "tag_choice": "B",
   "source_commit_role": "artifact source commit; tag target is the later release-package commit",
-  "metadata_correction_note": "This manifest is corrected in a docs-only commit after 13f7ddc; artifacts and source_commit do not change."
+  "metadata_correction_note": "This manifest is corrected in a docs-only commit after 13f7ddc; artifacts and source_commit do not change.",
+  "released_at": "2026-11-10T00:33:14+08:00",
+  "release_url": "https://github.com/JunxiangPan/cbe/releases/tag/v0.1.0",
+  "tag_object_sha": "c8fde53d9c429e2869ee4ededafced25c06ca303"
 }
