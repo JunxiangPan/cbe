@@ -36,10 +36,10 @@ CBE-08 is **PASS**. No tag/release exists.
 
 ## 0.1.0 release package
 
-Status: **released on GitHub; PyPI not uploaded.** Tag `v0.1.0` →
-`13f7ddc`; GitHub Release:
+Status: **released on GitHub; PyPI upload blocked by missing credentials.** Tag
+`v0.1.0` → `13f7ddc`; GitHub Release:
 <https://github.com/JunxiangPan/cbe/releases/tag/v0.1.0>. Distribution is
-`cbe-review` (old `cbe` is never used); PyPI remains un-uploaded.
+`cbe-review` (old `cbe` is never used); PyPI is approved but not uploaded.
 
 - [Release notes](release/0.1.0/RELEASE_NOTES.md)
 - [Release runbook](release/0.1.0/RELEASE_RUNBOOK.md)

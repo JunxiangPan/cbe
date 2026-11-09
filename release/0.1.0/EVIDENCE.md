@@ -15,3 +15,9 @@ from the RC audit package and is read-only for this release staging directory.
 | CBE-11 | `evidence/cbe-11-selfcheck.json` | bootstrap PASS; not a stable-baseline claim |
 
 Artifact hashes are in `RELEASE_MANIFEST.json` and `SHA256SUMS`.
+
+## PyPI
+
+Human approved `cbe-review==0.1.0`, but the upload is **BLOCKED**: no `twine`,
+no `.pypirc`, no PyPI token, and no trusted-publisher workflow. No upload was
+attempted; the old `cbe` name is never used.
