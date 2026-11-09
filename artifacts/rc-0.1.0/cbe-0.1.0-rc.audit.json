@@ -172,8 +172,8 @@
   },
   "ci": {
     "status": "SUCCESS",
-    "run_url": "https://github.com/JunxiangPan/cbe/actions/runs/42633731786",
-    "head_sha": "404116951f6551c9d97608d0aaa4d74ac3fa289e",
+    "run_url": "https://github.com/JunxiangPan/cbe/actions/runs/42648086977",
+    "head_sha": "4561e8338a09a7e681b08fc0c2b38fcff2d56e70",
     "ubuntu": "success",
     "windows": "success",
     "unit_tests": 74,
@@ -181,18 +181,25 @@
     "total_tests": 176,
     "coverage": "71.89%",
     "dependency": "cbp-action==1.2.2",
-    "installed_cbp_version": "1.2.2"
+    "installed_cbp_version": "1.2.2",
+    "installed_distribution": "cbe-review==0.1.0"
   },
   "cbe_wheel": {
-    "sha256": "b1f3807c1d65a28c3238e8bae9066c4af42e2c9713973753d0f3d67cb335c707",
+    "name": "cbe_review-0.1.0-py3-none-any.whl",
+    "sha256": "87f0ad40a6cffdf4f9c657e6cc972a0f93787259c52445a1c112a5c7753599a7",
+    "sdist_name": "cbe_review-0.1.0.tar.gz",
+    "sdist_sha256": "a77c653d178d5d0ab179da73c92184d9a54d5104ca5202f41574588979b68854",
     "install_smoke": "PASS",
     "schemas_bundled": true,
-    "built_from": "4041169"
+    "built_from": "4561e83"
   },
   "issue_1": {
     "number": 1,
     "state": "CLOSED",
     "url": "https://github.com/JunxiangPan/cbe/issues/1",
     "scope": "CBP 1.2.2 / RC2 consumer upgrade"
-  }
+  },
+  "distribution_name": "cbe-review",
+  "import_package": "cbe",
+  "cli": "cbe"
 }

@@ -4,23 +4,23 @@
   "version": "0.1.0",
   "status": "AWAITING_HUMAN_APPROVAL",
   "created_at": "2026-11-09",
-  "source_commit": "d820001ec1120408b4d76db323e9153465359805",
+  "source_commit": "4561e8338a09a7e681b08fc0c2b38fcff2d56e70",
   "release_package_commit": null,
   "tag": "v0.1.0",
-  "tag_target": "d820001ec1120408b4d76db323e9153465359805",
+  "tag_target": "4561e8338a09a7e681b08fc0c2b38fcff2d56e70",
   "tag_created": false,
   "release_created": false,
   "pypi_uploaded": false,
   "artifacts": [
     {
-      "name": "cbe-0.1.0-py3-none-any.whl",
-      "sha256": "966fabf110eb2909722670f23c4b22efdca773b1cd1381bd4fcc90e02266fa6e",
-      "size": 51764
+      "name": "cbe_review-0.1.0-py3-none-any.whl",
+      "sha256": "87f0ad40a6cffdf4f9c657e6cc972a0f93787259c52445a1c112a5c7753599a7",
+      "size": 52090
     },
     {
-      "name": "cbe-0.1.0.tar.gz",
-      "sha256": "bc474810fabce42397f75fa68dace3182f9308ab0681b53597c56220493daaff",
-      "size": 45983
+      "name": "cbe_review-0.1.0.tar.gz",
+      "sha256": "a77c653d178d5d0ab179da73c92184d9a54d5104ca5202f41574588979b68854",
+      "size": 46253
     }
   ],
   "verification": {
@@ -28,7 +28,8 @@
     "unit": 74,
     "e2e": 102,
     "coverage": "71.89%",
-    "ci_run": "https://github.com/JunxiangPan/cbe/actions/runs/42634308910",
+    "ci_run": "https://github.com/JunxiangPan/cbe/actions/runs/42648086977",
+    "head_sha": "4561e8338a09a7e681b08fc0c2b38fcff2d56e70",
     "ubuntu": "success",
     "windows": "success"
   },
@@ -63,14 +64,17 @@
   "runbook": "RELEASE_RUNBOOK.md",
   "notes": "RELEASE_NOTES.md",
   "pypi": {
-    "status": "BLOCKED_NAME_COLLISION",
+    "status": "PENDING_APPROVAL",
     "uploaded": false,
-    "requested_name": "cbe",
-    "observed_owner": "azizo-b/CBE",
-    "observed_versions": [
-      "0.1.7",
-      "0.1.8"
-    ],
-    "action": "do not upload; resolve package name/ownership and rebuild/re-audit first"
-  }
+    "requested_name": "cbe-review",
+    "available_at_preparation": true,
+    "old_name": "cbe",
+    "old_name_owner": "azizo-b/CBE",
+    "note": "do not upload cbe; cbe-review requires human approval"
+  },
+  "distribution_name": "cbe-review",
+  "import_package": "cbe",
+  "cli": "cbe",
+  "package_id": "cbe",
+  "producer_id": "cbe"
 }

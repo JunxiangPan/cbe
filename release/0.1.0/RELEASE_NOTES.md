@@ -7,6 +7,18 @@ provides the rule-pack manifest, provider execution, no-bypass enforcement,
 SARIF evidence, and the CBE report/body fragment for the Cyber-Butler release
 train.
 
+Distribution identity:
+
+```text
+PyPI distribution: cbe-review
+Import package:    cbe
+CLI:               cbe
+package_id:        cbe
+producer_id:       cbe
+```
+
+The `cbe` PyPI name belongs to `azizo-b/CBE` and is **not used**.
+
 ## Highlights
 
 - Five CLI commands: `validate-manifest`, `enforce-no-bypass`,
@@ -30,8 +42,8 @@ train.
 Tests:      176 passed = 74 unit + 102 E2E
 Coverage:   71.89% (gate 60%)
 CI:         Ubuntu + Windows success
-Run:        https://github.com/JunxiangPan/cbe/actions/runs/42634308910
-Source:     d820001ec1120408b4d76db323e9153465359805
+Run:        https://github.com/JunxiangPan/cbe/actions/runs/42648086977
+Source:     4561e8338a09a7e681b08fc0c2b38fcff2d56e70
 ```
 
 Contract and upstream pins:
@@ -46,18 +58,30 @@ CBP: cbp-action==1.2.2
 
 | File | SHA256 | Size |
 |---|---|---|
-| `cbe-0.1.0-py3-none-any.whl` | `966fabf110eb2909722670f23c4b22efdca773b1cd1381bd4fcc90e02266fa6e` | 51,764 B |
-| `cbe-0.1.0.tar.gz` | `bc474810fabce42397f75fa68dace3182f9308ab0681b53597c56220493daaff` | 45,983 B |
+| `cbe_review-0.1.0-py3-none-any.whl` | `87f0ad40a6cffdf4f9c657e6cc972a0f93787259c52445a1c112a5c7753599a7` | 52,090 B |
+| `cbe_review-0.1.0.tar.gz` | `a77c653d178d5d0ab179da73c92184d9a54d5104ca5202f41574588979b68854` | 46,253 B |
 
 Install from the wheel:
 
 ```bash
-python -m pip install cbe-0.1.0-py3-none-any.whl
+python -m pip install cbe_review-0.1.0-py3-none-any.whl
 cbe --help
+```
+
+If and when PyPI publication is approved:
+
+```bash
+python -m pip install cbe-review==0.1.0
 ```
 
 Runtime dependencies: `jsonschema>=4.20`, `pyyaml>=6.0`. Python >= 3.10.
 Test-only `e2e` extra pins `cbp-action==1.2.2`.
+
+## PyPI status
+
+`cbe-review` is currently unclaimed on PyPI. Status: **PENDING HUMAN
+APPROVAL**. Do not upload the old `cbe` name; it belongs to a different
+project.
 
 ## Evidence
 
@@ -67,14 +91,6 @@ Test-only `e2e` extra pins `cbp-action==1.2.2`.
 - [Real CBP 1.2.2 quality manifest](evidence/cbp-1.2.2-quality-manifest.json)
 - [CBE-10 F5/F6 + RC2 fields](evidence/cbe-10-f5-f6.json)
 - [Real CBE report vs RC2 schema](evidence/cbe-report-rc2.validation.json)
-
-## PyPI status: BLOCKED
-
-The PyPI project `cbe` is already owned by a different package:
-`azizo-b/CBE` (Crossroads Bank for Enterprises), versions 0.1.7/0.1.8. It is
-**not** this Cyber-Butler Enforcement gate. Do not run `twine upload cbe`.
-Publishing requires a human decision on a new distribution name/ownership,
-followed by a rebuild and re-audit.
 
 ## Release boundary
 

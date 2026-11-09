@@ -2,7 +2,7 @@
 
 Status: **DRAFT — NOT EXECUTED. Human approval is mandatory.**
 The release package is prepared; no tag, GitHub Release, or PyPI upload exists.
-PyPI is separately blocked by the `cbe` name collision.
+Distribution name: `cbe-review`; import package and CLI remain `cbe`.
 
 ## 0. Approval record
 
@@ -12,11 +12,11 @@ Complete this before running any release command.
 |---|---|
 | Approver | _pending_ |
 | Approval date | _pending_ |
-| Scope approved | GitHub Release only; PyPI is blocked |
-| Release source commit | `d820001ec1120408b4d76db323e9153465359805` |
-| Wheel SHA256 | `966fabf110eb2909722670f23c4b22efdca773b1cd1381bd4fcc90e02266fa6e` |
-| Sdist SHA256 | `bc474810fabce42397f75fa68dace3182f9308ab0681b53597c56220493daaff` |
-| PyPI status | **BLOCKED — `cbe` owned by azizo-b/CBE** |
+| Scope approved | GitHub Release only / GitHub + PyPI |
+| Release source commit | `4561e8338a09a7e681b08fc0c2b38fcff2d56e70` |
+| Wheel SHA256 | `87f0ad40a6cffdf4f9c657e6cc972a0f93787259c52445a1c112a5c7753599a7` |
+| Sdist SHA256 | `a77c653d178d5d0ab179da73c92184d9a54d5104ca5202f41574588979b68854` |
+| PyPI distribution | `cbe-review` (available at preparation time; pending approval) |
 
 **Do not tag or publish until this table is filled by a human.**
 
@@ -27,16 +27,17 @@ Run from the CBE repository after approval:
 ```bash
 git status --porcelain              # must be empty
 git rev-parse HEAD                  # record the release-package commit
-git rev-parse d820001ec1120408b4d76db323e9153465359805
+git rev-parse 4561e8338a09a7e681b08fc0c2b38fcff2d56e70
 git tag --list v0.1.0               # must be empty
 gh release view v0.1.0              # must not exist
-python -m pip index versions cbe    # 0.1.0 must not be published
+python -m pip index versions cbe-review   # must not exist yet
+python -m pip index versions cbe          # owned by azizo-b/CBE; never upload here
 ```
 
 Required evidence:
 
-- `release/0.1.0/artifacts/cbe-0.1.0-py3-none-any.whl` hash matches the record.
-- `release/0.1.0/artifacts/cbe-0.1.0.tar.gz` hash matches the record.
+- `release/0.1.0/artifacts/cbe_review-0.1.0-py3-none-any.whl` hash matches.
+- `release/0.1.0/artifacts/cbe_review-0.1.0.tar.gz` hash matches.
 - `release/0.1.0/evidence/cbe-08-frozen.json` has `status=PASS`, `not_pass=false`,
   and all four F2 checks matching.
 - `release/0.1.0/evidence/contract-guard.json` has `gate_status=PINNED`,
@@ -51,7 +52,7 @@ Tag the recorded release source commit, not a moving branch and not a later
 docs commit:
 
 ```bash
-RELEASE_COMMIT=d820001ec1120408b4d76db323e9153465359805
+RELEASE_COMMIT=4561e8338a09a7e681b08fc0c2b38fcff2d56e70
 git tag -a v0.1.0 "$RELEASE_COMMIT" -m "CBE 0.1.0"
 git push origin refs/tags/v0.1.0
 ```
@@ -72,8 +73,8 @@ Create the release from the annotated tag with the two artifacts:
 
 ```bash
 gh release create v0.1.0 \
-  release/0.1.0/artifacts/cbe-0.1.0-py3-none-any.whl \
-  release/0.1.0/artifacts/cbe-0.1.0.tar.gz \
+  release/0.1.0/artifacts/cbe_review-0.1.0-py3-none-any.whl \
+  release/0.1.0/artifacts/cbe_review-0.1.0.tar.gz \
   --repo JunxiangPan/cbe \
   --title "CBE 0.1.0" \
   --notes-file release/0.1.0/RELEASE_NOTES.md
@@ -88,25 +89,45 @@ gh release view v0.1.0 --repo JunxiangPan/cbe \
 
 The asset digests must equal the hashes above.
 
-## 4. PyPI — BLOCKED; DO NOT RUN
+## 4. PyPI (optional; requires separate approval)
 
-`pip index versions cbe` reports the PyPI project `cbe` belongs to
-`azizo-b/CBE` (Crossroads Bank for Enterprises), versions 0.1.7/0.1.8. It is a
-different project. **Do not run `twine upload` for `cbe`.**
+Only if the approval record explicitly includes PyPI **and** `cbe-review` is
+still unclaimed:
 
-Unblocking requires a human decision on a new distribution name or PyPI
-ownership, followed by rebuilding artifacts and re-auditing them. No PyPI
-upload is approved by this runbook.
+```bash
+python -m twine check release/0.1.0/artifacts/*
+python -m twine upload \
+  release/0.1.0/artifacts/cbe_review-0.1.0-py3-none-any.whl \
+  release/0.1.0/artifacts/cbe_review-0.1.0.tar.gz
+```
+
+Then verify:
+
+```bash
+python -m pip download --no-deps --dest /tmp/cbe-review-pypi cbe-review==0.1.0
+sha256sum /tmp/cbe-review-pypi/*
+python -m pip index versions cbe-review
+```
+
+PyPI digests must match the recorded hashes. Never upload the old `cbe` name.
+PyPI uploads cannot be deleted; use yank + ERRATUM if necessary.
 
 ## 5. Post-release verification
 
-Install from the GitHub Release asset or the staged wheel, not from PyPI:
+If PyPI was approved and published:
 
 ```bash
 python -m venv /tmp/cbe-release-check
-/tmp/cbe-release-check/bin/pip install release/0.1.0/artifacts/cbe-0.1.0-py3-none-any.whl
+/tmp/cbe-release-check/bin/pip install cbe-review==0.1.0
 /tmp/cbe-release-check/bin/cbe validate-manifest \
   --manifest tests/e2e/fixtures/manifests/valid_minimal.json
+```
+
+If only the GitHub Release was approved, install the attached wheel instead:
+
+```bash
+/tmp/cbe-release-check/bin/pip install \
+  release/0.1.0/artifacts/cbe_review-0.1.0-py3-none-any.whl
 ```
 
 Expected: `PASS`, exit 0. Also verify `cbe --help` and the five subcommands.
@@ -115,8 +136,8 @@ Expected: `PASS`, exit 0. Also verify `cbe --help` and the five subcommands.
 
 - Before any distribution: delete the GitHub Release and the local/remote tag
   only if the release was not distributed; record the reason.
-- If PyPI is ever unblocked and a bad file is published: do not move the tag;
-  yank the bad files, publish an ERRATUM, and bump the version.
+- After PyPI: do not move the tag. Yank the bad files, publish an ERRATUM, and
+  bump the version.
 - Never rewrite published evidence or move `contract-v1.7.1`.
 
 ## 7. Explicit non-actions
@@ -124,7 +145,8 @@ Expected: `PASS`, exit 0. Also verify `cbe --help` and the five subcommands.
 This runbook does **not** authorize:
 
 - tagging without the approval record;
-- any PyPI upload while the `cbe` name is owned by another project;
+- uploading the old `cbe` distribution name;
+- publishing to PyPI without an explicit PyPI scope;
 - changing CBE-08 PASS evidence after publication;
 - editing CBS/CBP/CBM/CBC;
 - moving `contract-v1.7.1`.

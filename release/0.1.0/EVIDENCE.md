@@ -1,7 +1,7 @@
 # CBE 0.1.0 Release Evidence
 
-All evidence is copied from the RC audit package and is read-only for this
-release staging directory.
+Distribution `cbe-review`; import package/CLI `cbe`. All evidence is copied
+from the RC audit package and is read-only for this release staging directory.
 
 | Evidence | File | Key fact |
 |---|---|---|

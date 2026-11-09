@@ -1,8 +1,10 @@
 # CBE 0.1.0 Release Package
 
 Status: **AWAITING HUMAN APPROVAL — no tag, no GitHub Release, no PyPI upload.**
-PyPI is separately **BLOCKED**: the `cbe` project name is owned by a different
-package (`azizo-b/CBE`). Do not upload.
+
+Distribution: `cbe-review`; import package and CLI remain `cbe`.
+PyPI status: **PENDING APPROVAL** for `cbe-review` (unclaimed). The old `cbe`
+name belongs to `azizo-b/CBE` and must never be uploaded.
 
 - [Release notes](RELEASE_NOTES.md)
 - [Release runbook](RELEASE_RUNBOOK.md)

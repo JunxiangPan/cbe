@@ -13,7 +13,7 @@ Human audit is required before any tag or publish.
 | CBS CBE-08 addendum | `e318cbd` | `FREEZE_NOTICE_ADDENDUM.md` sha256 `51604f56…`; authorizes PASS if four checks match |
 | RC2 CBE report schema | `2b3e1c5a…` | real CBE report validates with zero errors |
 
-CBE's `e2e` extra pins the released `cbp-action==1.2.2`. The CBP
+CBE's distribution is `cbe-review` (import package/CLI `cbe`). CBE's `e2e` extra pins the released `cbp-action==1.2.2`. The CBP
 1.2.2 quality manifest is the real Release asset; no CBP 1.2.2 gate PASS is
 claimed by CBE.
 
@@ -52,11 +52,11 @@ claimed by CBE.
 
 - Ubuntu: success
 - Windows: success
-- Run: https://github.com/JunxiangPan/cbe/actions/runs/42633731786
+- Run: https://github.com/JunxiangPan/cbe/actions/runs/42648086977
 - 176 tests = 74 unit + 102 E2E
 - Coverage: 71.89% (gate 60%)
-- Installed dependency: `cbp-action==1.2.2` (official)
-- CBE wheel: `b1f3807c1d65a28c3238e8bae9066c4af42e2c9713973753d0f3d67cb335c707`
+- Installed dependency: `cbp-action==1.2.2` (official); distribution `cbe-review==0.1.0`
+- CBE wheel: `cbe_review-0.1.0-py3-none-any.whl` / `87f0ad40a6cffdf4f9c657e6cc972a0f93787259c52445a1c112a5c7753599a7`
 - CBE issue #1: CLOSED (CBP 1.2.2 / RC2 consumer upgrade)
 
 ## Release discipline
