@@ -106,6 +106,9 @@ def main(argv: list[str] | None = None) -> int:
         observed_commit = _resolve_ref(pin)
         contract_bytes = _get(f"{RAW}/{pin['repo']}/{observed_commit}/{pin['contract_path']}")
         vm_bytes = _get(f"{RAW}/{pin['repo']}/{observed_commit}/{pin['vm_proof_path']}")
+        addendum_bytes = _get(
+            f"{RAW}/{pin['repo']}/{pin['addendum_commit']}/{pin['addendum_path']}"
+        )
     except (RuntimeError, ValueError, KeyError, OSError) as exc:
         return _error(
             "CONTRACT_GUARD_UNAVAILABLE",
@@ -113,6 +116,12 @@ def main(argv: list[str] | None = None) -> int:
             [{"pin": str(args.pin)}],
         )
     observed_sha = hashlib.sha256(contract_bytes).hexdigest()
+    addendum_sha = hashlib.sha256(addendum_bytes).hexdigest()
+    addendum_text = addendum_bytes.decode("utf-8", errors="replace")
+    addendum_authorizes_pass = (
+        "CBE-08 may be evaluated" in addendum_text
+        and "status PASS is permitted" in addendum_text
+    )
     vm_text = vm_bytes.decode("utf-8", errors="replace")
     vm_conflict = has_conflict_markers(vm_text)
     changes: list[dict[str, Any]] = []
@@ -143,6 +152,24 @@ def main(argv: list[str] | None = None) -> int:
                 "action": "CBS must resolve vm-proof.yml conflicts",
             }
         )
+    if addendum_sha != pin["addendum_sha256"]:
+        changes.append(
+            {
+                "field": "addendum_sha256",
+                "pinned": pin["addendum_sha256"],
+                "observed": addendum_sha,
+                "action": "the CBE-08 addendum changed; re-review authorization before flipping PASS",
+            }
+        )
+    if not addendum_authorizes_pass:
+        changes.append(
+            {
+                "field": "addendum_authorization",
+                "pinned": "CBE-08 may be evaluated; status PASS is permitted",
+                "observed": "authorization phrase missing",
+                "action": "do not report CBE-08 PASS",
+            }
+        )
     if changes:
         return _error(
             "CONTRACT_CHANGED",
@@ -164,11 +191,16 @@ def main(argv: list[str] | None = None) -> int:
                 "commit": pin["commit"],
                 "contract_sha256": pin["contract_sha256"],
                 "frozen": bool(pin.get("frozen", False)),
+                "addendum_commit": pin["addendum_commit"],
+                "addendum_sha256": pin["addendum_sha256"],
+                "cbe08_pass_authorized": bool(pin.get("cbe08_pass_authorized", False)),
             },
             "observed": {
                 "commit": observed_commit,
                 "contract_sha256": observed_sha,
                 "vm_proof_clean": not vm_conflict,
+                "addendum_sha256": addendum_sha,
+                "addendum_authorizes_pass": addendum_authorizes_pass,
             },
             "error": None,
             "warnings": [],

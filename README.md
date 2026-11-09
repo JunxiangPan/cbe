@@ -16,9 +16,9 @@ Commit 8 implemented P0-05 (`symbol-index`, `run-provider`, `emit-sarif`,
 implemented, CBE-08 kept DRAFT, CBP 1.2.0 manifest fields aligned, and schemas
 bundled in the wheel. Commit 13 pins the released CBP 1.2.0 from PyPI; commit
 14 follows contract RC2 and the object `artifact_repository` shape. Commit 15
-pins the frozen contract tag `contract-v1.7.1` and CBP 1.2.2. CBE-08 is
-**not PASS** because the frozen CBS notice explicitly requires DRAFT; no
-tag/release exists.
+pins the frozen contract tag `contract-v1.7.1` and CBP 1.2.2. Commit 16 consumes
+`FREEZE_NOTICE_ADDENDUM.md` at `e318cbd`; all four frozen F2 checks match, so
+CBE-08 is **PASS**. No tag/release exists.
 
 ## 0.1.0 RC inputs
 
@@ -28,8 +28,9 @@ tag/release exists.
   real quality manifest `228594d0…`. CBE-07b and CBE-10 pass against it; the
   project pin is `cbp-action==1.2.2`.
 - CBS `contract/v1.7.1` frozen tag `contract-v1.7.1` at commit `c2b5e9`;
-  contract SHA256 `209d75b4…`; `vm-proof.yml` clean. The frozen
-  `FREEZE_NOTICE.md` says **CBE-08 remains DRAFT; do not report PASS.**
+  contract SHA256 `209d75b4…`; `vm-proof.yml` clean.
+  `FREEZE_NOTICE_ADDENDUM.md` at `e318cbd` authorizes CBE-08 PASS when the four
+  F2 checks match; all four match, so CBE-08 is PASS.
 - CBE: `0.1.0` package version, no tag, no release.
 
 ## Runtime dependencies
@@ -202,8 +203,17 @@ No security rule implementation is included in the first commit.
 - `cbp-action==1.2.2` pin; CBE-07b and CBE-10 run against real 1.2.2 artifacts.
 - Real CBP 1.2.2 quality manifest is validated, including the object
   `artifact_repository`; B-33 is resolved.
-- CBE-08 stays DRAFT because the frozen `FREEZE_NOTICE.md` says so. No tag,
-  no release.
+- CBE-08 stayed DRAFT at commit 15 because the frozen `FREEZE_NOTICE.md` said
+  so. No tag, no release.
+
+## Commit 16 scope (CBE-08 PASS)
+
+- Consume `FREEZE_NOTICE_ADDENDUM.md` at `e318cbd` / `51604f56…`, which
+  authorizes PASS when the four frozen F2 checks match.
+- `five_advisory_valid=0`, `non_blocking_1_of_5_skip=0`,
+  `blocking_skip_exits_3=3`, `zero_rules_exits_3=3`; all match.
+- CBE-08 flips to PASS; evidence `artifacts/rc-0.1.0/evidence/cbe-08-frozen.json`.
+- No tag, no release; CBE 0.1.0 remains an RC candidate.
 
 ## Commands
 

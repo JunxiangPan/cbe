@@ -22,6 +22,9 @@ def test_guard_matches_pinned_contract() -> None:
     assert data["observed"]["contract_sha256"] == data["pin"]["contract_sha256"]
     assert data["observed"]["vm_proof_clean"] is True
     assert data["pin"]["frozen"] is True
+    assert data["pin"]["addendum_commit"] == "e318cbdac748a3a88057bd882e897f50c364bd97"
+    assert data["observed"]["addendum_sha256"] == data["pin"]["addendum_sha256"]
+    assert data["observed"]["addendum_authorizes_pass"] is True
 
 
 def test_guard_fails_when_pinned_commit_moves(tmp_path: Path) -> None:
@@ -46,3 +49,15 @@ def test_guard_fails_when_contract_hash_changes(tmp_path: Path) -> None:
     assert data is not None
     assert data["error"]["code"] == "CONTRACT_CHANGED"
     assert any(item["field"] == "contract_sha256" for item in data["error"]["details"])
+
+
+def test_guard_fails_when_addendum_hash_changes(tmp_path: Path) -> None:
+    pin = json.loads(PIN.read_text(encoding="utf-8"))
+    pin["addendum_sha256"] = "0" * 64
+    path = tmp_path / "addendum-changed.json"
+    path.write_text(json.dumps(pin), encoding="utf-8")
+    code, data, _, _ = run_script("tools/cbe_contract_guard.py", "--pin", path)
+    assert code == 3
+    assert data is not None
+    assert data["error"]["code"] == "CONTRACT_CHANGED"
+    assert any(item["field"] == "addendum_sha256" for item in data["error"]["details"])

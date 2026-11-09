@@ -1,11 +1,10 @@
 # CBE E2E matrix (CBE-01..CBE-11)
 
-Status: CBE-01..CBE-07b, CBE-09, CBE-10, and CBE-11 are implemented. CBE-08
-is a DRAFT against frozen CBS `contract/v1.7.1` `contract-v1.7.1` / `c2b5e9`
-and is not PASS because the freeze notice requires DRAFT. CBE-07b
-runs against the released CBP 1.2.0 (and historically 1.1.0/1.2.0 RC). The
-matrix is the authoritative definition until CBS references it from the v1.7
-execution contract.
+Status: CBE-01..CBE-11 are implemented; CBE-08 is PASS under the frozen
+`contract-v1.7.1` / `c2b5e9` addendum `e318cbd`. CBE-07b runs against the
+released CBP 1.2.2 (and historically 1.1.0/1.2.0/1.2.2 RC). The matrix is the
+authoritative definition until CBS references it from the v1.7 execution
+contract.
 
 ## CBE-01 — CLI contract
 
@@ -115,26 +114,27 @@ execution contract.
   asserts `cbe-body-section.md` Section B lists `UNVERIFIABLE_CONDITION`.
   CBE-local visibility is implemented; CBS Release-body integration is pending.
 
-## CBE-08 — F2 denominator (DRAFT)
+## CBE-08 — F2 denominator (PASS)
 
-- File: `tools/cbe08_draft.py` (no PASS assertion)
+- File: `tools/cbe08_draft.py` (F2 runner; it now emits PASS when all four
+  frozen checks match)
 - Guard: `tests/e2e/test_cbe_08_contract_guard.py`,
   `tools/cbe_contract_guard.py`,
   `tests/e2e/fixtures/contract/v1.7.1-pin.json`
 - Guard check: pinned immutable tag `contract-v1.7.1`, commit `c2b5e9`,
-  contract SHA256 `209d75b4…`, `vm-proof.yml` clean. Drift exits 3
-  `CONTRACT_CHANGED`; a successful guard says `PINNED`, never `CBE-08 PASS`.
+  contract SHA256 `209d75b4…`, `vm-proof.yml` clean, and
+  `FREEZE_NOTICE_ADDENDUM.md` at `e318cbd` / `51604f56…` authorizing PASS.
+  Drift exits 3 `CONTRACT_CHANGED`; a successful guard says `PINNED`.
 - Fixtures: manifest combinations from `manifests/five_advisory.json`,
   `valid_blocking_zero.json`, `zero_rules.json`; `exemptions/valid.txt`,
   `exemptions/blocking.txt`
 - Check: denominator = non-blocking applicable checks only; blocking rules are
   not counted and may not SKIP; blocking exemption exits 3; zero rules exits 3;
   1/5 advisory skip passes; 2/5 would exit 4.
-- **Status: DRAFT.** CBS froze `contract/v1.7.1` at tag `contract-v1.7.1` /
-  `c2b5e9`; the hash is `209d75b4…` and `vm-proof.yml` is clean. However,
-  `FREEZE_NOTICE.md` explicitly says **“CBE-08 remains DRAFT; do not report
-  PASS.”** CBE-08 therefore stays DRAFT; flipping it would violate the frozen
-  notice. A CBS-corrected notice is required before any PASS.
+- **Status: PASS.** Frozen expectations and observed exits all match:
+  `five_advisory_valid=0`, `non_blocking_1_of_5_skip=0`,
+  `blocking_skip_exits_3=3`, `zero_rules_exits_3=3`.
+- Evidence: `artifacts/rc-0.1.0/evidence/cbe-08-frozen.json`.
 - **CBE report schema:** `test_cbe_report_rc2_schema.py` generates a real CBE
   report and validates it against the RC2 CBE report schema; the schema also
   accepts `gate_status=NOT_UPLOADED`.

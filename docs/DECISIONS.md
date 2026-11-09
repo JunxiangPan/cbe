@@ -185,16 +185,18 @@ CBE 0.1.0 is an RC candidate only: no tag, no GitHub release, no PyPI upload.
 CBE-07b is real on released CBP 1.2.2 (`d4bfefb`). CBE-09/10/11 have
 implementation evidence, but there is no previous stable CBE, so F4/CBE-11
 evidence is explicitly `bootstrap=true`. CBS froze `contract/v1.7.1` at tag
-`contract-v1.7.1` / `c2b5e9` with hash `209d75b4…`; however, the frozen
-`FREEZE_NOTICE.md` says CBE-08 remains DRAFT, so CBE-08 stays DRAFT.
+`contract-v1.7.1` / `c2b5e9` with hash `209d75b4…`; the post-freeze
+`FREEZE_NOTICE_ADDENDUM.md` at `e318cbd` authorizes CBE-08 PASS when the four
+F2 checks match. All four match, so CBE-08 is PASS.
 
 ### D14. Contract hash guard
 
 CBE pins the immutable CBS tag `contract-v1.7.1` at commit `c2b5e9` and contract
-SHA256 `209d75b4…` in `tests/e2e/fixtures/contract/v1.7.1-pin.json`. The guard
-resolves the annotated tag, not a moving branch, and fails with
-`CONTRACT_CHANGED` when the tag commit, contract bytes, or `vm-proof.yml`
-cleanliness changes. `PINNED` is not CBE-08 PASS.
+SHA256 `209d75b4…` in `tests/e2e/fixtures/contract/v1.7.1-pin.json`. It also
+pins the addendum commit `e318cbd` and hash `51604f56…`. The guard resolves the
+annotated tag, not a moving branch, and fails with `CONTRACT_CHANGED` when the
+tag commit, contract bytes, `vm-proof.yml` cleanliness, addendum hash, or
+addendum authorization phrase changes.
 
 ### D15. CBP 1.2.2 official dependency
 
@@ -244,5 +246,8 @@ manifest, including the object `artifact_repository`.
     CBE-08 still DRAFT. CBP 1.2.2 adoption pending release.
 15. **Commit 15 (freeze + CBP 1.2.2, done)**: pin immutable tag
     `contract-v1.7.1` / `c2b5e9`; CBP 1.2.2 official; CBE-07b and CBE-10 run
-    against real 1.2.2 artifacts. CBE-08 remains DRAFT because the frozen
-    `FREEZE_NOTICE.md` says so. No tag/release.
+    against real 1.2.2 artifacts. CBE-08 remained DRAFT pending the addendum.
+    No tag/release.
+16. **Commit 16 (CBE-08 PASS, done)**: consume
+    `FREEZE_NOTICE_ADDENDUM.md` at `e318cbd` / `51604f56…`; all four frozen F2
+    checks match; CBE-08 flips to PASS. No tag/release.

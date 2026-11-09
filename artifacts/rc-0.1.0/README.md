@@ -10,6 +10,7 @@ Human audit is required before any tag or publish.
 | CBP 1.2.2 official | `v1.2.2` / `d4bfefb` | wheel `2b73b4a4…`, sdist `91974398…`, manifest `228594d0…` |
 | CBP 1.2.0 official (historical) | `v1.2.0` / `5ebd0eb` | wheel `188639bb…` |
 | CBS contract frozen | `tag contract-v1.7.1` / `c2b5e9` | hash `209d75b4…`; freeze baseline `6835789`; `vm-proof.yml` clean |
+| CBS CBE-08 addendum | `e318cbd` | `FREEZE_NOTICE_ADDENDUM.md` sha256 `51604f56…`; authorizes PASS if four checks match |
 | RC2 CBE report schema | `2b3e1c5a…` | real CBE report validates with zero errors |
 
 CBE's `e2e` extra pins the released `cbp-action==1.2.2`. The CBP
@@ -22,8 +23,8 @@ claimed by CBE.
 |---|---|---|
 | CBE-01..CBE-07a | PASS | CI + local E2E |
 | CBE-07b on CBP 1.2.2 official | PASS | `evidence/cbp-1.2.2-official.json` |
-| CBE-08 F2 | **DRAFT — not PASS** | `evidence/cbe-08-frozen.json`, `docs/CBE-08_DRAFT.md` |
-| CBE-08 contract guard | **PINNED** to tag `contract-v1.7.1` / `c2b5e9` / `209d75b4…`; not a PASS | `evidence/contract-guard.json` |
+| CBE-08 F2 | **PASS**; four frozen checks match | `evidence/cbe-08-frozen.json`, `docs/CBE-08_PASS.md` |
+| CBE-08 contract guard | **PINNED** to tag `contract-v1.7.1` / `c2b5e9` / `209d75b4…` and addendum `e318cbd` / `51604f56…` | `evidence/contract-guard.json` |
 | Real CBE report vs RC2 schema | PASS; schema `2b3e1c5a…` | `evidence/cbe-report-rc2.validation.json` |
 | CBE-09 F4 baseline | implemented; no stable CBE yet | `evidence/cbe-09-baseline.json` |
 | CBE-10 F5/F6 + RC2 manifest fields | **PASS** with real CBP 1.2.2 manifest | `evidence/cbe-10-f5-f6.json` |
@@ -32,13 +33,13 @@ claimed by CBE.
 
 ## Boundaries
 
-- CBS has frozen `contract/v1.7.1` at tag `contract-v1.7.1`, but its
-  `docs/v1.7/FREEZE_NOTICE.md` explicitly says **“CBE-08 remains DRAFT; do not
-  report PASS.”** Therefore CBE-08 stays DRAFT. This is a contract instruction,
-  not a missing freeze; flipping it would be a false PASS.
-- The guard pins the immutable tag, not the moving branch. It fails with
-  `CONTRACT_CHANGED` if the tag/commit/hash changes or `vm-proof.yml` gets
-  conflict markers.
+- CBS froze `contract/v1.7.1` at tag `contract-v1.7.1`. The original
+  `FREEZE_NOTICE.md` kept CBE-08 DRAFT, but the post-freeze
+  `FREEZE_NOTICE_ADDENDUM.md` at `e318cbd` authorizes PASS when the four frozen
+  F2 checks match. All four match, so CBE-08 is PASS.
+- The guard pins the immutable tag and the addendum commit/hash. It fails with
+  `CONTRACT_CHANGED` if the tag/commit/hash, addendum hash, authorization
+  phrase, or `vm-proof.yml` cleanliness changes.
 - RC2 makes `artifact_repository` the object
   `{repository, run_id, artifact_name}`. CBE accepts the real CBP 1.2.2
   manifest and rejects bare strings. B-33 is resolved by RC2 + CBP 1.2.2.

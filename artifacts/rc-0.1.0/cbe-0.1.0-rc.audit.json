@@ -56,6 +56,12 @@
       "quality_manifest_sha256": "228594d07d7a9906280e7b5ff12fa0b1bf70b22ffff4b3d25983a4bcc072a2c6",
       "installed_version": "1.2.2",
       "dependency_pin": "cbp-action==1.2.2"
+    },
+    "cbs_freeze_addendum": {
+      "commit": "e318cbdac748a3a88057bd882e897f50c364bd97",
+      "path": "docs/v1.7/FREEZE_NOTICE_ADDENDUM.md",
+      "sha256": "51604f56b18cdd2fe388c9ca0e9977f703d32fb15c684f73a172b9380eb5faaf",
+      "authorizes_cbe08_pass": true
     }
   },
   "checks": {
@@ -91,9 +97,9 @@
       "cbp_1_2_2_wheel_sha256": "2b73b4a4c387e4eb0700a339235249d62accfbe0a14c505188c53c484df7d046"
     },
     "CBE-08": {
-      "status": "DRAFT",
-      "not_pass": true,
-      "reason": "contract frozen at 209d75b4, but CBS FREEZE_NOTICE explicitly keeps CBE-08 DRAFT; do not report PASS",
+      "status": "PASS",
+      "not_pass": false,
+      "reason": "four frozen F2 checks match the addendum-authorized expectations",
       "contract_guard": {
         "status": "PINNED",
         "evidence": "evidence/contract-guard.json",
@@ -103,7 +109,10 @@
         "pin_contract_sha256": "209d75b4c900f9a2d1ad8f5c377ac1b8a868cf3e4cd449970e61e3ff380c18f1",
         "vm_proof_clean": true,
         "frozen": true,
-        "note": "guard pass means the frozen tag is intact; it is not CBE-08 PASS"
+        "note": "guard verifies the frozen tag and addendum; F2 checks are separately recorded as PASS",
+        "pin_addendum_commit": "e318cbdac748a3a88057bd882e897f50c364bd97",
+        "pin_addendum_sha256": "51604f56b18cdd2fe388c9ca0e9977f703d32fb15c684f73a172b9380eb5faaf",
+        "addendum_authorizes_pass": true
       },
       "report_schema": {
         "status": "PASS",
@@ -119,8 +128,21 @@
       "contract_tag": "contract-v1.7.1",
       "freeze_notice": {
         "path": "docs/v1.7/FREEZE_NOTICE.md",
-        "cbe08": "DRAFT",
-        "instruction": "CBE-08 remains DRAFT; do not report PASS"
+        "cbe08": "DRAFT"
+      },
+      "docs": "docs/CBE-08_PASS.md",
+      "addendum": {
+        "commit": "e318cbdac748a3a88057bd882e897f50c364bd97",
+        "path": "docs/v1.7/FREEZE_NOTICE_ADDENDUM.md",
+        "sha256": "51604f56b18cdd2fe388c9ca0e9977f703d32fb15c684f73a172b9380eb5faaf",
+        "authorizes_pass": true
+      },
+      "f2_checks": {
+        "five_advisory_valid": 0,
+        "non_blocking_1_of_5_skip": 0,
+        "blocking_skip_exits_3": 3,
+        "zero_rules_exits_3": 3,
+        "failed_checks": []
       }
     },
     "CBE-09": {

@@ -38,7 +38,7 @@ Status values:
 | B-26 | release_body_v17.py | `## NOT_UPLOADED` lacks “declared as attached but not uploaded” | P2-04 failure | **PENDING-CBS**: body generator fix; CBE cannot edit public-release |
 | B-27 | process | `public-release` HEAD moved past 4a437df (it added §11 Build-once Profiles) | Patch/contract drift; wrong revision may be consumed | **PENDING-CBS**: v1.7.1 applies a rebased patch to the current tip; CBE remains pinned to 4a437df and must not apply it directly |
 | B-28 | F2 / P0-04 | Workflow scanner only detected `continue-on-error`/`|| true`, not a `cbe-gate` job skipped by `if: false`/`needs`/comment | Gate could be bypassed by never running it | **RESOLVED** in P0-04.5: job-graph parsing, exit 3 `reason=WORKFLOW_SKIPS_CBE_GATE`, CBE-04 subcases |
-| B-29 | CBE-08 / v1.7.1 | CBS `contract/v1.7.1` is frozen at tag `contract-v1.7.1` / `c2b5e9`; hash `209d75b4…`; but `FREEZE_NOTICE.md` explicitly says CBE-08 remains DRAFT | Reporting CBE-08 PASS would violate the frozen notice | **BLOCKED-BY-FREEZE-NOTICE**: CBE-08 stays DRAFT (`tools/cbe08_draft.py`, `docs/CBE-08_DRAFT.md`). Guard pins the immutable tag; `PINNED` is not PASS. Do not flip without a corrected CBS notice |
+| B-29 | CBE-08 / v1.7.1 | CBS froze `contract/v1.7.1` at tag `contract-v1.7.1` / `c2b5e9`, hash `209d75b4…`; `FREEZE_NOTICE.md` keeps CBE-08 DRAFT, but `FREEZE_NOTICE_ADDENDUM.md` at `e318cbd` authorizes PASS if the four F2 checks match | Reporting PASS without the addendum or without matching checks would be a false PASS | **RESOLVED**: CBE-08 is PASS (`tools/cbe08_draft.py`, `docs/CBE-08_PASS.md`); four frozen F2 checks match; addendum commit/hash and guard are pinned. No other exemption |
 | B-30 | P0-04.5 / static workflow analysis | Dynamic conditions (`inputs.*`, `vars.*`, `github.*`, functions) and dynamic `needs` chains cannot be evaluated before the run | A dynamic gate skip could be missed; claiming complete coverage would be false | **RESOLVED CBE-side as warning**: `UNVERIFIABLE_CONDITION` / `UNVERIFIABLE_NEEDS_CHAIN` warnings, never FAIL, never silent. The evaluator is a restricted literal parser, not Python `eval` |
 | B-31 | CBE-07 / CBP interop | Old assumption “CBP preserves CBE-*” was wrong; CBP 1.1.0/1.2.0/1.2.2 enforce namespace isolation | A test asserting CBE-* preservation would be wrong | **RESOLVED** against CBP 1.2.2 official (`d4bfefb`, wheel `2b73b4a4…`): CBE-07b emits `CBE-SECRET-001`; CBP emits `CBP-EXT-SECRET-001` in `rule`, with `origin_rule: CBE-SECRET-001`. CBE-07b passes with the official 1.2.2 wheel |
 | B-32 | §5 report / Release body | CBE-local report/body now carry `warn_count`, but CBS must consume the CBE body fragment | End-to-end Release body visibility is still not guaranteed | **RESOLVED CBE-side**: `tools/cbe_gate.py` writes `cbe-report.json` + `cbe-body-section.md` Section B with warn_count and warning codes. **PENDING-CBS**: the CBS Release body generator must consume the fragment before claiming end-to-end visibility |
@@ -61,9 +61,9 @@ state:
 - B-04 resolved; release-train schema added.
 - B-08 decided; CBS amendment/schema update pending.
 - B-28 resolved in P0-04.5; workflow gate-skip is now exit 3.
-- B-29 is blocked by the frozen `FREEZE_NOTICE`: CBS froze the contract at
-  tag `contract-v1.7.1` / `c2b5e9`, but the notice says CBE-08 remains DRAFT.
-  Do not report PASS without a corrected CBS notice.
+- B-29 resolved by `FREEZE_NOTICE_ADDENDUM.md` at `e318cbd`: CBE-08 is PASS
+  because the four frozen F2 checks match. The addendum authorizes only that
+  specific PASS; no other exemption.
 - B-30 is a documented static-analysis limit, surfaced as warnings; it is not
   complete coverage and must not be described as such.
 - B-31 resolved against CBP 1.2.2 official: CBE-07b is a real assertion of

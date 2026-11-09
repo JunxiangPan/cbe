@@ -5,8 +5,8 @@ Status: interface frozen in commit 1. All five subcommands are implemented:
 `emit-sarif`. `tools/cbe_gate.py` assembles the CBE report and Section B.
 CBE-07b is a real assertion against released CBP 1.2.2 (`CBP-EXT-*` mapping);
 `tools/cbe_baseline.py`, `tools/cbe_train.py`, and `tools/cbe_selfcheck.py`
-cover CBE-09/10/11. CBE-08 remains DRAFT against frozen CBS
-`contract/v1.7.1` because the freeze notice requires DRAFT.
+cover CBE-09/10/11. CBE-08 is PASS against frozen CBS
+`contract/v1.7.1`, authorized by `FREEZE_NOTICE_ADDENDUM.md` at `e318cbd`.
 
 ## Global contract
 

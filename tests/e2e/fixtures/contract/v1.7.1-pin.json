@@ -8,5 +8,9 @@
   "contract_sha256": "209d75b4c900f9a2d1ad8f5c377ac1b8a868cf3e4cd449970e61e3ff380c18f1",
   "vm_proof_path": ".github/workflows/vm-proof.yml",
   "freeze_notice_path": "docs/v1.7/FREEZE_NOTICE.md",
+  "addendum_commit": "e318cbdac748a3a88057bd882e897f50c364bd97",
+  "addendum_path": "docs/v1.7/FREEZE_NOTICE_ADDENDUM.md",
+  "addendum_sha256": "51604f56b18cdd2fe388c9ca0e9977f703d32fb15c684f73a172b9380eb5faaf",
+  "cbe08_pass_authorized": true,
   "frozen": true
 }
