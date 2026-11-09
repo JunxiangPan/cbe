@@ -2,7 +2,7 @@
   "schema_version": "1",
   "product": "cbe",
   "version": "0.1.0",
-  "status": "RC_CANDIDATE",
+  "status": "RC_COMPLETE",
   "released": false,
   "tag": null,
   "release": null,
@@ -172,22 +172,22 @@
   },
   "ci": {
     "status": "SUCCESS",
-    "run_url": "https://github.com/JunxiangPan/cbe/actions/runs/42629122113",
-    "head_sha": "ee7eb7418aeccbed2f6a600537186f20be35586d",
+    "run_url": "https://github.com/JunxiangPan/cbe/actions/runs/42633731786",
+    "head_sha": "404116951f6551c9d97608d0aaa4d74ac3fa289e",
     "ubuntu": "success",
     "windows": "success",
     "unit_tests": 74,
-    "e2e_tests": 100,
-    "total_tests": 174,
+    "e2e_tests": 102,
+    "total_tests": 176,
     "coverage": "71.89%",
     "dependency": "cbp-action==1.2.2",
     "installed_cbp_version": "1.2.2"
   },
   "cbe_wheel": {
-    "sha256": "4e8abc21c1600d9ce231d14ccee0effda65c570c5548bd49b37c51981019c0c7",
+    "sha256": "b1f3807c1d65a28c3238e8bae9066c4af42e2c9713973753d0f3d67cb335c707",
     "install_smoke": "PASS",
     "schemas_bundled": true,
-    "built_from": "ee7eb74"
+    "built_from": "4041169"
   },
   "issue_1": {
     "number": 1,

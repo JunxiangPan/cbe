@@ -184,5 +184,37 @@
     },
     "wheel_sha256": "4e8abc21c1600d9ce231d14ccee0effda65c570c5548bd49b37c51981019c0c7",
     "commit": "ee7eb74"
+  },
+  "cbe08_pass_final_wheel_bootstrap": {
+    "exit": 0,
+    "data": {
+      "schema_version": "1",
+      "command": "cbe-selfcheck",
+      "ok": true,
+      "exit_code": 0,
+      "gate_status": "PASS",
+      "baseline": {
+        "label": "cbe-0.1.0-cbe08-pass-wheel",
+        "python": "D:\\tmp\\cbe-pass-venv\\Scripts\\python.exe",
+        "version": "0.1.0",
+        "bootstrap": true
+      },
+      "steps": [
+        {
+          "step": "validate-manifest",
+          "exit_code": 0,
+          "stderr": ""
+        },
+        {
+          "step": "run-provider",
+          "exit_code": 0,
+          "stderr": ""
+        }
+      ],
+      "error": null,
+      "warnings": []
+    },
+    "wheel_sha256": "b1f3807c1d65a28c3238e8bae9066c4af42e2c9713973753d0f3d67cb335c707",
+    "commit": "4041169"
   }
 }

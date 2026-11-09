@@ -1,6 +1,6 @@
 # CBE 0.1.0 RC audit package
 
-Status: **RC candidate — NOT released, no tag, no GitHub release, no PyPI upload.**
+Status: **0.1.0 RC complete — CBE-08 PASS; NOT released, no tag, no GitHub release, no PyPI upload.**
 Human audit is required before any tag or publish.
 
 ## Inputs
@@ -52,11 +52,11 @@ claimed by CBE.
 
 - Ubuntu: success
 - Windows: success
-- Run: https://github.com/JunxiangPan/cbe/actions/runs/42629122113
-- 174 tests = 74 unit + 100 E2E
+- Run: https://github.com/JunxiangPan/cbe/actions/runs/42633731786
+- 176 tests = 74 unit + 102 E2E
 - Coverage: 71.89% (gate 60%)
 - Installed dependency: `cbp-action==1.2.2` (official)
-- CBE wheel: `4e8abc21c1600d9ce231d14ccee0effda65c570c5548bd49b37c51981019c0c7`
+- CBE wheel: `b1f3807c1d65a28c3238e8bae9066c4af42e2c9713973753d0f3d67cb335c707`
 - CBE issue #1: CLOSED (CBP 1.2.2 / RC2 consumer upgrade)
 
 ## Release discipline
