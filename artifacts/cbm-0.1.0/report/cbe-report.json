@@ -1,0 +1,19 @@
+{
+  "schema_version": "1",
+  "package_id": "cbm",
+  "producer_id": "cbe",
+  "version": "v0.1.0",
+  "tag": "v0.1.0",
+  "gate_status": "PASS",
+  "exit_code": 0,
+  "applicable_count": 1,
+  "skip_count": 0,
+  "skip_ratio": 0.0,
+  "blocking_skip": false,
+  "warn_count": 0,
+  "rules_manifest_hash": "eeade50e538b418c74168d6b6019f82cddeab439c0765a970b24024a09abc076",
+  "sarif_paths": [
+    "cbe.sarif"
+  ],
+  "evidence_sha256": "1367f74cd3eadc3461d1f4805acb8c591003853eeb27fe63c9416ae439217cd3"
+}

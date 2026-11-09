@@ -1,0 +1,26 @@
+{
+  "schema_version": "1",
+  "validated_by": "cbm_attach.reports (real CBM source)",
+  "cbm_source_commit": "f605808a89d334b5458c38f92201583004b6fff0",
+  "cbm_version": "0.1.0",
+  "cbm_tag_present": false,
+  "cbe_report": {
+    "path": "artifacts/cbm-0.1.0/report/cbe-report.json",
+    "sha256": "6b4dc1efd8433535efe70d4de9337910aa537fbcc982ebba3a014284f27fc76e",
+    "package_id": "cbm",
+    "producer_id": "cbe",
+    "version": "v0.1.0",
+    "tag": "v0.1.0",
+    "gate_status": "PASS"
+  },
+  "cbp_manifest": {
+    "path": "audit/v1.2.0-rc/cbm-quality-manifest.json",
+    "sha256": "b41798f07be4dda35e2afa1a810381bcd6f5025fb5d33f5c5a1054834a390c82",
+    "package_id": "cbm",
+    "producer_id": "cbp",
+    "version": "v0.1.0"
+  },
+  "identity_errors": [],
+  "b2_status": "INPUT_READY_NOT_B2_PASS",
+  "note": "This is a real CBM-scoped CBE report accepted by CBM identity checks. It does not by itself close B2/B4; CBM must run its own RC gate."
+}

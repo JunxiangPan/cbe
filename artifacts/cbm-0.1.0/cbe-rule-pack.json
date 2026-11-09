@@ -1,0 +1,75 @@
+{
+  "schema_version": "1",
+  "pack_id": "cbe-cbm",
+  "pack_version": "0.1.0",
+  "description": "CBM v0.1.0 CBE scope: real secret scan plus builtin manifest check",
+  "package_types": [
+    "cbm"
+  ],
+  "providers": {
+    "builtin-manifest": {
+      "kind": "builtin",
+      "output_formats": [
+        "json"
+      ]
+    },
+    "gitleaks": {
+      "kind": "exec",
+      "output_formats": [
+        "sarif"
+      ],
+      "command": [
+        "D:/tmp/gitleaks-8.30.1/gitleaks.exe",
+        "detect",
+        "--no-git",
+        "--source",
+        "{source_root}",
+        "--report-format",
+        "sarif",
+        "--report-path",
+        "{out}/gitleaks.sarif",
+        "--exit-code",
+        "0"
+      ],
+      "timeout_seconds": 300
+    }
+  },
+  "rules": [
+    {
+      "rule_id": "CBE-SECRET-001",
+      "title": "No hardcoded secrets",
+      "description": "Real gitleaks scan of the CBM source tree",
+      "severity": "error",
+      "gate": "blocking",
+      "provider": "gitleaks",
+      "provider_rule_ids": [
+        "generic-api-key",
+        "aws-access-token"
+      ],
+      "version_constraint": ">=0.1.0 <2.0.0",
+      "package_types": [
+        "cbm"
+      ],
+      "tags": [
+        "security",
+        "secrets"
+      ],
+      "sarif": {
+        "name": "NoHardcodedSecrets",
+        "short_description": "Hardcoded secret detected",
+        "help_uri": "https://github.com/JunxiangPan/cbe"
+      }
+    },
+    {
+      "rule_id": "CBE-QUALITY-001",
+      "title": "CBM manifest quality advisory",
+      "severity": "warning",
+      "gate": "advisory",
+      "provider": "builtin-manifest",
+      "version_constraint": "*",
+      "package_types": [
+        "cbm"
+      ]
+    }
+  ]
+}
