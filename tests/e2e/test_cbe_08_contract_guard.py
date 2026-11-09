@@ -1,4 +1,4 @@
-"""CBE-08 contract-hash guard: pin 6835789 / 209d75b4, fail on drift."""
+"""CBE-08 contract guard: pin frozen tag c2b5e9 / 209d75b4, fail on drift."""
 
 from __future__ import annotations
 
@@ -15,12 +15,13 @@ def test_guard_matches_pinned_contract() -> None:
     assert code == 0
     assert data is not None
     assert data["gate_status"] == "PINNED"
-    assert data["pin"]["commit"] == "683578964fb14518b2bd81d3fd49766b66feb851"
+    assert data["pin"]["tag"] == "contract-v1.7.1"
+    assert data["pin"]["commit"] == "c2b5e9292552685cc40bd21b3ac2252847856715"
     assert data["pin"]["contract_sha256"] == "209d75b4c900f9a2d1ad8f5c377ac1b8a868cf3e4cd449970e61e3ff380c18f1"
     assert data["observed"]["commit"] == data["pin"]["commit"]
     assert data["observed"]["contract_sha256"] == data["pin"]["contract_sha256"]
     assert data["observed"]["vm_proof_clean"] is True
-    assert data["pin"]["frozen"] is False
+    assert data["pin"]["frozen"] is True
 
 
 def test_guard_fails_when_pinned_commit_moves(tmp_path: Path) -> None:

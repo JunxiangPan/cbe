@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Fail when the pinned CBS contract branch moves or its bytes change.
+"""Fail when the pinned CBS contract tag/bytes change.
 
-This is a guard, not a CBE-08 PASS. CBE-08 stays DRAFT until human freeze.
+This is a guard, not a CBE-08 PASS. CBE-08 stays DRAFT per CBS FREEZE_NOTICE.
 """
 
 from __future__ import annotations
@@ -51,6 +51,30 @@ def _head_sha(repo: str, branch: str) -> str:
     return sha
 
 
+def _tag_commit(repo: str, tag: str) -> str:
+    data = json.loads(_get(f"{API}/repos/{repo}/git/ref/tags/{tag}"))
+    obj = data.get("object") or {}
+    sha = obj.get("sha")
+    kind = obj.get("type")
+    if not isinstance(sha, str) or len(sha) != 40:
+        raise ValueError("tag ref did not contain a full object SHA")
+    # Resolve an annotated tag to its commit; lightweight tags are commits.
+    while kind == "tag":
+        tag_data = json.loads(_get(f"{API}/repos/{repo}/git/tags/{sha}"))
+        obj = tag_data.get("object") or {}
+        sha = obj.get("sha")
+        kind = obj.get("type")
+        if not isinstance(sha, str) or len(sha) != 40:
+            raise ValueError("annotated tag did not contain a full object SHA")
+    return sha
+
+
+def _resolve_ref(pin: dict[str, Any]) -> str:
+    if pin.get("ref_type") == "tag":
+        return _tag_commit(pin["repo"], pin["tag"])
+    return _head_sha(pin["repo"], pin["branch"])
+
+
 def has_conflict_markers(text: str) -> bool:
     return any(
         line.startswith(("<<<<<<<", ">>>>>>>", "|||||||")) or line.strip() == "======="
@@ -79,7 +103,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     pin = json.loads(Path(args.pin).read_text(encoding="utf-8"))
     try:
-        observed_commit = _head_sha(pin["repo"], pin["branch"])
+        observed_commit = _resolve_ref(pin)
         contract_bytes = _get(f"{RAW}/{pin['repo']}/{observed_commit}/{pin['contract_path']}")
         vm_bytes = _get(f"{RAW}/{pin['repo']}/{observed_commit}/{pin['vm_proof_path']}")
     except (RuntimeError, ValueError, KeyError, OSError) as exc:
@@ -134,7 +158,9 @@ def main(argv: list[str] | None = None) -> int:
             "gate_status": "PINNED",
             "pin": {
                 "repo": pin["repo"],
-                "branch": pin["branch"],
+                "ref_type": pin.get("ref_type", "branch"),
+                "tag": pin.get("tag"),
+                "branch": pin.get("branch"),
                 "commit": pin["commit"],
                 "contract_sha256": pin["contract_sha256"],
                 "frozen": bool(pin.get("frozen", False)),

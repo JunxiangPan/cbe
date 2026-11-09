@@ -13,8 +13,8 @@ from cbe.jsonio import print_json
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "tests" / "e2e" / "fixtures"
-CONTRACT_REF = "683578964fb14518b2bd81d3fd49766b66feb851"
-CONTRACT_SHORT_REF = "6835789"
+CONTRACT_REF = "c2b5e9292552685cc40bd21b3ac2252847856715"
+CONTRACT_SHORT_REF = "contract-v1.7.1"
 CONTRACT_DECLARED_SHA256 = "209d75b4c900f9a2d1ad8f5c377ac1b8a868cf3e4cd449970e61e3ff380c18f1"
 CONTRACT_OBSERVED_SHA256 = "209d75b4c900f9a2d1ad8f5c377ac1b8a868cf3e4cd449970e61e3ff380c18f1"
 
@@ -128,10 +128,14 @@ def main() -> int:
             "contract_declared_sha256": CONTRACT_DECLARED_SHA256,
             "contract_observed_sha256": CONTRACT_OBSERVED_SHA256,
             "contract_hash_match": CONTRACT_DECLARED_SHA256 == CONTRACT_OBSERVED_SHA256,
-            "contract_status": "RC2_NOT_FROZEN",
+            "contract_status": "FROZEN_BY_TAG",
+            "contract_tag": "contract-v1.7.1",
             "vm_proof_conflict_markers": False,
-            "freeze_required": True,
-            "reason": "CBS contract/v1.7.1 is RC and not frozen; hash and vm-proof are aligned but human freeze is still required",
+            "freeze_required": False,
+            "freeze_notice_path": "docs/v1.7/FREEZE_NOTICE.md",
+            "freeze_notice_cbe08": "DRAFT",
+            "cbe08_blocked_by": "CBS FREEZE_NOTICE says CBE-08 remains DRAFT; do not report PASS",
+            "reason": "contract is frozen at 209d75b4, but CBS FREEZE_NOTICE explicitly keeps CBE-08 DRAFT",
             "checks": checks,
         }
         print_json(result)

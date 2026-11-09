@@ -176,36 +176,35 @@ namespace-isolation assertion, re-run on released CBP 1.2.0.
 Contract RC2 makes `artifact_repository` the object
 `{repository, run_id, artifact_name}`. CBE accepts that object and rejects bare
 `owner/repo` strings and incomplete objects; it does not define a union or a
-private variant. CBP 1.2.2 is not released yet, so the object shape is
-fixture-tested only and is not claimed as a CBP 1.2.2 PASS. B-33 is resolved on
-the contract side; CBP 1.2.2 adoption remains pending.
+private variant. CBP 1.2.2 is released and its real quality manifest uses the
+object; B-33 is resolved by RC2 + CBP 1.2.2.
 
 ### D13. CBE 0.1.0 RC boundary
 
 CBE 0.1.0 is an RC candidate only: no tag, no GitHub release, no PyPI upload.
-CBE-07b is real on released CBP 1.2.0 (`5ebd0eb`). CBE-09/10/11 have
+CBE-07b is real on released CBP 1.2.2 (`d4bfefb`). CBE-09/10/11 have
 implementation evidence, but there is no previous stable CBE, so F4/CBE-11
-evidence is explicitly `bootstrap=true`. CBE-08 remains DRAFT against CBS
-`contract/v1.7.1` RC2 `6835789`: declared/observed hash both `209d75b4…` and
-`vm-proof.yml` is clean, but the contract is still not frozen.
+evidence is explicitly `bootstrap=true`. CBS froze `contract/v1.7.1` at tag
+`contract-v1.7.1` / `c2b5e9` with hash `209d75b4…`; however, the frozen
+`FREEZE_NOTICE.md` says CBE-08 remains DRAFT, so CBE-08 stays DRAFT.
 
 ### D14. Contract hash guard
 
-CBE pins CBS `contract/v1.7.1` to commit `6835789` and contract SHA256
-`209d75b4…` in `tests/e2e/fixtures/contract/v1.7.1-pin.json`. The guard fetches
-the branch head and fails with `CONTRACT_CHANGED` when the commit, contract
-bytes, or `vm-proof.yml` cleanliness changes. A guard result of `PINNED` means
-the pin is intact; it is not CBE-08 PASS and does not imply the contract is
-frozen.
+CBE pins the immutable CBS tag `contract-v1.7.1` at commit `c2b5e9` and contract
+SHA256 `209d75b4…` in `tests/e2e/fixtures/contract/v1.7.1-pin.json`. The guard
+resolves the annotated tag, not a moving branch, and fails with
+`CONTRACT_CHANGED` when the tag commit, contract bytes, or `vm-proof.yml`
+cleanliness changes. `PINNED` is not CBE-08 PASS.
 
-### D15. CBP 1.2.0 official dependency
+### D15. CBP 1.2.2 official dependency
 
-CBE's `e2e` extra pins the released `cbp-action==1.2.0` instead of keeping a
-1.1.0 pin plus temporary RC venvs. The official PyPI wheel is
-`188639bb47e5a8940defbdb5ba3c4270ae89ad68503d283b611cb2a00497da2e`; the sdist
-is `08392b2af6b3ff29dc21cfe5db0f23d628307ccac06b9035639f32da6343defd`.
-CBE-07b runs with the installed official wheel and still maps `CBE-*` to
-`CBP-EXT-*` with `origin_rule`. CBE-08 remains DRAFT.
+CBE's `e2e` extra pins the released `cbp-action==1.2.2`. The official PyPI
+wheel is
+`2b73b4a4c387e4eb0700a339235249d62accfbe0a14c505188c53c484df7d046`; the sdist
+is `91974398ea0bc850633919e287f546d48b53f08d0ca57befce3a4a091de092d5`.
+CBE-07b runs with the installed official wheel and maps `CBE-*` to
+`CBP-EXT-*` with `origin_rule`. CBE-10 validates the real CBP 1.2.2 quality
+manifest, including the object `artifact_repository`.
 
 ## Commit sequence
 
@@ -243,3 +242,7 @@ CBE-07b runs with the installed official wheel and still maps `CBE-*` to
 14. **Commit 14 (contract RC2, done)**: pin `6835789` / `209d75b4…`; RC2 CBE
     report schema; object `artifact_repository`; NOT_UPLOADED schema support;
     CBE-08 still DRAFT. CBP 1.2.2 adoption pending release.
+15. **Commit 15 (freeze + CBP 1.2.2, done)**: pin immutable tag
+    `contract-v1.7.1` / `c2b5e9`; CBP 1.2.2 official; CBE-07b and CBE-10 run
+    against real 1.2.2 artifacts. CBE-08 remains DRAFT because the frozen
+    `FREEZE_NOTICE.md` says so. No tag/release.

@@ -20,15 +20,18 @@
       "sdist_sha256": "49592d6bd5ae90450cfa6e7e6f2487829d40c97e77d8f2b7d0f4fe6c7113d844"
     },
     "cbs_contract_rc": {
-      "ref": "683578964fb14518b2bd81d3fd49766b66feb851",
-      "short_ref": "6835789",
+      "ref": "c2b5e9292552685cc40bd21b3ac2252847856715",
+      "short_ref": "c2b5e9",
+      "tag": "contract-v1.7.1",
+      "freeze_baseline": "683578964fb14518b2bd81d3fd49766b66feb851",
       "rc": "RC2",
       "declared_sha256": "209d75b4c900f9a2d1ad8f5c377ac1b8a868cf3e4cd449970e61e3ff380c18f1",
       "observed_sha256": "209d75b4c900f9a2d1ad8f5c377ac1b8a868cf3e4cd449970e61e3ff380c18f1",
       "hash_match": true,
-      "frozen": false,
+      "frozen": true,
       "vm_proof_conflict_markers": false,
       "vm_proof_clean": true,
+      "freeze_notice": "docs/v1.7/FREEZE_NOTICE.md",
       "cbe_report_schema_sha256": "2b3e1c5a77a7f520b80d01fefa328c9353fffc5d65e87782ca90d193839c0e74"
     },
     "cbp_1_2_0_rc_final": {
@@ -44,6 +47,15 @@
       "sdist_sha256": "08392b2af6b3ff29dc21cfe5db0f23d628307ccac06b9035639f32da6343defd",
       "installed_version": "1.2.0",
       "dependency_pin": "cbp-action==1.2.0"
+    },
+    "cbp_1_2_2_official": {
+      "tag": "v1.2.2",
+      "code_ref": "d4bfefbd5f66c6bbdb74549b37f1f187fcb61924",
+      "wheel_sha256": "2b73b4a4c387e4eb0700a339235249d62accfbe0a14c505188c53c484df7d046",
+      "sdist_sha256": "91974398ea0bc850633919e287f546d48b53f08d0ca57befce3a4a091de092d5",
+      "quality_manifest_sha256": "228594d07d7a9906280e7b5ff12fa0b1bf70b22ffff4b3d25983a4bcc072a2c6",
+      "installed_version": "1.2.2",
+      "dependency_pin": "cbp-action==1.2.2"
     }
   },
   "checks": {
@@ -51,7 +63,8 @@
       "status": "PASS",
       "cbp_versions": [
         "1.1.0",
-        "1.2.0-rc"
+        "1.2.0",
+        "1.2.2"
       ],
       "cbp_rc_refs": [
         "5da8b87",
@@ -64,7 +77,8 @@
         "evidence/cbp-1.2.0-rc-5da8b87.json",
         "evidence/cbp-1.2.0-rc-bb8d4d6.json",
         "evidence/cbp-1.2.0-rc-855fed7.json",
-        "evidence/cbp-1.2.0-official.json"
+        "evidence/cbp-1.2.0-official.json",
+        "evidence/cbp-1.2.2-official.json"
       ],
       "cbp_final_rc_ref": "855fed7",
       "cbp_final_wheel_sha256": "9469a8e980a536e9481e0b14239cd4857a5cd6173a61043d47645b82cf3b4d51",
@@ -72,20 +86,24 @@
       "rerun_test": "PASS",
       "cbp_official": "1.2.0",
       "cbp_official_wheel_sha256": "188639bb47e5a8940defbdb5ba3c4270ae89ad68503d283b611cb2a00497da2e",
-      "cbp_official_test": "PASS"
+      "cbp_official_test": "PASS",
+      "cbp_1_2_2": "PASS",
+      "cbp_1_2_2_wheel_sha256": "2b73b4a4c387e4eb0700a339235249d62accfbe0a14c505188c53c484df7d046"
     },
     "CBE-08": {
       "status": "DRAFT",
       "not_pass": true,
-      "reason": "contract RC2 6835789 is not frozen; hash 209d75b4 matches; vm-proof clean; CBE-08 DRAFT",
+      "reason": "contract frozen at 209d75b4, but CBS FREEZE_NOTICE explicitly keeps CBE-08 DRAFT; do not report PASS",
       "contract_guard": {
         "status": "PINNED",
         "evidence": "evidence/contract-guard.json",
-        "pin_commit": "683578964fb14518b2bd81d3fd49766b66feb851",
+        "pin_type": "tag",
+        "pin_tag": "contract-v1.7.1",
+        "pin_commit": "c2b5e9292552685cc40bd21b3ac2252847856715",
         "pin_contract_sha256": "209d75b4c900f9a2d1ad8f5c377ac1b8a868cf3e4cd449970e61e3ff380c18f1",
         "vm_proof_clean": true,
-        "frozen": false,
-        "note": "guard pass means the pin is intact; it is not CBE-08 PASS"
+        "frozen": true,
+        "note": "guard pass means the frozen tag is intact; it is not CBE-08 PASS"
       },
       "report_schema": {
         "status": "PASS",
@@ -95,6 +113,14 @@
           "evidence/cbe-report-rc2.validation.json"
         ],
         "not_uploaded_schema_supported": true
+      },
+      "evidence": "evidence/cbe-08-frozen.json",
+      "contract_frozen": true,
+      "contract_tag": "contract-v1.7.1",
+      "freeze_notice": {
+        "path": "docs/v1.7/FREEZE_NOTICE.md",
+        "cbe08": "DRAFT",
+        "instruction": "CBE-08 remains DRAFT; do not report PASS"
       }
     },
     "CBE-09": {
@@ -104,7 +130,7 @@
       "evidence": "evidence/cbe-09-baseline.json"
     },
     "CBE-10": {
-      "status": "FIXTURE_PASS",
+      "status": "PASS",
       "not_uploaded_not_counted": true,
       "infra_not_counted": true,
       "cbp_body_hash_scope": "base",
@@ -113,7 +139,7 @@
       "evidence": "evidence/cbe-10-f5-f6.json",
       "cbp_artifact_repository_bare_string": "rejected",
       "schema_version": "string \"1\"",
-      "cbp_1_2_2": "PENDING_RELEASE"
+      "cbp_1_2_2": "REAL_MANIFEST_VALIDATED"
     },
     "CBE-11": {
       "status": "BOOTSTRAP_PASS",
@@ -123,17 +149,11 @@
     }
   },
   "ci": {
-    "status": "SUCCESS",
-    "run_url": "https://github.com/JunxiangPan/cbe/actions/runs/42617711567",
-    "head_sha": "f4a65e987ec632e33269b75d9c3b5cf899e2d0e5",
-    "ubuntu": "success",
-    "windows": "success",
-    "unit_tests": 74,
-    "e2e_tests": 100,
-    "total_tests": 174,
-    "coverage": "71.89%",
-    "dependency": "cbp-action==1.2.0",
-    "installed_cbp_version": "1.2.0"
+    "status": "PENDING",
+    "run_url": null,
+    "head_sha": null,
+    "ubuntu": null,
+    "windows": null
   },
   "cbe_wheel": {
     "sha256": "04e0b915da9d282d5dc4d6c8f79fd216d14be93c5d1136ab641494ed24adfe5a",

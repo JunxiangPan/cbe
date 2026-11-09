@@ -7,41 +7,41 @@ Human audit is required before any tag or publish.
 
 | Input | Ref | Evidence |
 |---|---|---|
-| CBP 1.2.0 official | `v1.2.0` / `5ebd0eb` | wheel `188639bb47e5a8940defbdb5ba3c4270ae89ad68503d283b611cb2a00497da2e`, sdist `08392b2a…` |
-| CBP 1.2.2 | not released | object shape is fixture-tested only; no CBP 1.2.2 PASS |
-| CBS contract RC2 | `6835789` | declared and observed `209d75b4…`; `vm-proof.yml` clean; **NOT FROZEN** |
+| CBP 1.2.2 official | `v1.2.2` / `d4bfefb` | wheel `2b73b4a4…`, sdist `91974398…`, manifest `228594d0…` |
+| CBP 1.2.0 official (historical) | `v1.2.0` / `5ebd0eb` | wheel `188639bb…` |
+| CBS contract frozen | `tag contract-v1.7.1` / `c2b5e9` | hash `209d75b4…`; freeze baseline `6835789`; `vm-proof.yml` clean |
 | RC2 CBE report schema | `2b3e1c5a…` | real CBE report validates with zero errors |
 
-CBE's `e2e` extra pins the released `cbp-action==1.2.0`. CBP 1.2.2 has not been
-released; it will be pinned only after release. RC wheels are historical
-evidence only.
+CBE's `e2e` extra pins the released `cbp-action==1.2.2`. The CBP
+1.2.2 quality manifest is the real Release asset; no CBP 1.2.2 gate PASS is
+claimed by CBE.
 
 ## Results
 
 | Check | Status | Evidence |
 |---|---|---|
 | CBE-01..CBE-07a | PASS | CI + local E2E |
-| CBE-07b on CBP 1.2.0 official | PASS | `evidence/cbp-1.2.0-official.json` |
-| CBE-08 F2 | **DRAFT — not PASS** | `evidence/cbe-08-draft.json`, `docs/CBE-08_DRAFT.md` |
-| CBE-08 contract hash guard | **PINNED** to `6835789` / `209d75b4…`; not a PASS | `evidence/contract-guard.json` |
+| CBE-07b on CBP 1.2.2 official | PASS | `evidence/cbp-1.2.2-official.json` |
+| CBE-08 F2 | **DRAFT — not PASS** | `evidence/cbe-08-frozen.json`, `docs/CBE-08_DRAFT.md` |
+| CBE-08 contract guard | **PINNED** to tag `contract-v1.7.1` / `c2b5e9` / `209d75b4…`; not a PASS | `evidence/contract-guard.json` |
 | Real CBE report vs RC2 schema | PASS; schema `2b3e1c5a…` | `evidence/cbe-report-rc2.validation.json` |
-| Real CBE report vs RC2 schema | PASS | `evidence/cbe-report-rc2.validation.json` |
 | CBE-09 F4 baseline | implemented; no stable CBE yet | `evidence/cbe-09-baseline.json` |
-| CBE-10 F5/F6 + RC2 manifest fields | **FIXTURE PASS**; CBP 1.2.2 pending | `evidence/cbe-10-f5-f6.json` |
+| CBE-10 F5/F6 + RC2 manifest fields | **PASS** with real CBP 1.2.2 manifest | `evidence/cbe-10-f5-f6.json` |
 | CBE-11 self-bootstrap | bootstrap PASS; not a stable claim | `evidence/cbe-11-selfcheck.json` |
 | Wheel install | PASS; schemas bundled | installed-wheel smoke test |
 
 ## Boundaries
 
-- CBE-08 must stay DRAFT until CBS freezes `contract/v1.7.1`. RC2 hash and
-  `vm-proof.yml` are aligned, but the contract still says **RC2, NOT FROZEN**.
-  The guard passing means “the pin is intact”, **not** “CBE-08 PASS”.
-- The guard fails with `CONTRACT_CHANGED` if the branch moves, the contract
-  bytes change, or `vm-proof.yml` gets conflict markers.
+- CBS has frozen `contract/v1.7.1` at tag `contract-v1.7.1`, but its
+  `docs/v1.7/FREEZE_NOTICE.md` explicitly says **“CBE-08 remains DRAFT; do not
+  report PASS.”** Therefore CBE-08 stays DRAFT. This is a contract instruction,
+  not a missing freeze; flipping it would be a false PASS.
+- The guard pins the immutable tag, not the moving branch. It fails with
+  `CONTRACT_CHANGED` if the tag/commit/hash changes or `vm-proof.yml` gets
+  conflict markers.
 - RC2 makes `artifact_repository` the object
-  `{repository, run_id, artifact_name}`. CBE accepts it and rejects bare
-  strings. CBP 1.2.2 is not released, so this is fixture evidence only; no
-  CBP 1.2.2 PASS is claimed. B-33 is resolved on the contract side.
+  `{repository, run_id, artifact_name}`. CBE accepts the real CBP 1.2.2
+  manifest and rejects bare strings. B-33 is resolved by RC2 + CBP 1.2.2.
 - `schema_version` must be the string `"1"`; numeric `1` is rejected.
 - `NOT_UPLOADED` is supported and is not PASS, not SKIP, and not counted.
 - There is no previous stable CBE, so CBE-09/CBE-11 evidence is explicit

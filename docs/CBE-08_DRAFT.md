@@ -1,54 +1,54 @@
-# CBE-08 DRAFT — F2 denominator against CBS contract/v1.7.1 RC2
+# CBE-08 DRAFT — F2 denominator against frozen CBS contract/v1.7.1
 
 Status: **DRAFT — NOT PASS**
 
-- Contract ref: CBS `contract/v1.7.1` RC2 commit
-  `683578964fb14518b2bd81d3fd49766b66feb851` (`6835789`)
-- Declared candidate SHA256 in `docs/v1.7/RC_STATUS.md`:
+- Contract ref: CBS frozen tag `contract-v1.7.1` at commit
+  `c2b5e9292552685cc40bd21b3ac2252847856715` (`c2b5e9`)
+- Freeze baseline: `6835789`
+- Contract SHA256:
   `209d75b4c900f9a2d1ad8f5c377ac1b8a868cf3e4cd449970e61e3ff380c18f1`
-- Observed raw SHA256 of `docs/v1.7/CONTRACT.md` at `6835789`:
-  `209d75b4c900f9a2d1ad8f5c377ac1b8a868cf3e4cd449970e61e3ff380c18f1`
-- The hashes match, and `vm-proof.yml` has no conflict markers. The contract
-  still says **RC2, NOT FROZEN**; human freeze has not happened. CBE-08 remains
-  DRAFT.
+- `vm-proof.yml` has no conflict markers.
+- **Blocking instruction:** `docs/v1.7/FREEZE_NOTICE.md` says
+  **“CBE-08 remains DRAFT; do not report PASS.”** CBE therefore keeps DRAFT
+  even though the contract is frozen. This is not a missing freeze.
 
 ## Draft assertions (not evidence of CBE-08 PASS)
 
 `tools/cbe08_draft.py` records the current F2 behavior:
 
-| Case | Observed | RC expectation |
+| Case | Observed | Contract expectation |
 |---|---|---|
 | 5 advisory rules, 1 exemption | applicable 5, skip 1, ratio 0.2, exit 0 | 20% passes |
 | blocking rule + blocking exemption | exit 3, `blocking_skip=true` | blocking may not SKIP |
 | zero rules | exit 3 `NO_RULES` | zero rules is a gate failure |
 
-The script always emits `"status": "DRAFT"`, `"not_pass": true`,
-`"contract_hash_match": true`, and `"contract_status": "RC2_NOT_FROZEN"`. It is
-not included in the E2E pass count and must not be quoted as CBE-08 PASS.
+The script emits `"status": "DRAFT"`, `"not_pass": true`,
+`"contract_status": "FROZEN_BY_TAG"`, and
+`"cbe08_blocked_by": "CBS FREEZE_NOTICE says CBE-08 remains DRAFT; do not report PASS"`.
+It is not included in the E2E pass count and must not be quoted as CBE-08 PASS.
 
-## Contract hash guard
+## Contract guard
 
-`tests/e2e/fixtures/contract/v1.7.1-pin.json` pins:
+`tests/e2e/fixtures/contract/v1.7.1-pin.json` pins the immutable tag
+`contract-v1.7.1`, not the moving branch:
 
 ```text
 repo:              JunxiangPan/Cyber-Butler-Security
-branch:            contract/v1.7.1
-commit:            683578964fb14518b2bd81d3fd49766b66feb851
+ref_type:          tag
+tag:               contract-v1.7.1
+commit:            c2b5e9292552685cc40bd21b3ac2252847856715
 contract_sha256:   209d75b4c900f9a2d1ad8f5c377ac1b8a868cf3e4cd449970e61e3ff380c18f1
-frozen:            false
+frozen:            true
 ```
 
-`tools/cbe_contract_guard.py` fetches the current branch head, the contract
-bytes at that head, and `vm-proof.yml`. It exits 0 `PINNED` only when the commit,
-contract hash, and vm-proof cleanliness all match; otherwise it exits 3
-`CONTRACT_CHANGED` with the pinned/observed values and an update action.
+`tools/cbe_contract_guard.py` resolves the annotated tag to its commit and
+fetches the contract and `vm-proof.yml` from that commit. It exits 0 `PINNED`
+only when the tag commit, contract hash, and vm-proof cleanliness all match;
+otherwise it exits 3 `CONTRACT_CHANGED`.
 
-`tests/e2e/test_cbe_08_contract_guard.py` asserts the pinned case and simulates
-a moved commit and a changed contract hash. A passing guard means the pin is
-intact; it is **not** CBE-08 PASS.
+## Flip rule
 
-## Freeze rule
-
-CBE-08 becomes PASS only after CBS freezes the contract and a human audit
-confirms the final F2 blocking set against these assertions. If the frozen set
-differs, rewrite fixtures and assertions — do not relabel this draft.
+CBE-08 cannot become PASS while the frozen `FREEZE_NOTICE.md` says it must
+remain DRAFT. A CBS correction to that notice is required first. If the
+corrected notice allows the flip, rerun the F2 assertions against the frozen
+hash and record the result; do not merely relabel this draft.

@@ -17,7 +17,7 @@ dependencies = [
 e2e = [
   "pytest>=8",
   "pytest-cov>=7",
-  "cbp-action==1.2.0",
+  "cbp-action==1.2.2",
 ]
 
 [project.scripts]

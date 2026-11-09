@@ -16,7 +16,8 @@ Markdown body fragment:
 
 ## Contract RC2 fields
 
-The optional `--cbp-manifest` check follows contract RC2 (`6835789`):
+The optional `--cbp-manifest` check follows frozen contract RC2
+(`contract-v1.7.1` / `c2b5e9`):
 
 - `schema_version` must be the string `"1"`; numeric `1` is rejected.
 - `body_hash_scope` must be exactly `base`; `full` exits 2.
@@ -27,7 +28,8 @@ The optional `--cbp-manifest` check follows contract RC2 (`6835789`):
   manifest field. A private `cbc_event` manifest key is rejected as unexpected;
   CBE does not define a private variant.
 
-CBP 1.2.2 has not been released at the time of this RC. The object shape is
-verified with fixtures only; CBE does not claim a CBP 1.2.2 PASS. The
-`cbp-action==1.2.0` pin remains until 1.2.2 ships. This module is a CBE-side
+CBP 1.2.2 is released. CBE validates its real `quality-manifest.json` (sha256
+`228594d0…`) with the object `artifact_repository`; the `cbp-action==1.2.2`
+pin is used. This is CBE's manifest-consumption check, not a claim that CBE
+performed CBP's own gate PASS. This module is a CBE-side
 consumer/compatibility check, not a replacement for CBP's own validator.
