@@ -10,7 +10,7 @@
   "tag_target": "13f7ddc8af947a6bae10b4251beb2406e2d31f30",
   "tag_created": true,
   "release_created": true,
-  "pypi_uploaded": false,
+  "pypi_uploaded": true,
   "artifacts": [
     {
       "name": "cbe_review-0.1.0-py3-none-any.whl",
@@ -33,7 +33,8 @@
     "ubuntu": "success",
     "windows": "success",
     "release_install": "PASS; cbe-review==0.1.0 from GitHub Release asset",
-    "cli": "cbe 0.1.0; five subcommands --help OK"
+    "cli": "cbe 0.1.0; five subcommands --help OK",
+    "pypi_install": "PASS; pip install cbe-review==0.1.0; metadata 0.1.0; import cbe; CLI cbe 0.1.0; five subcommands"
   },
   "contract": {
     "tag": "contract-v1.7.1",
@@ -67,18 +68,36 @@
   "runbook": "RELEASE_RUNBOOK.md",
   "notes": "RELEASE_NOTES.md",
   "pypi": {
-    "status": "BLOCKED_NO_CREDENTIALS",
+    "status": "UPLOADED_VERIFIED",
     "approved": true,
-    "uploaded": false,
+    "uploaded": true,
     "requested_name": "cbe-review",
+    "name": "cbe-review",
     "version": "0.1.0",
-    "source_release": "https://github.com/JunxiangPan/cbe/releases/tag/v0.1.0",
-    "expected_wheel_sha256": "87f0ad40a6cffdf4f9c657e6cc972a0f93787259c52445a1c112a5c7753599a7",
-    "expected_sdist_sha256": "a77c653d178d5d0ab179da73c92184d9a54d5104ca5202f41574588979b68854",
+    "url": "https://pypi.org/project/cbe-review/0.1.0/",
+    "json_url": "https://pypi.org/pypi/cbe-review/0.1.0/json",
+    "uploaded_at": "2026-11-10T01:05:18+08:00",
+    "wheel": {
+      "filename": "cbe_review-0.1.0-py3-none-any.whl",
+      "sha256": "87f0ad40a6cffdf4f9c657e6cc972a0f93787259c52445a1c112a5c7753599a7",
+      "size": 52090
+    },
+    "sdist": {
+      "filename": "cbe_review-0.1.0.tar.gz",
+      "sha256": "a77c653d178d5d0ab179da73c92184d9a54d5104ca5202f41574588979b68854",
+      "size": 46253
+    },
+    "verified": {
+      "pip_install": "PASS",
+      "metadata_version": "0.1.0",
+      "import": "cbe",
+      "cli": "cbe 0.1.0",
+      "subcommands": 5,
+      "distribution": "cbe-review"
+    },
     "old_name": "cbe",
     "old_name_owner": "azizo-b/CBE",
-    "old_name_never_used": true,
-    "blocked_reason": "twine absent; ~/.pypirc absent; TWINE_*/PYPI_API_TOKEN/UV_PUBLISH_TOKEN unset; no trusted-publisher workflow"
+    "old_name_never_used": true
   },
   "distribution_name": "cbe-review",
   "import_package": "cbe",
@@ -91,5 +110,8 @@
   "metadata_correction_note": "This manifest is corrected in a docs-only commit after 13f7ddc; artifacts and source_commit do not change.",
   "released_at": "2026-11-10T00:33:14+08:00",
   "release_url": "https://github.com/JunxiangPan/cbe/releases/tag/v0.1.0",
-  "tag_object_sha": "c8fde53d9c429e2869ee4ededafced25c06ca303"
+  "tag_object_sha": "c8fde53d9c429e2869ee4ededafced25c06ca303",
+  "pypi_name": "cbe-review",
+  "pypi_version": "0.1.0",
+  "pypi_url": "https://pypi.org/project/cbe-review/0.1.0/"
 }

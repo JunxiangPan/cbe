@@ -1,6 +1,6 @@
 # CBE 0.1.0 — Release Notes
 
-Status: **RELEASED on GitHub — PyPI approved but BLOCKED (no credentials).**
+Status: **RELEASED on GitHub and PyPI.**
 
 CBE (Cyber-Butler Enforcement gate) 0.1.0 is the first stable CBE release. It
 provides the rule-pack manifest, provider execution, no-bypass enforcement,
@@ -84,10 +84,17 @@ Test-only `e2e` extra pins `cbp-action==1.2.2`.
 
 ## PyPI status
 
-Human approved `cbe-review==0.1.0`, but the upload is **BLOCKED — NOT
-UPLOADED**: this environment has no `twine`, no `.pypirc`, no PyPI token, and
-no trusted-publisher workflow. The old `cbe` name belongs to a different
-project and is never used.
+`cbe-review==0.1.0` is **UPLOADED**:
+<https://pypi.org/project/cbe-review/0.1.0/>.
+
+```text
+wheel  cbe_review-0.1.0-py3-none-any.whl  87f0ad40a6cffdf4f9c657e6cc972a0f93787259c52445a1c112a5c7753599a7
+sdist  cbe_review-0.1.0.tar.gz            a77c653d178d5d0ab179da73c92184d9a54d5104ca5202f41574588979b68854
+```
+
+PyPI install verified: `cbe-review==0.1.0`, import `cbe`, CLI `cbe 0.1.0`,
+five subcommands. The old `cbe` name belongs to a different project and is
+never used.
 
 ## Evidence
 
@@ -101,5 +108,6 @@ project and is never used.
 ## Release boundary
 
 GitHub Release: <https://github.com/JunxiangPan/cbe/releases/tag/v0.1.0>
-(tag `v0.1.0` → `13f7ddc`). PyPI `cbe-review` is approved but blocked by
-missing credentials. See `RELEASE_RUNBOOK.md`.
+(tag `v0.1.0` → `13f7ddc`). PyPI:
+<https://pypi.org/project/cbe-review/0.1.0/> (uploaded and verified). See
+`RELEASE_RUNBOOK.md`.

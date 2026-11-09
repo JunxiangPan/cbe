@@ -1,8 +1,9 @@
 # CBE 0.1.0 Release Runbook
 
-Status: **GITHUB RELEASE EXECUTED — PyPI APPROVED but BLOCKED (no credentials).**
+Status: **GITHUB RELEASE + PYPI UPLOAD EXECUTED.**
 Tag `v0.1.0` → `13f7ddc`; GitHub Release:
 <https://github.com/JunxiangPan/cbe/releases/tag/v0.1.0>.
+PyPI: <https://pypi.org/project/cbe-review/0.1.0/>.
 Distribution name: `cbe-review`; import package and CLI remain `cbe`.
 Tag choice: **B — tag `13f7ddc`, which includes the complete release package.**
 Artifacts were built from `4561e83`; metadata corrections after `13f7ddc` are
@@ -17,15 +18,14 @@ Complete this before running any release command.
 | Approver | human operator (chat approval) |
 | Approval date | `2026-11-10T00:32:18+08:00` (GitHub); `2026-11-10T00:42:21+08:00` (PyPI) |
 | Scope approved | GitHub Release + PyPI `cbe-review==0.1.0` |
-| PyPI status | **BLOCKED — NOT UPLOADED**: no `twine`, `.pypirc`, token, or trusted publisher |
+| PyPI status | **UPLOADED_VERIFIED** |
 | Release source commit | `4561e8338a09a7e681b08fc0c2b38fcff2d56e70` |
 | Release package commit / tag target | `13f7ddc8af947a6bae10b4251beb2406e2d31f30` |
 | Wheel SHA256 | `87f0ad40a6cffdf4f9c657e6cc972a0f93787259c52445a1c112a5c7753599a7` |
 | Sdist SHA256 | `a77c653d178d5d0ab179da73c92184d9a54d5104ca5202f41574588979b68854` |
-| PyPI distribution | `cbe-review` (approved; upload blocked) |
+| PyPI distribution | `cbe-review` (uploaded and verified) |
 
-**Do not re-tag. PyPI upload remains blocked until credentials or a trusted
-publisher are configured.**
+**Do not re-tag or re-upload; PyPI 0.1.0 is already published.**
 
 ## 1. Preconditions
 
@@ -102,14 +102,11 @@ gh release view v0.1.0 --repo JunxiangPan/cbe \
 
 The asset digests must equal the hashes above.
 
-## 4. PyPI — APPROVED but BLOCKED (no credentials; NOT EXECUTED)
+## 4. PyPI — UPLOADED_VERIFIED
 
-Current blocker: `twine` is absent, `~/.pypirc` is absent,
-`TWINE_USERNAME`/`TWINE_PASSWORD`/`TWINE_API_KEY`/`PYPI_API_TOKEN`/
-`UV_PUBLISH_TOKEN` are unset, and no trusted-publisher workflow exists. Do not
-attempt the commands below until one of those is configured.
-
-Only if credentials are configured **and** `cbe-review` is still unclaimed:
+`cbe-review==0.1.0` is published at
+<https://pypi.org/project/cbe-review/0.1.0/>. The exact staged artifacts were
+used; do not rebuild or re-upload. Historical commands:
 
 ```bash
 python -m twine check release/0.1.0/artifacts/*

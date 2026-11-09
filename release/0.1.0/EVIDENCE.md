@@ -18,6 +18,13 @@ Artifact hashes are in `RELEASE_MANIFEST.json` and `SHA256SUMS`.
 
 ## PyPI
 
-Human approved `cbe-review==0.1.0`, but the upload is **BLOCKED**: no `twine`,
-no `.pypirc`, no PyPI token, and no trusted-publisher workflow. No upload was
-attempted; the old `cbe` name is never used.
+`cbe-review==0.1.0` is **UPLOADED and verified**:
+<https://pypi.org/project/cbe-review/0.1.0/>.
+
+```text
+wheel 87f0ad40a6cffdf4f9c657e6cc972a0f93787259c52445a1c112a5c7753599a7
+sdist a77c653d178d5d0ab179da73c92184d9a54d5104ca5202f41574588979b68854
+```
+
+PyPI install verified (`cbe-review==0.1.0`, import `cbe`, CLI `cbe 0.1.0`,
+five subcommands). The old `cbe` name is never used.

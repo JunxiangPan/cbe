@@ -4,7 +4,7 @@ CBE is the rule-pack manifest, provider execution, no-bypass enforcement, and
 SARIF evidence gate for the Cyber-Butler release train. It is a sibling project
 to `public-release` (CBS), `cbp-action-release` (CBP), and `cbm`.
 
-Status: **0.1.0 released on GitHub (tag `v0.1.0`); PyPI not uploaded.** Commit 1
+Status: **0.1.0 released on GitHub and PyPI (tag `v0.1.0`).** Commit 1
 froze the manifest schema, the five CLI interfaces, and the E2E fixtures. Commit
 2 added the manifest validator (P0-03). Commit 3 added `enforce-no-bypass`
 (P0-04). Commit 4 added workflow gate-skip detection (P0-04.5). Commit 5 added
@@ -36,10 +36,11 @@ CBE-08 is **PASS**. No tag/release exists.
 
 ## 0.1.0 release package
 
-Status: **released on GitHub; PyPI upload blocked by missing credentials.** Tag
+Status: **released on GitHub and PyPI.** Tag
 `v0.1.0` → `13f7ddc`; GitHub Release:
-<https://github.com/JunxiangPan/cbe/releases/tag/v0.1.0>. Distribution is
-`cbe-review` (old `cbe` is never used); PyPI is approved but not uploaded.
+<https://github.com/JunxiangPan/cbe/releases/tag/v0.1.0>. PyPI:
+<https://pypi.org/project/cbe-review/0.1.0/>. Distribution is `cbe-review`
+(import/CLI `cbe`; old `cbe` is never used).
 
 - [Release notes](release/0.1.0/RELEASE_NOTES.md)
 - [Release runbook](release/0.1.0/RELEASE_RUNBOOK.md)
