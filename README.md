@@ -161,6 +161,15 @@ No security rule implementation is included in the first commit.
   `CBE-SECRET-001` → `CBP-EXT-SECRET-001`, `origin_rule` retained.
 - RC audit package and SHA256SUMS updated; no tag, no release.
 
+## Commit 12 scope (contract guard)
+
+- `tests/e2e/fixtures/contract/v1.7.1-pin.json` pins `3de93ae` / `c1653c…`.
+- `tools/cbe_contract_guard.py` fetches the current `contract/v1.7.1` head,
+  contract bytes, and `vm-proof.yml`; drift exits 3 `CONTRACT_CHANGED`.
+- `tests/e2e/test_cbe_08_contract_guard.py` proves the pinned case and simulated
+  commit/hash drift. Guard `PINNED` is **not** CBE-08 PASS.
+- CBE-07b re-run on CBP 1.2.0 RC `855fed7`; audit package refreshed.
+
 ## Commands
 
 ```text

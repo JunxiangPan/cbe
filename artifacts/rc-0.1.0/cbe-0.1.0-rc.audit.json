@@ -56,12 +56,23 @@
         "evidence/cbp-1.2.0-rc-855fed7.json"
       ],
       "cbp_final_rc_ref": "855fed7",
-      "cbp_final_wheel_sha256": "9469a8e980a536e9481e0b14239cd4857a5cd6173a61043d47645b82cf3b4d51"
+      "cbp_final_wheel_sha256": "9469a8e980a536e9481e0b14239cd4857a5cd6173a61043d47645b82cf3b4d51",
+      "rerun_at": "2026-11-09T09:40:00Z",
+      "rerun_test": "PASS"
     },
     "CBE-08": {
       "status": "DRAFT",
       "not_pass": true,
-      "reason": "contract RC 3de93ae is not frozen; declared and observed hash match c1653c; vm-proof clean"
+      "reason": "contract RC 3de93ae is not frozen; declared and observed hash match c1653c; vm-proof clean",
+      "contract_guard": {
+        "status": "PINNED",
+        "evidence": "evidence/contract-guard.json",
+        "pin_commit": "3de93aed99cf81c4408cb160dcf5846a8d2bacfe",
+        "pin_contract_sha256": "c1653cfe1adbc74d2523d2fa12c965ab761fce978061c8e55443eb8b6db3a7e5",
+        "vm_proof_clean": true,
+        "frozen": false,
+        "note": "guard pass means the pin is intact; it is not CBE-08 PASS"
+      }
     },
     "CBE-09": {
       "status": "IMPLEMENTED_BOOTSTRAP_ONLY",
@@ -86,15 +97,11 @@
     }
   },
   "ci": {
-    "status": "SUCCESS",
-    "run_url": "https://github.com/JunxiangPan/cbe/actions/runs/42593501099",
-    "head_sha": "d59c2715539778b18d764a4871cfc4d362859ac0",
-    "ubuntu": "success",
-    "windows": "success",
-    "unit_tests": 71,
-    "e2e_tests": 93,
-    "total_tests": 164,
-    "coverage": "71.82%"
+    "status": "PENDING",
+    "run_url": null,
+    "head_sha": null,
+    "ubuntu": null,
+    "windows": null
   },
   "cbe_wheel": {
     "sha256": "30dd950e1b2b3b6087ba6d777cc432f81da66baa809a1f77f3404f458b4df38e",

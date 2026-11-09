@@ -1,0 +1,24 @@
+{
+  "exit": 0,
+  "data": {
+    "schema_version": "1",
+    "command": "cbe-contract-guard",
+    "ok": true,
+    "exit_code": 0,
+    "gate_status": "PINNED",
+    "pin": {
+      "repo": "JunxiangPan/Cyber-Butler-Security",
+      "branch": "contract/v1.7.1",
+      "commit": "3de93aed99cf81c4408cb160dcf5846a8d2bacfe",
+      "contract_sha256": "c1653cfe1adbc74d2523d2fa12c965ab761fce978061c8e55443eb8b6db3a7e5",
+      "frozen": false
+    },
+    "observed": {
+      "commit": "3de93aed99cf81c4408cb160dcf5846a8d2bacfe",
+      "contract_sha256": "c1653cfe1adbc74d2523d2fa12c965ab761fce978061c8e55443eb8b6db3a7e5",
+      "vm_proof_clean": true
+    },
+    "error": null,
+    "warnings": []
+  }
+}

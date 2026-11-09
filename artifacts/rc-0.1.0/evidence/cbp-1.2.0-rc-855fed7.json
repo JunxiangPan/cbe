@@ -23,5 +23,8 @@
     "rule_equals": "CBP-EXT-SECRET-001",
     "origin_rule_equals": "CBE-SECRET-001",
     "no_CBE_prefix_in_rule": true
-  }
+  },
+  "rerun_at": "2026-11-09T09:40:00Z",
+  "rerun_test": "PASS",
+  "pin_unchanged": "cbp-action==1.1.0"
 }

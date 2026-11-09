@@ -187,6 +187,15 @@ explicitly `bootstrap=true`. CBE-08 remains DRAFT against CBS `contract/v1.7.1`
 RC `3de93ae`: declared/observed hash both `c1653c…` and `vm-proof.yml` is clean,
 but the contract is still not frozen.
 
+### D14. Contract hash guard
+
+CBE pins CBS `contract/v1.7.1` to commit `3de93ae` and contract SHA256
+`c1653c…` in `tests/e2e/fixtures/contract/v1.7.1-pin.json`. The guard fetches
+the branch head and fails with `CONTRACT_CHANGED` when the commit, contract
+bytes, or `vm-proof.yml` cleanliness changes. A guard result of `PINNED` means
+the pin is intact; it is not CBE-08 PASS and does not imply the contract is
+frozen.
+
 ## Commit sequence
 
 1. **Commit 1 (done)**: schemas + `src/cbe/` CLI skeleton +
@@ -214,3 +223,6 @@ but the contract is still not frozen.
     with matching `c1653c…` hash and clean `vm-proof.yml`, still DRAFT;
     CBE-07b re-run on CBP 1.2.0 RC `855fed7`; audit SHA256SUMS and CI evidence
     refreshed. No tag/release.
+12. **Commit 12 (contract guard, done)**: pin fixture and
+    `tools/cbe_contract_guard.py`; `test_cbe_08_contract_guard.py` proves the
+    pin and simulated drift. Guard `PINNED` is not CBE-08 PASS.

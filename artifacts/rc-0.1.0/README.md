@@ -19,8 +19,9 @@ CBP RC wheels were installed only in temporary venvs. The project
 | Check | Status | Evidence |
 |---|---|---|
 | CBE-01..CBE-07a | PASS | CI + local E2E |
-| CBE-07b on CBP 1.2.0 RC | PASS on `855fed7` (also earlier RC candidates) | `evidence/cbp-1.2.0-rc-*.json` |
+| CBE-07b on CBP 1.2.0 RC `855fed7` | PASS | `evidence/cbp-1.2.0-rc-855fed7.json` |
 | CBE-08 F2 | **DRAFT — not PASS** | `evidence/cbe-08-draft.json`, `docs/CBE-08_DRAFT.md` |
+| CBE-08 contract hash guard | **PINNED** to `3de93ae` / `c1653c…`; not a PASS | `evidence/contract-guard.json` |
 | CBE-09 F4 baseline | implemented; no stable CBE yet | `evidence/cbe-09-baseline.json` |
 | CBE-10 F5/F6 + CBP 1.2.0 fields | PASS | `evidence/cbe-10-f5-f6.json` |
 | CBE-11 self-bootstrap | bootstrap PASS; not a stable claim | `evidence/cbe-11-selfcheck.json` |
@@ -29,8 +30,11 @@ CBP RC wheels were installed only in temporary venvs. The project
 ## Boundaries
 
 - CBE-08 must stay DRAFT until CBS freezes `contract/v1.7.1`. The `3de93ae`
-  contract hash and `vm-proof.yml` are now aligned, but the contract still says
-  **RC, NOT FROZEN**; human freeze has not happened.
+  contract hash and `vm-proof.yml` are aligned, but the contract still says
+  **RC, NOT FROZEN**; human freeze has not happened. The guard passing means
+  “the pin is intact”, **not** “CBE-08 PASS”.
+- The guard fails with `CONTRACT_CHANGED` if `contract/v1.7.1` moves, the
+  contract bytes change, or `vm-proof.yml` gets conflict markers.
 - CBP 1.2.0 RC uses `artifact_repository` as an `owner/repo` string; the CBS RC
   contract sketches an object. CBE follows CBP 1.2.0 RC and records the mismatch
   (B-33). No private union.
@@ -41,11 +45,7 @@ CBP RC wheels were installed only in temporary venvs. The project
 
 ## CI
 
-- Ubuntu: success
-- Windows: success
-- Run: https://github.com/JunxiangPan/cbe/actions/runs/42593501099
-- 164 tests = 71 unit + 93 E2E
-- Coverage: 71.82% (gate 60%)
+Status: **PENDING** — fill after the guard commit is pushed.
 
 ## Release discipline
 

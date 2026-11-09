@@ -118,6 +118,12 @@ contract.
 ## CBE-08 — F2 denominator (DRAFT)
 
 - File: `tools/cbe08_draft.py` (no PASS assertion)
+- Guard: `tests/e2e/test_cbe_08_contract_guard.py`,
+  `tools/cbe_contract_guard.py`,
+  `tests/e2e/fixtures/contract/v1.7.1-pin.json`
+- Guard check: pinned commit `3de93ae`, contract SHA256 `c1653c…`,
+  `vm-proof.yml` clean. Drift exits 3 `CONTRACT_CHANGED`; a successful guard
+  says `PINNED`, never `CBE-08 PASS`.
 - Fixtures: manifest combinations from `manifests/five_advisory.json`,
   `valid_blocking_zero.json`, `zero_rules.json`; `exemptions/valid.txt`,
   `exemptions/blocking.txt`
@@ -211,17 +217,20 @@ tests/e2e/fixtures/
                     cbp-quality-manifest-full.json,
                     cbp-quality-manifest-object-repo.json,
                     cbp-quality-manifest-cbc-event-field.json
+  contract/         v1.7.1-pin.json
   cli/              .keep
 ```
 
 ## Runner and CI
 
-- `tests/e2e/run_e2e.py` runs CBE-01..07b and CBE-09..11; CBE-08 is a DRAFT
-  tool (`tools/cbe08_draft.py`) and is deliberately not counted as a passing
-  E2E. Non-zero exit on any failure; JSON summary to stdout.
+- `tests/e2e/run_e2e.py` runs CBE-01..07b, the CBE-08 contract guard, and
+  CBE-09..11. The CBE-08 F2 draft tool (`tools/cbe08_draft.py`) is deliberately
+  not counted as a passing E2E. Non-zero exit on any failure; JSON summary to
+  stdout.
 - Tools: `tools/cbe_gate.py` (report/body), `tools/cbe_baseline.py` (F4),
   `tools/cbe_train.py` (F5/F6 + CBP manifest), `tools/cbe_selfcheck.py`
-  (CBE-11), `tools/cbe08_draft.py` (DRAFT only).
+  (CBE-11), `tools/cbe08_draft.py` (DRAFT only),
+  `tools/cbe_contract_guard.py` (contract pin drift).
 - `.github/workflows/cbe-e2e.yml` runs it without `continue-on-error`, `|| true`,
   or `if: always()`.
 - Fixtures are committed; no network. The CBE baseline wheel/source used in the

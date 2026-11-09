@@ -26,6 +26,27 @@ The script always emits `"status": "DRAFT"`, `"not_pass": true`,
 `"contract_hash_match": true`, and `"contract_status": "RC_NOT_FROZEN"`. It is
 not included in the E2E pass count and must not be quoted as CBE-08 PASS.
 
+## Contract hash guard
+
+`tests/e2e/fixtures/contract/v1.7.1-pin.json` pins:
+
+```text
+repo:              JunxiangPan/Cyber-Butler-Security
+branch:            contract/v1.7.1
+commit:            3de93aed99cf81c4408cb160dcf5846a8d2bacfe
+contract_sha256:   c1653cfe1adbc74d2523d2fa12c965ab761fce978061c8e55443eb8b6db3a7e5
+frozen:            false
+```
+
+`tools/cbe_contract_guard.py` fetches the current branch head, the contract
+bytes at that head, and `vm-proof.yml`. It exits 0 `PINNED` only when the commit,
+contract hash, and vm-proof cleanliness all match; otherwise it exits 3
+`CONTRACT_CHANGED` with the pinned/observed values and an update action.
+
+`tests/e2e/test_cbe_08_contract_guard.py` asserts the pinned case and simulates
+a moved commit and a changed contract hash. A passing guard means the pin is
+intact; it is **not** CBE-08 PASS.
+
 ## Freeze rule
 
 CBE-08 becomes PASS only after CBS freezes the contract and a human audit

@@ -1,0 +1,10 @@
+{
+  "schema_version": "1",
+  "repo": "JunxiangPan/Cyber-Butler-Security",
+  "branch": "contract/v1.7.1",
+  "commit": "3de93aed99cf81c4408cb160dcf5846a8d2bacfe",
+  "contract_path": "docs/v1.7/CONTRACT.md",
+  "contract_sha256": "c1653cfe1adbc74d2523d2fa12c965ab761fce978061c8e55443eb8b6db3a7e5",
+  "vm_proof_path": ".github/workflows/vm-proof.yml",
+  "frozen": false
+}
