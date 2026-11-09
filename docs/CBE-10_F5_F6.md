@@ -14,9 +14,9 @@ Markdown body fragment:
 - `skip_count=0`, `applicable_count=0`, `counted_in_skip_denominator=false` for
   the release-train section; CBM/CBC are not part of the CBE F2 denominator.
 
-## CBP 1.2.0 RC fields
+## CBP 1.2.0 fields
 
-The optional `--cbp-manifest` check follows CBP 1.2.0 RC code `5da8b87`:
+The optional `--cbp-manifest` check follows CBP 1.2.0 (`5ebd0eb`):
 
 - `body_hash_scope` must be exactly `base`; `full` exits 2.
 - `artifact_repository` is a non-empty `owner/repo` string. The CBS v1.7.1 RC

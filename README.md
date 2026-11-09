@@ -14,14 +14,16 @@ Commit 8 implemented P0-05 (`symbol-index`, `run-provider`, `emit-sarif`,
 `tools/cbe_gate.py`). Commit 9 made CBE-07b a real CBP 1.1.0 assertion. Commit
 10 is the 0.1.0 RC candidate: CBE-07b re-run on CBP 1.2.0 RC, CBE-09/10/11
 implemented, CBE-08 kept DRAFT, CBP 1.2.0 manifest fields aligned, and schemas
-bundled in the wheel. CBE-08 is **not PASS**; no tag/release exists.
+bundled in the wheel. Commit 13 pins the released CBP 1.2.0 from PyPI. CBE-08 is
+**not PASS**; no tag/release exists.
 
 ## 0.1.0 RC inputs
 
-- CBP 1.2.0 RC final candidate: code `855fed7`, `cbp-rc` wheel
-  `9469a8e980a536e9481e0b14239cd4857a5cd6173a61043d47645b82cf3b4d51`.
-  CBE-07b passes in a temporary venv; the project `cbp-action==1.1.0` pin is
-  unchanged. Earlier RC candidates `5da8b87` and `bb8d4d6` also passed.
+- CBP 1.2.0 official: tag/main `5ebd0eb…`; PyPI wheel
+  `188639bb47e5a8940defbdb5ba3c4270ae89ad68503d283b611cb2a00497da2e`,
+  sdist `08392b2af6b3ff29dc21cfe5db0f23d628307ccac06b9035639f32da6343defd`.
+  CBE-07b passes with the installed official wheel; the project pin is
+  `cbp-action==1.2.0`. Earlier 1.2.0 RC candidates also passed.
 - CBS `contract/v1.7.1` RC: commit `3de93ae`; declared and observed contract
   SHA256 both `c1653c…`; `vm-proof.yml` is clean. The contract is still
   **NOT FROZEN**. CBE-08 remains DRAFT.
@@ -35,7 +37,7 @@ CBE is **not** zero-runtime-dependency. It declares:
 |---|---|---|
 | `jsonschema>=4.20` | `validate-manifest`; any command that loads a manifest | core dependency |
 | `pyyaml>=6.0` | `enforce-no-bypass --workflows` | target GitHub Actions YAML parsing; currently a core dependency, not an optional extra |
-| `cbp-action==1.1.0` | CBE-07b cross-repo assertion | test-only `e2e` extra; not a CBE runtime dependency |
+| `cbp-action==1.2.0` | CBE-07b cross-repo assertion | test-only `e2e` extra; not a CBE runtime dependency |
 
 Both are in `pyproject.toml`. The workflow parser reads only the target
 repository's `.github/workflows/`; it does not execute workflow YAML or any
@@ -44,7 +46,7 @@ GitHub expression.
 ## CI
 
 `.github/workflows/cbe-e2e.yml` runs on `ubuntu-latest` and `windows-latest`
-with Python 3.10. Each job installs `.[e2e]` (including `cbp-action==1.1.0`
+with Python 3.10. Each job installs `.[e2e]` (including `cbp-action==1.2.0`
 for CBE-07b), runs `tests/e2e/run_e2e.py`, and enforces a 60% unit-test
 coverage gate (`--cov=cbe --cov-fail-under=60`). The gate covers measured
 unit-test coverage; E2E commands run in subprocesses and are not counted by
@@ -169,6 +171,14 @@ No security rule implementation is included in the first commit.
 - `tests/e2e/test_cbe_08_contract_guard.py` proves the pinned case and simulated
   commit/hash drift. Guard `PINNED` is **not** CBE-08 PASS.
 - CBE-07b re-run on CBP 1.2.0 RC `855fed7`; audit package refreshed.
+
+## Commit 13 scope (CBP 1.2.0 official)
+
+- `pyproject.toml` `e2e` extra pins `cbp-action==1.2.0` (released, not RC).
+- PyPI wheel `188639bb…` and sdist `08392b2a…` downloaded and hash-checked.
+- CBE-07b re-run with the installed official 1.2.0: `CBE-SECRET-001` →
+  `CBP-EXT-SECRET-001`, `origin_rule: CBE-SECRET-001`.
+- Audit package records the official dependency evidence; CBE-08 remains DRAFT.
 
 ## Commands
 

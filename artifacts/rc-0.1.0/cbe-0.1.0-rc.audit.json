@@ -34,6 +34,14 @@
       "wheel_sha256": "9469a8e980a536e9481e0b14239cd4857a5cd6173a61043d47645b82cf3b4d51",
       "sdist_sha256": "98b8916ce26d84b38e492182eda8eba75d0ec8bb03c5ffb6d9001a0c2d7b405b",
       "rc_run_url": "https://github.com/JunxiangPan/cbp-action/actions/runs/42589460728"
+    },
+    "cbp_1_2_0_official": {
+      "tag": "v1.2.0",
+      "code_ref": "5ebd0eb52844e2a7b51f6990fb30d1d5005098a9",
+      "wheel_sha256": "188639bb47e5a8940defbdb5ba3c4270ae89ad68503d283b611cb2a00497da2e",
+      "sdist_sha256": "08392b2af6b3ff29dc21cfe5db0f23d628307ccac06b9035639f32da6343defd",
+      "installed_version": "1.2.0",
+      "dependency_pin": "cbp-action==1.2.0"
     }
   },
   "checks": {
@@ -53,12 +61,16 @@
       "evidence": [
         "evidence/cbp-1.2.0-rc-5da8b87.json",
         "evidence/cbp-1.2.0-rc-bb8d4d6.json",
-        "evidence/cbp-1.2.0-rc-855fed7.json"
+        "evidence/cbp-1.2.0-rc-855fed7.json",
+        "evidence/cbp-1.2.0-official.json"
       ],
       "cbp_final_rc_ref": "855fed7",
       "cbp_final_wheel_sha256": "9469a8e980a536e9481e0b14239cd4857a5cd6173a61043d47645b82cf3b4d51",
       "rerun_at": "2026-11-09T09:40:00Z",
-      "rerun_test": "PASS"
+      "rerun_test": "PASS",
+      "cbp_official": "1.2.0",
+      "cbp_official_wheel_sha256": "188639bb47e5a8940defbdb5ba3c4270ae89ad68503d283b611cb2a00497da2e",
+      "cbp_official_test": "PASS"
     },
     "CBE-08": {
       "status": "DRAFT",
@@ -97,15 +109,11 @@
     }
   },
   "ci": {
-    "status": "SUCCESS",
-    "run_url": "https://github.com/JunxiangPan/cbe/actions/runs/42595453232",
-    "head_sha": "450c3cf0acd888cbc0d812880b3347631d5cc25f",
-    "ubuntu": "success",
-    "windows": "success",
-    "unit_tests": 71,
-    "e2e_tests": 96,
-    "total_tests": 167,
-    "coverage": "71.82%"
+    "status": "PENDING",
+    "run_url": null,
+    "head_sha": null,
+    "ubuntu": null,
+    "windows": null
   },
   "cbe_wheel": {
     "sha256": "30dd950e1b2b3b6087ba6d777cc432f81da66baa809a1f77f3404f458b4df38e",

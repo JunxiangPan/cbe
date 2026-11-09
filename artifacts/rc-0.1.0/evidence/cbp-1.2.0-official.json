@@ -1,0 +1,29 @@
+{
+  "schema_version": "1",
+  "check_id": "CBE-07b",
+  "cbp_version": "1.2.0",
+  "cbp_tag": "v1.2.0",
+  "cbp_code_ref": "5ebd0eb52844e2a7b51f6990fb30d1d5005098a9",
+  "pypi_url": "https://pypi.org/project/cbp-action/1.2.0/",
+  "wheel_sha256": "188639bb47e5a8940defbdb5ba3c4270ae89ad68503d283b611cb2a00497da2e",
+  "sdist_sha256": "08392b2af6b3ff29dc21cfe5db0f23d628307ccac06b9035639f32da6343defd",
+  "installed_version": "1.2.0",
+  "installed_wheel_sha256": "188639bb47e5a8940defbdb5ba3c4270ae89ad68503d283b611cb2a00497da2e",
+  "findings": [
+    {
+      "path": "src/a.py",
+      "line": 1,
+      "rule": "CBP-EXT-SECRET-001",
+      "origin_rule": "CBE-SECRET-001",
+      "message": "fixture secret finding",
+      "severity": "error",
+      "tool": "CBE/gitleaks"
+    }
+  ],
+  "assertions": {
+    "rule_starts_with_CBP": true,
+    "rule_equals": "CBP-EXT-SECRET-001",
+    "origin_rule_equals": "CBE-SECRET-001",
+    "no_CBE_prefix_in_rule": true
+  }
+}

@@ -169,23 +169,23 @@ artifacts from zero findings, maps native provider IDs via `provider_rule_ids`,
 and computes F2 counts. `emit-sarif` emits SARIF 2.1.0 with `CBE-*` IDs.
 `tools/cbe_gate.py` writes `cbe-report.json` and `cbe-body-section.md`;
 `warn_count` and warning codes reach Section B. CBE-07b is a real CBP
-namespace-isolation assertion, re-run on CBP 1.2.0 RC.
+namespace-isolation assertion, re-run on released CBP 1.2.0.
 
-### D12. CBP 1.2.0 RC `artifact_repository` shape
+### D12. CBP 1.2.0 `artifact_repository` shape
 
-CBP 1.2.0 RC `5da8b87` treats `artifact_repository` as an `owner/repo` string.
-The CBS v1.7.1 RC contract sketches an object. CBE follows the CBP 1.2.0 RC
+CBP 1.2.0 (`5ebd0eb`) treats `artifact_repository` as an `owner/repo` string.
+The CBS v1.7.1 RC contract sketches an object. CBE follows the CBP 1.2.0
 shape and rejects the object; it does not define a union or a private variant.
 This mismatch is B-33 and must be resolved upstream before the contract freezes.
 
 ### D13. CBE 0.1.0 RC boundary
 
 CBE 0.1.0 is an RC candidate only: no tag, no GitHub release, no PyPI upload.
-CBE-07b is real on CBP 1.2.0 RC `855fed7`. CBE-09/10/11 have implementation
-evidence, but there is no previous stable CBE, so F4/CBE-11 evidence is
-explicitly `bootstrap=true`. CBE-08 remains DRAFT against CBS `contract/v1.7.1`
-RC `3de93ae`: declared/observed hash both `c1653c…` and `vm-proof.yml` is clean,
-but the contract is still not frozen.
+CBE-07b is real on released CBP 1.2.0 (`5ebd0eb`). CBE-09/10/11 have
+implementation evidence, but there is no previous stable CBE, so F4/CBE-11
+evidence is explicitly `bootstrap=true`. CBE-08 remains DRAFT against CBS
+`contract/v1.7.1` RC `3de93ae`: declared/observed hash both `c1653c…` and
+`vm-proof.yml` is clean, but the contract is still not frozen.
 
 ### D14. Contract hash guard
 
@@ -195,6 +195,15 @@ the branch head and fails with `CONTRACT_CHANGED` when the commit, contract
 bytes, or `vm-proof.yml` cleanliness changes. A guard result of `PINNED` means
 the pin is intact; it is not CBE-08 PASS and does not imply the contract is
 frozen.
+
+### D15. CBP 1.2.0 official dependency
+
+CBE's `e2e` extra pins the released `cbp-action==1.2.0` instead of keeping a
+1.1.0 pin plus temporary RC venvs. The official PyPI wheel is
+`188639bb47e5a8940defbdb5ba3c4270ae89ad68503d283b611cb2a00497da2e`; the sdist
+is `08392b2af6b3ff29dc21cfe5db0f23d628307ccac06b9035639f32da6343defd`.
+CBE-07b runs with the installed official wheel and still maps `CBE-*` to
+`CBP-EXT-*` with `origin_rule`. CBE-08 remains DRAFT.
 
 ## Commit sequence
 
@@ -226,3 +235,6 @@ frozen.
 12. **Commit 12 (contract guard, done)**: pin fixture and
     `tools/cbe_contract_guard.py`; `test_cbe_08_contract_guard.py` proves the
     pin and simulated drift. Guard `PINNED` is not CBE-08 PASS.
+13. **Commit 13 (CBP 1.2.0 official, done)**: `cbp-action==1.2.0` in the `e2e`
+    extra; PyPI wheel/sdist hashes recorded; CBE-07b re-run on the official
+    wheel; audit package refreshed. No tag/release.
