@@ -31,13 +31,14 @@ CBE-08 is **PASS**. No tag/release exists.
   contract SHA256 `209d75b4…`; `vm-proof.yml` clean.
   `FREEZE_NOTICE_ADDENDUM.md` at `e318cbd` authorizes CBE-08 PASS when the four
   F2 checks match; all four match, so CBE-08 is PASS.
-- CBE: `0.1.0` package version, no tag, no release.
+- CBE: `0.1.0` package version; PyPI distribution `cbe-review`; import package
+  `cbe`; CLI `cbe`; no tag, no release.
 
 ## 0.1.0 release package
 
-Status: **awaiting human approval; no tag, no release, no PyPI upload.** PyPI is
-separately **BLOCKED** because the `cbe` project name is owned by another
-package (`azizo-b/CBE`).
+Status: **awaiting human approval; no tag, no release, no PyPI upload.** The
+PyPI distribution name is now `cbe-review` (the old `cbe` name belongs to
+`azizo-b/CBE` and is never used). PyPI remains pending approval.
 
 - [Release notes](release/0.1.0/RELEASE_NOTES.md)
 - [Release runbook](release/0.1.0/RELEASE_RUNBOOK.md)

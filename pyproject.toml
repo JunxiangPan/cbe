@@ -3,7 +3,7 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "cbe"
+name = "cbe-review"
 version = "0.1.0"
 description = "Cyber-Butler Enforcement gate: rule-pack manifest, provider execution, no-bypass enforcement, and SARIF evidence."
 readme = "README.md"

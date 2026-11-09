@@ -35,7 +35,7 @@ def _run(python: str, args: list[str], cwd: Path, env: dict[str, str]) -> tuple[
 
 def _version(python: str, cwd: Path, env: dict[str, str]) -> str:
     process = subprocess.run(
-        [python, "-c", "import importlib.metadata as m; print(m.version('cbe'))"],
+        [python, "-c", "import importlib.metadata as m; print(m.version('cbe-review'))"],
         cwd=str(cwd),
         env=env,
         capture_output=True,
