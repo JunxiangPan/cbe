@@ -86,11 +86,15 @@
     }
   },
   "ci": {
-    "status": "PENDING",
-    "run_url": null,
-    "head_sha": null,
-    "ubuntu": null,
-    "windows": null
+    "status": "SUCCESS",
+    "run_url": "https://github.com/JunxiangPan/cbe/actions/runs/42593501099",
+    "head_sha": "d59c2715539778b18d764a4871cfc4d362859ac0",
+    "ubuntu": "success",
+    "windows": "success",
+    "unit_tests": 71,
+    "e2e_tests": 93,
+    "total_tests": 164,
+    "coverage": "71.82%"
   },
   "cbe_wheel": {
     "sha256": "30dd950e1b2b3b6087ba6d777cc432f81da66baa809a1f77f3404f458b4df38e",

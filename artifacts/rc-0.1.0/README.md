@@ -41,7 +41,11 @@ CBP RC wheels were installed only in temporary venvs. The project
 
 ## CI
 
-Status: **PENDING** — fill after the RC closeout commit is pushed.
+- Ubuntu: success
+- Windows: success
+- Run: https://github.com/JunxiangPan/cbe/actions/runs/42593501099
+- 164 tests = 71 unit + 93 E2E
+- Coverage: 71.82% (gate 60%)
 
 ## Release discipline
 
