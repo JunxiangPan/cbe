@@ -2,7 +2,7 @@
   "schema_version": "1",
   "product": "cbe",
   "version": "0.1.0",
-  "status": "AWAITING_HUMAN_APPROVAL",
+  "status": "APPROVED_FOR_GITHUB_RELEASE",
   "created_at": "2026-11-09",
   "source_commit": "4561e8338a09a7e681b08fc0c2b38fcff2d56e70",
   "release_package_commit": "13f7ddc8af947a6bae10b4251beb2406e2d31f30",
@@ -56,22 +56,24 @@
   },
   "approval": {
     "required": true,
-    "approved": false,
-    "approver": null,
-    "approved_at": null,
-    "scope": null
+    "approved": true,
+    "approver": "human operator (chat approval)",
+    "approved_at": "2026-11-10T00:32:18+08:00",
+    "scope": "GitHub Release; PyPI cbe-review conditional (not separately confirmed)",
+    "source": "DSH session user message"
   },
   "runbook": "RELEASE_RUNBOOK.md",
   "notes": "RELEASE_NOTES.md",
   "pypi": {
-    "status": "PENDING_APPROVAL",
+    "status": "NOT_UPLOADED",
+    "approved": false,
     "uploaded": false,
     "requested_name": "cbe-review",
     "available_at_preparation": true,
     "old_name": "cbe",
     "old_name_owner": "azizo-b/CBE",
-    "note": "do not upload cbe; cbe-review requires human approval",
-    "old_name_never_used": true
+    "old_name_never_used": true,
+    "blocked_reason": "conditional PyPI scope; twine and PyPI credentials absent"
   },
   "distribution_name": "cbe-review",
   "import_package": "cbe",

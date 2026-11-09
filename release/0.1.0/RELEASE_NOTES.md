@@ -1,6 +1,6 @@
 # CBE 0.1.0 — Release Notes
 
-Status: **ready for human approval — NOT tagged, NOT released, NOT uploaded to PyPI.**
+Status: **APPROVED for GitHub Release — release in progress; PyPI NOT uploaded.**
 
 CBE (Cyber-Butler Enforcement gate) 0.1.0 is the first stable CBE release. It
 provides the rule-pack manifest, provider execution, no-bypass enforcement,
@@ -99,5 +99,5 @@ project.
 
 ## Release boundary
 
-No release tag, GitHub Release, or PyPI upload exists. Human approval is
-required before any of them is created. See `RELEASE_RUNBOOK.md`.
+GitHub Release is being created from tag `v0.1.0`. PyPI `cbe-review` is NOT
+uploaded (conditional scope; no credentials). See `RELEASE_RUNBOOK.md`.

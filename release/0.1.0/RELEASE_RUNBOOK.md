@@ -13,9 +13,9 @@ Complete this before running any release command.
 
 | Field | Value |
 |---|---|
-| Approver | _pending_ |
-| Approval date | _pending_ |
-| Scope approved | GitHub Release only / GitHub + PyPI (`cbe-review`) |
+| Approver | human operator (chat approval) |
+| Approval date | 2026-11-10T00:32:18+08:00 |
+| Scope approved | GitHub Release; PyPI `cbe-review` conditional (not separately confirmed) |
 | Release source commit | `4561e8338a09a7e681b08fc0c2b38fcff2d56e70` |
 | Release package commit / tag target | `13f7ddc8af947a6bae10b4251beb2406e2d31f30` |
 | Wheel SHA256 | `87f0ad40a6cffdf4f9c657e6cc972a0f93787259c52445a1c112a5c7753599a7` |
