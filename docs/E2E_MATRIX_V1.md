@@ -1,9 +1,10 @@
 # CBE E2E matrix (CBE-01..CBE-11)
 
 Status: CBE-01..CBE-07b, CBE-09, CBE-10, and CBE-11 are implemented. CBE-08
-is a DRAFT against CBS `contract/v1.7.1` RC `04c9f8b` and is not PASS. CBE-07b
-runs against CBP 1.1.0 and CBP 1.2.0 RC. The matrix is the authoritative
-definition until CBS references it from the v1.7 execution contract.
+is a DRAFT against CBS `contract/v1.7.1` RC `3de93ae` and is not PASS. CBE-07b
+runs against CBP 1.1.0 and CBP 1.2.0 RC `855fed7`. The matrix is the
+authoritative definition until CBS references it from the v1.7 execution
+contract.
 
 ## CBE-01 — CLI contract
 
@@ -98,15 +99,17 @@ definition until CBS references it from the v1.7 execution contract.
   ruleIndex/level/message/location; relative POSIX paths; no runs is invalid;
   merged output is Code Scanning ingestible. Expected: 0 for valid; 3 for
   invalid/cross-namespace/absolute path.
-- **CBE-07b — CBP consumption:** real assertion against CBP 1.1.0. CBE emits
-  `CBE-SECRET-001`; CBP `report_aggregator` consumes it and emits
-  `CBP-EXT-SECRET-001` in `rule`, with `origin_rule: CBE-SECRET-001` retained
-  for traceability. CBP's `rule` field must start with `CBP-`, never `CBE-`.
-  This is namespace isolation, not “preserve CBE-*”.
-- Interop contract: CBE guarantees only `CBE-*` output. CBP 1.1.0 maps foreign
-  IDs into `CBP-EXT-*` and keeps `origin_rule`; CBP output carries only
-  `CBP-*`. The CBP-side test is `test_cbe_07b_cbp_consumer.py` with
-  `cbp-action==1.1.0` installed via the `e2e` extra.
+- **CBE-07b — CBP consumption:** real assertion against CBP 1.1.0 and CBP
+  1.2.0 RC `855fed7`. CBE emits `CBE-SECRET-001`; CBP `report_aggregator`
+  consumes it and emits `CBP-EXT-SECRET-001` in `rule`, with
+  `origin_rule: CBE-SECRET-001` retained for traceability. CBP's `rule` field
+  must start with `CBP-`, never `CBE-`. This is namespace isolation, not
+  “preserve CBE-*”.
+- Interop contract: CBE guarantees only `CBE-*` output. CBP maps foreign IDs
+  into `CBP-EXT-*` and keeps `origin_rule`; CBP output carries only `CBP-*`.
+  The CBP-side test is `test_cbe_07b_cbp_consumer.py` with
+  `cbp-action==1.1.0` installed via the `e2e` extra; the `855fed7` RC is run
+  from a temporary venv without changing that pin.
 - **Report assembly (B-32):** `test_cbe_07a_gate_report.py` runs
   `tools/cbe_gate.py`, asserts `cbe-report.json` carries `warn_count`, and
   asserts `cbe-body-section.md` Section B lists `UNVERIFIABLE_CONDITION`.
@@ -121,11 +124,12 @@ definition until CBS references it from the v1.7 execution contract.
 - Check: denominator = non-blocking applicable checks only; blocking rules are
   not counted and may not SKIP; blocking exemption exits 3; zero rules exits 3;
   1/5 advisory skip passes; 2/5 would exit 4.
-- **Status: DRAFT.** Target is CBS `contract/v1.7.1` RC commit `04c9f8b`.
-  The declared contract SHA256 in `RC_STATUS.md` (`19b37f…`) does not match the
-  observed bytes (`c1653c…`), and `vm-proof.yml` still has conflict markers.
-  CBE-08 is **not PASS** and cannot become PASS until CBS freezes the contract.
-  If the frozen F2 set differs, rewrite fixtures/assertions, not just re-label.
+- **Status: DRAFT.** Target is CBS `contract/v1.7.1` RC commit `3de93ae`.
+  The declared contract SHA256 in `RC_STATUS.md` and the observed bytes both
+  equal `c1653c…`; `vm-proof.yml` has no conflict markers. The contract is
+  still **RC, NOT FROZEN**. CBE-08 is **not PASS** and cannot become PASS until
+  CBS freezes the contract. If the frozen F2 set differs, rewrite
+  fixtures/assertions, not just re-label.
 
 ## CBE-09 — F4 baseline
 

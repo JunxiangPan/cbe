@@ -20,12 +20,20 @@
       "sdist_sha256": "49592d6bd5ae90450cfa6e7e6f2487829d40c97e77d8f2b7d0f4fe6c7113d844"
     },
     "cbs_contract_rc": {
-      "ref": "04c9f8bebbcce96ed77f5f71d6bbf6b34d88255e",
-      "declared_sha256": "19b37fd4f2def25a6945bd59affae3128fe466cc0bfd1809d522ba8291b3c12b",
+      "ref": "3de93aed99cf81c4408cb160dcf5846a8d2bacfe",
+      "short_ref": "3de93ae",
+      "declared_sha256": "c1653cfe1adbc74d2523d2fa12c965ab761fce978061c8e55443eb8b6db3a7e5",
       "observed_sha256": "c1653cfe1adbc74d2523d2fa12c965ab761fce978061c8e55443eb8b6db3a7e5",
-      "hash_match": false,
+      "hash_match": true,
       "frozen": false,
-      "vm_proof_conflict_markers": true
+      "vm_proof_conflict_markers": false,
+      "vm_proof_clean": true
+    },
+    "cbp_1_2_0_rc_final": {
+      "code_ref": "855fed70053000d11f3c0e8cfb6077e80dde1b25",
+      "wheel_sha256": "9469a8e980a536e9481e0b14239cd4857a5cd6173a61043d47645b82cf3b4d51",
+      "sdist_sha256": "98b8916ce26d84b38e492182eda8eba75d0ec8bb03c5ffb6d9001a0c2d7b405b",
+      "rc_run_url": "https://github.com/JunxiangPan/cbp-action/actions/runs/42589460728"
     }
   },
   "checks": {
@@ -37,19 +45,23 @@
       ],
       "cbp_rc_refs": [
         "5da8b87",
-        "bb8d4d6"
+        "bb8d4d6",
+        "855fed7"
       ],
       "rule": "CBP-EXT-SECRET-001",
       "origin_rule": "CBE-SECRET-001",
       "evidence": [
         "evidence/cbp-1.2.0-rc-5da8b87.json",
-        "evidence/cbp-1.2.0-rc-bb8d4d6.json"
-      ]
+        "evidence/cbp-1.2.0-rc-bb8d4d6.json",
+        "evidence/cbp-1.2.0-rc-855fed7.json"
+      ],
+      "cbp_final_rc_ref": "855fed7",
+      "cbp_final_wheel_sha256": "9469a8e980a536e9481e0b14239cd4857a5cd6173a61043d47645b82cf3b4d51"
     },
     "CBE-08": {
       "status": "DRAFT",
       "not_pass": true,
-      "reason": "contract not frozen; declared and observed hashes differ; vm-proof conflict markers"
+      "reason": "contract RC 3de93ae is not frozen; declared and observed hash match c1653c; vm-proof clean"
     },
     "CBE-09": {
       "status": "IMPLEMENTED_BOOTSTRAP_ONLY",
@@ -74,15 +86,11 @@
     }
   },
   "ci": {
-    "status": "SUCCESS",
-    "run_url": "https://github.com/JunxiangPan/cbe/actions/runs/42544634996",
-    "head_sha": "e0421169c4c3a6b1461e754e20bfa8717117f4ba",
-    "ubuntu": "success",
-    "windows": "success",
-    "unit_tests": 71,
-    "e2e_tests": 93,
-    "total_tests": 164,
-    "coverage": "71.82%"
+    "status": "PENDING",
+    "run_url": null,
+    "head_sha": null,
+    "ubuntu": null,
+    "windows": null
   },
   "cbe_wheel": {
     "sha256": "30dd950e1b2b3b6087ba6d777cc432f81da66baa809a1f77f3404f458b4df38e",

@@ -5,12 +5,15 @@
     "command": "cbe-08-draft",
     "status": "DRAFT",
     "not_pass": true,
-    "contract_ref": "04c9f8b",
-    "contract_declared_sha256": "19b37fd4f2def25a6945bd59affae3128fe466cc0bfd1809d522ba8291b3c12b",
+    "contract_ref": "3de93aed99cf81c4408cb160dcf5846a8d2bacfe",
+    "contract_short_ref": "3de93ae",
+    "contract_declared_sha256": "c1653cfe1adbc74d2523d2fa12c965ab761fce978061c8e55443eb8b6db3a7e5",
     "contract_observed_sha256": "c1653cfe1adbc74d2523d2fa12c965ab761fce978061c8e55443eb8b6db3a7e5",
-    "contract_hash_match": false,
+    "contract_hash_match": true,
+    "contract_status": "RC_NOT_FROZEN",
+    "vm_proof_conflict_markers": false,
     "freeze_required": true,
-    "reason": "CBS contract/v1.7.1 is RC and not frozen; vm-proof.yml also has conflict markers",
+    "reason": "CBS contract/v1.7.1 is RC and not frozen; hash and vm-proof are aligned but human freeze is still required",
     "checks": [
       {
         "check": "five_advisory_valid",
@@ -23,7 +26,7 @@
           "gate_status": "PASS",
           "error": null,
           "warnings": [],
-          "manifest_path": "D:\\qq\ufffd\ufffd\ufffd\ufffd\u0534\ufffd\ufffd\ufffd\ufffd\\cbe\\tests\\e2e\\fixtures\\manifests\\five_advisory.json",
+          "manifest_path": "D:\\qq苏瑾言大肥鱼\\cbe\\tests\\e2e\\fixtures\\manifests\\five_advisory.json",
           "manifest_sha256": "8248a65ea61578714b8c85f201c017421e593c6c21be3acc69d44794833ff6a1",
           "schema_version_seen": "1",
           "pack_id": "cbe-five",
@@ -86,7 +89,7 @@
               "message": "provider is not referenced by any rule: gitleaks"
             }
           ],
-          "manifest_path": "D:\\qq\ufffd\ufffd\ufffd\ufffd\u0534\ufffd\ufffd\ufffd\ufffd\\cbe\\tests\\e2e\\fixtures\\manifests\\zero_rules.json",
+          "manifest_path": "D:\\qq苏瑾言大肥鱼\\cbe\\tests\\e2e\\fixtures\\manifests\\zero_rules.json",
           "manifest_sha256": "4bf2ce46f11928b87182e896d547f57779840d6681dea52c58635e66091add0d",
           "schema_version_seen": "1",
           "pack_id": "cbe-core",

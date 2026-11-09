@@ -181,10 +181,11 @@ This mismatch is B-33 and must be resolved upstream before the contract freezes.
 ### D13. CBE 0.1.0 RC boundary
 
 CBE 0.1.0 is an RC candidate only: no tag, no GitHub release, no PyPI upload.
-CBE-07b is real on CBP 1.2.0 RC. CBE-09/10/11 have implementation evidence, but
-there is no previous stable CBE, so F4/CBE-11 evidence is explicitly
-`bootstrap=true`. CBE-08 remains DRAFT against `04c9f8b`; its declared contract
-hash does not match the observed bytes and the contract is not frozen.
+CBE-07b is real on CBP 1.2.0 RC `855fed7`. CBE-09/10/11 have implementation
+evidence, but there is no previous stable CBE, so F4/CBE-11 evidence is
+explicitly `bootstrap=true`. CBE-08 remains DRAFT against CBS `contract/v1.7.1`
+RC `3de93ae`: declared/observed hash both `c1653c…` and `vm-proof.yml` is clean,
+but the contract is still not frozen.
 
 ## Commit sequence
 
@@ -209,3 +210,7 @@ hash does not match the observed bytes and the contract is not frozen.
 10. **Commit 10 (RC candidate, done)**: CBE-07b on CBP 1.2.0 RC; CBE-09/10/11;
     CBE-08 DRAFT; CBP 1.2.0 manifest alignment; package schemas; RC audit
     package. No tag/release. CBE-08 remains DRAFT until CBS freezes v1.7.1.
+11. **Commit 11 (RC closeout, done)**: CBE-08 draft re-pinned to CBS `3de93ae`
+    with matching `c1653c…` hash and clean `vm-proof.yml`, still DRAFT;
+    CBE-07b re-run on CBP 1.2.0 RC `855fed7`; audit SHA256SUMS and CI evidence
+    refreshed. No tag/release.

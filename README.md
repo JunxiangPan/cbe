@@ -18,15 +18,13 @@ bundled in the wheel. CBE-08 is **not PASS**; no tag/release exists.
 
 ## 0.1.0 RC inputs
 
-- CBP 1.2.0 RC: code `5da8b87`, `cbp-rc` wheel
-  `40b0f5f827acefe4f5f9a5891a5d70be9d53557435acd721706c6a9f01fff320`.
-  Later RC candidate `bb8d4d6` wheel
-  `06f8c3d383d39ae4e42cee2a69abdaebdc15cae9fce63a65baf05da4d0998285`
-  was also checked. CBE-07b passes on both in temporary venvs; the project
-  `cbp-action==1.1.0` pin is unchanged.
-- CBS `contract/v1.7.1` RC: commit `04c9f8b`, **not frozen**. Declared contract
-  hash `19b37f…` does not match observed `c1653c…`; `vm-proof.yml` still has
-  conflict markers. CBE-08 remains DRAFT.
+- CBP 1.2.0 RC final candidate: code `855fed7`, `cbp-rc` wheel
+  `9469a8e980a536e9481e0b14239cd4857a5cd6173a61043d47645b82cf3b4d51`.
+  CBE-07b passes in a temporary venv; the project `cbp-action==1.1.0` pin is
+  unchanged. Earlier RC candidates `5da8b87` and `bb8d4d6` also passed.
+- CBS `contract/v1.7.1` RC: commit `3de93ae`; declared and observed contract
+  SHA256 both `c1653c…`; `vm-proof.yml` is clean. The contract is still
+  **NOT FROZEN**. CBE-08 remains DRAFT.
 - CBE: `0.1.0` package version, no tag, no release.
 
 ## Runtime dependencies
@@ -143,8 +141,8 @@ No security rule implementation is included in the first commit.
 
 ## Commit 10 scope (0.1.0 RC candidate)
 
-- CBE-07b re-run against CBP 1.2.0 RC `5da8b87` and `bb8d4d6` in temporary
-  venvs; wheel hashes recorded in `artifacts/rc-0.1.0/`.
+- CBE-07b re-run against CBP 1.2.0 RC `5da8b87`, `bb8d4d6`, and `855fed7` in
+  temporary venvs; wheel hashes recorded in `artifacts/rc-0.1.0/`.
 - CBE-09 F4 baseline selector; CBE-10 F5/F6 release-train and CBP 1.2.0
   manifest checks; CBE-11 self-bootstrap harness.
 - CBE-08 kept DRAFT against CBS `contract/v1.7.1` RC `04c9f8b`; no PASS claim.
@@ -152,6 +150,16 @@ No security rule implementation is included in the first commit.
   no private `cbc_event` manifest field.
 - Schemas bundled in the wheel; installed-wheel smoke test passes.
 - RC audit package at `artifacts/rc-0.1.0/`; no tag, no release.
+
+## Commit 11 scope (RC closeout)
+
+- CBE-08 draft re-pinned to CBS `contract/v1.7.1` RC `3de93ae`; declared and
+  observed contract hash both `c1653c…`; `vm-proof.yml` has no conflict markers;
+  status remains **DRAFT — NOT PASS**.
+- CBE-07b re-run on CBP 1.2.0 RC `855fed7`; wheel
+  `9469a8e980a536e9481e0b14239cd4857a5cd6173a61043d47645b82cf3b4d51`;
+  `CBE-SECRET-001` → `CBP-EXT-SECRET-001`, `origin_rule` retained.
+- RC audit package and SHA256SUMS updated; no tag, no release.
 
 ## Commands
 

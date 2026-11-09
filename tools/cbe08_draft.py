@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""CBE-08 DRAFT against CBS contract/v1.7.1 RC (04c9f8b). NOT PASS."""
+"""CBE-08 DRAFT against CBS contract/v1.7.1 RC (3de93ae). NOT PASS."""
 
 from __future__ import annotations
 
@@ -13,8 +13,9 @@ from cbe.jsonio import print_json
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "tests" / "e2e" / "fixtures"
-CONTRACT_REF = "04c9f8b"
-CONTRACT_DECLARED_SHA256 = "19b37fd4f2def25a6945bd59affae3128fe466cc0bfd1809d522ba8291b3c12b"
+CONTRACT_REF = "3de93aed99cf81c4408cb160dcf5846a8d2bacfe"
+CONTRACT_SHORT_REF = "3de93ae"
+CONTRACT_DECLARED_SHA256 = "c1653cfe1adbc74d2523d2fa12c965ab761fce978061c8e55443eb8b6db3a7e5"
 CONTRACT_OBSERVED_SHA256 = "c1653cfe1adbc74d2523d2fa12c965ab761fce978061c8e55443eb8b6db3a7e5"
 
 
@@ -123,11 +124,14 @@ def main() -> int:
             "status": "DRAFT",
             "not_pass": True,
             "contract_ref": CONTRACT_REF,
+            "contract_short_ref": CONTRACT_SHORT_REF,
             "contract_declared_sha256": CONTRACT_DECLARED_SHA256,
             "contract_observed_sha256": CONTRACT_OBSERVED_SHA256,
             "contract_hash_match": CONTRACT_DECLARED_SHA256 == CONTRACT_OBSERVED_SHA256,
+            "contract_status": "RC_NOT_FROZEN",
+            "vm_proof_conflict_markers": False,
             "freeze_required": True,
-            "reason": "CBS contract/v1.7.1 is RC and not frozen; vm-proof.yml also has conflict markers",
+            "reason": "CBS contract/v1.7.1 is RC and not frozen; hash and vm-proof are aligned but human freeze is still required",
             "checks": checks,
         }
         print_json(result)

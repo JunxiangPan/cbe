@@ -7,9 +7,9 @@ Human audit is required before any tag or publish.
 
 | Input | Ref | Evidence |
 |---|---|---|
-| CBP 1.2.0 RC (requested baseline) | `5da8b87` | wheel `40b0f5f827acefe4f5f9a5891a5d70be9d53557435acd721706c6a9f01fff320`, sdist `e30fa831…` |
-| CBP 1.2.0 RC (later candidate) | `bb8d4d6` | wheel `06f8c3d383d39ae4e42cee2a69abdaebdc15cae9fce63a65baf05da4d0998285`, sdist `49592d6b…` |
-| CBS contract RC | `04c9f8b` | declared `19b37f…` != observed `c1653c…`; not frozen; `vm-proof.yml` has conflict markers |
+| CBP 1.2.0 RC (final candidate) | `855fed7` | wheel `9469a8e980a536e9481e0b14239cd4857a5cd6173a61043d47645b82cf3b4d51`, sdist `98b8916c…` |
+| CBP 1.2.0 RC (earlier candidates) | `5da8b87`, `bb8d4d6` | wheels `40b0f5…`, `06f8c3…` |
+| CBS contract RC | `3de93ae` | declared and observed `c1653cfe…`; `vm-proof.yml` clean; **NOT FROZEN** |
 
 CBP RC wheels were installed only in temporary venvs. The project
 `cbp-action==1.1.0` pin is unchanged.
@@ -19,7 +19,7 @@ CBP RC wheels were installed only in temporary venvs. The project
 | Check | Status | Evidence |
 |---|---|---|
 | CBE-01..CBE-07a | PASS | CI + local E2E |
-| CBE-07b on CBP 1.2.0 RC | PASS on both RC candidates | `evidence/cbp-1.2.0-rc-*.json` |
+| CBE-07b on CBP 1.2.0 RC | PASS on `855fed7` (also earlier RC candidates) | `evidence/cbp-1.2.0-rc-*.json` |
 | CBE-08 F2 | **DRAFT — not PASS** | `evidence/cbe-08-draft.json`, `docs/CBE-08_DRAFT.md` |
 | CBE-09 F4 baseline | implemented; no stable CBE yet | `evidence/cbe-09-baseline.json` |
 | CBE-10 F5/F6 + CBP 1.2.0 fields | PASS | `evidence/cbe-10-f5-f6.json` |
@@ -28,9 +28,9 @@ CBP RC wheels were installed only in temporary venvs. The project
 
 ## Boundaries
 
-- CBE-08 must stay DRAFT until CBS freezes `contract/v1.7.1` and the contract
-  hash is consistent. The observed RC contract hash differs from the declared
-  candidate hash, and `vm-proof.yml` still has conflict markers.
+- CBE-08 must stay DRAFT until CBS freezes `contract/v1.7.1`. The `3de93ae`
+  contract hash and `vm-proof.yml` are now aligned, but the contract still says
+  **RC, NOT FROZEN**; human freeze has not happened.
 - CBP 1.2.0 RC uses `artifact_repository` as an `owner/repo` string; the CBS RC
   contract sketches an object. CBE follows CBP 1.2.0 RC and records the mismatch
   (B-33). No private union.
@@ -41,11 +41,7 @@ CBP RC wheels were installed only in temporary venvs. The project
 
 ## CI
 
-- Ubuntu: success
-- Windows: success
-- Run: https://github.com/JunxiangPan/cbe/actions/runs/42544634996
-- 164 tests = 71 unit + 93 E2E
-- Coverage: 71.82% (gate 60%)
+Status: **PENDING** — fill after the RC closeout commit is pushed.
 
 ## Release discipline
 
