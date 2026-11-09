@@ -45,7 +45,12 @@ historical evidence only; the project pin is no longer 1.1.0/RC.
 
 ## CI
 
-Status: **PENDING** — fill after the CBP 1.2.0 official commit is pushed.
+- Ubuntu: success
+- Windows: success
+- Run: https://github.com/JunxiangPan/cbe/actions/runs/42607680122
+- 167 tests = 71 unit + 96 E2E
+- Coverage: 71.82% (gate 60%)
+- Installed dependency: `cbp-action==1.2.0` (official)
 
 ## Release discipline
 
