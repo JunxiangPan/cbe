@@ -39,7 +39,10 @@
     "enforce_no_bypass_coverage": "90%",
     "ci_run": "https://github.com/JunxiangPan/cbe/actions/runs/42738752814",
     "ci_ubuntu": "success",
-    "ci_windows": "success"
+    "ci_windows": "success",
+    "pre_release_ci": "https://github.com/JunxiangPan/cbe/actions/runs/42738752814",
+    "post_release_ci": "https://github.com/JunxiangPan/cbe/actions/runs/42740507273",
+    "pypi_publish_run": "https://github.com/JunxiangPan/cbe/actions/runs/42739625465"
   },
   "pypi_workflow": {
     "file": ".github/workflows/pypi-publish.yml",
@@ -58,12 +61,14 @@
     "wheel": {
       "filename": "cbe_review-0.1.1-py3-none-any.whl",
       "sha256": "b838e4366196933e043119614d982f5bebdf3cc9a3d382ce7a302b96fd882f58",
-      "size": 54261
+      "size": 54261,
+      "uploaded_at": "2026-11-10T10:05:43+08:00"
     },
     "sdist": {
       "filename": "cbe_review-0.1.1.tar.gz",
       "sha256": "768d2ea635e263b168871df2080537c0a6d84a316cfb34623240e54931bc4c96",
-      "size": 45387
+      "size": 45387,
+      "uploaded_at": "2026-11-10T10:05:44+08:00"
     },
     "verified": {
       "pip_install": "PASS",
@@ -75,7 +80,8 @@
     },
     "old_name": "cbe",
     "old_name_owner": "azizo-b/CBE",
-    "old_name_never_used": true
+    "old_name_never_used": true,
+    "uploaded_at": "2026-11-10T10:05:43+08:00"
   },
   "github_release": {
     "status": "RELEASED",

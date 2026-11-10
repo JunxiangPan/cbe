@@ -59,15 +59,17 @@ cbe --version
 
 ## Verification
 
-- Full suite: **217 passed** (unit + E2E); CI run is authoritative for the
-  committed tree.
+- Full suite: **217 passed** (unit + E2E).
 - `enforce_no_bypass.py` unit coverage: **90%** (target 70%).
 - Full unit coverage: **82.43%** (gate 60%).
-- Ubuntu + Windows CI required before release.
+- Pre-release CI: <https://github.com/JunxiangPan/cbe/actions/runs/42738752814> — Ubuntu + Windows success.
+- Post-release CI: <https://github.com/JunxiangPan/cbe/actions/runs/42740507273> — Ubuntu + Windows success.
+- PyPI publish workflow: <https://github.com/JunxiangPan/cbe/actions/runs/42739625465> — success.
 
 ## Boundaries
 
 - `v0.1.0` tag remains at `13f7ddc`; its GitHub/PyPI artifacts are untouched.
-- 0.1.0 PyPI metadata is immutable; these corrections take effect only in
-  0.1.1.
-- No 0.1.1 tag, GitHub Release, or PyPI upload exists.
+- `v0.1.1` tag / GitHub Release / PyPI upload exist.
+- 0.1.0 PyPI metadata is immutable; corrections are in 0.1.1.
+- Remote reusable workflows are reported only as `UNVERIFIABLE_REMOTE_WORKFLOW`; they are not claimed as verified.
+- CBS/CBP/CBM/CBC were not modified.
