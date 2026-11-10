@@ -2,6 +2,8 @@
 
 Status: **AWAITING HUMAN APPROVAL — no tag, no GitHub Release, no PyPI upload.**
 
+Release readiness: [READINESS.md](READINESS.md).
+
 Distribution: `cbe-review`; import package and CLI remain `cbe`.
 This is a gate-integrity release, not a runtime security boundary.
 
