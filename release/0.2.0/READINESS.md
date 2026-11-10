@@ -1,8 +1,12 @@
 # CBE 0.2.0 Release Readiness
 
-Status: **HOLD — CBP v1.3.0 tag does not contain `cbp-gate`; unsigned; branch/tag protection not configured.**
+Status: **HOLD — waiting for CBP v1.3.1 tag/release; unsigned; branch/tag protection not configured.**
 
-CBP review: [artifacts/cbp-review/1.3.0.md](../../artifacts/cbp-review/1.3.0.md).
+CBP v1.3.0 review: [artifacts/cbp-review/1.3.0.md](../../artifacts/cbp-review/1.3.0.md).
+
+CBP 1.3.1 release commit `c4b5471f4e5cd1485f759192046b8b5f6a90d777` exists,
+but **no v1.3.1 tag or GitHub Release exists yet**. Tag-level review has not
+started; v1.3.0 remains historical FAIL.
 
 The real `cbp-gate` exists only in post-tag HEAD `3b900f5`; the released
 `v1.3.0` tag peels to `4aba2ff` and has no `cbp-gate`.

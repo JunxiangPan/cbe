@@ -33,13 +33,14 @@
   "verification": {
     "tests_total": 252,
     "unit": 126,
-    "full_unit_coverage": "83.00%",
+    "full_unit_coverage": "82.95%",
     "enforce_no_bypass_coverage": "91%",
     "mutation_total": 10,
     "mutation_recall": 1.0,
-    "ci_run": null,
-    "ci_ubuntu": null,
-    "ci_windows": null
+    "ci_run": "https://github.com/JunxiangPan/cbe/actions/runs/42841108822",
+    "ci_ubuntu": "success",
+    "ci_windows": "success",
+    "coverage_note": "Measured 82.95% (three local runs and CI); 82.93 was not used because it does not match the evidence."
   },
   "contract": {
     "report_schema_sha256": "2b3e1c5a77a7f520b80d01fefa328c9353fffc5d65e87782ca90d193839c0e74",
