@@ -37,7 +37,9 @@
     "enforce_no_bypass_coverage": "91%",
     "mutation_total": 10,
     "mutation_recall": 1.0,
-    "ci_run": null
+    "ci_run": "https://github.com/JunxiangPan/cbe/actions/runs/42808359187",
+    "ci_ubuntu": "success",
+    "ci_windows": "success"
   },
   "contract": {
     "report_schema_sha256": "2b3e1c5a77a7f520b80d01fefa328c9353fffc5d65e87782ca90d193839c0e74",

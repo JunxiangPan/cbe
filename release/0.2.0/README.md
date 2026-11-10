@@ -53,4 +53,6 @@ sidecar schemas: present
 - 20% skip threshold unchanged.
 - Sidecar signing is blocked, not faked.
 - Remote workflow fetch is opt-in; no remote workflow is called “verified”.
+- CI: <https://github.com/JunxiangPan/cbe/actions/runs/42808359187>
+  (Ubuntu + Windows success).
 - Human approval is required before tag/release/PyPI.
