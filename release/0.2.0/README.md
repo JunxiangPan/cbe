@@ -26,7 +26,7 @@ This is a gate-integrity release, not a runtime security boundary.
   gate script, manifest core, and contract guard; tamper tests are red.
 - **CBE-CONTRACT-01**: schema, exit codes, object `artifact_repository`, body
   scope, and 20% threshold pinned by tests.
-- **CBE-COV-01**: unit coverage gate raised to 80%; current **82.95%**,
+- **CBE-COV-01**: unit coverage gate raised to 80%; current **82.93%** (latest observed 82.95%),
   `enforce_no_bypass.py` **91%**.
 - **CBE-WIN-01**: Windows path/backslash test, SHA-pinned Actions, no
   self-hosted runner.
