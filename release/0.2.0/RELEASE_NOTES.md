@@ -1,6 +1,6 @@
 # CBE 0.2.0 Release Notes
 
-Status: **staged; no tag, no GitHub Release, no PyPI upload.**
+Status: **ready for owner final confirmation; CBP v1.3.2 PASS; unsigned; no tag, no GitHub Release, no PyPI upload.**
 
 CBE 0.2.0 is the gate-integrity release. Distribution remains `cbe-review`;
 import package and CLI remain `cbe`.

@@ -5,7 +5,7 @@
   "import_package": "cbe",
   "cli": "cbe",
   "version": "0.2.0",
-  "status": "AWAITING_HUMAN_APPROVAL",
+  "status": "READY_FOR_OWNER_FINAL_CONFIRMATION",
   "source_commit": "PENDING_RELEASE_COMMIT",
   "tag": "v0.2.0",
   "tag_created": false,
@@ -25,10 +25,11 @@
   ],
   "approval": {
     "required": true,
+    "conditional": true,
     "approved": false,
-    "approver": null,
-    "approved_at": null,
-    "scope": null
+    "approver": "human operator (conditional approval)",
+    "approved_at": "2026-11-11T01:09:02+08:00",
+    "scope": "GitHub Release + PyPI cbe-review 0.2.0; pending branch/tag protection waiver or config and final confirmation"
   },
   "verification": {
     "tests_total": 252,
@@ -61,5 +62,21 @@
     "old_name": "cbe",
     "old_name_never_used": true
   },
-  "notes": "Staged only. No tag/release/PyPI. v0.1.0 and v0.1.1 are immutable. Report schema unchanged."
+  "notes": "Staged only. CBP v1.3.2 PASS. Awaiting owner final confirmation and branch/tag protection waiver/config. No tag/release/PyPI. Report schema unchanged.",
+  "cbp_review": {
+    "status": "PASS",
+    "tag": "v1.3.2",
+    "commit": "63cc8f08af8cbb803271ffffd2d0b52d2fae4a5c",
+    "tag_is_release_identity": true,
+    "post_tag_head_used": false,
+    "tests": 526,
+    "mutation": "12/12",
+    "hostile": "50/50",
+    "cross_check": "PASS",
+    "cross_check_exit": 0,
+    "signed_assets": "VERIFIED",
+    "cosign": "4/4 Verified OK",
+    "attestations": "SLSA v1 Verified OK",
+    "report": "artifacts/cbp-review/1.3.2.md"
+  }
 }

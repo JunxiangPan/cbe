@@ -1,8 +1,14 @@
 # CBE 0.2.0 release staging
 
-Status: **AWAITING HUMAN APPROVAL — no tag, no GitHub Release, no PyPI upload.**
+Status: **READY FOR OWNER FINAL CONFIRMATION — CBP v1.3.2 PASS; unsigned; no tag, no GitHub Release, no PyPI upload.**
 
 Release readiness: [READINESS.md](READINESS.md).
+
+CBP v1.3.2 tag `63cc8f0` contains a real `cbp-gate`; CBE cross-check passes
+with `--gate-job '^cbp-gate$' --exclude-workflow '.github/workflows/e2e-payload.yml' --strict`.
+The release is **UNSIGNED** (`BLOCKED_NO_SIGNING_IDENTITY`); branch/tag
+protection is still external and requires configuration or an explicit owner
+waiver.
 
 Distribution: `cbe-review`; import package and CLI remain `cbe`.
 This is a gate-integrity release, not a runtime security boundary.

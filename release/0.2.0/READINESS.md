@@ -1,15 +1,15 @@
 # CBE 0.2.0 Release Readiness
 
-Status: **HOLD — waiting for CBP v1.3.1 tag/release; unsigned; branch/tag protection not configured.**
+Status: **READY FOR OWNER FINAL CONFIRMATION — CBP v1.3.2 PASS; unsigned; branch/tag protection not configured.**
 
-CBP v1.3.0 review: [artifacts/cbp-review/1.3.0.md](../../artifacts/cbp-review/1.3.0.md).
+CBP v1.3.2 review: [artifacts/cbp-review/1.3.2.md](../../artifacts/cbp-review/1.3.2.md).
 
-CBP 1.3.1 release commit `c4b5471f4e5cd1485f759192046b8b5f6a90d777` exists,
-but **no v1.3.1 tag or GitHub Release exists yet**. Tag-level review has not
-started; v1.3.0 remains historical FAIL.
+CBP v1.3.2 tag `63cc8f0` contains the real `cbp-gate`; CBE cross-check exits 0
+with `--gate-job '^cbp-gate$' --exclude-workflow '.github/workflows/e2e-payload.yml' --strict`.
+The post-tag docs HEAD `2708339` was not used as the release identity.
 
-The real `cbp-gate` exists only in post-tag HEAD `3b900f5`; the released
-`v1.3.0` tag peels to `4aba2ff` and has no `cbp-gate`.
+CBE is still **UNSIGNED**. Release is blocked only on branch/tag protection
+configuration or an explicit owner waiver, plus final owner confirmation.
 
 This page is the single readiness decision for the 0.2.0 staging package. No
 v0.2.0 tag, GitHub Release, or PyPI upload exists.
@@ -61,7 +61,7 @@ Consequences:
 - The self-protection manifest can be changed in the same commit as a
   protected file; CI catches drift only when the check actually runs.
 
-Owner must configure branch protection/rules before release.
+Owner must configure branch protection/rules **or** approve an explicit external-control waiver before release.
 
 ---
 
@@ -79,14 +79,14 @@ e2e (windows-latest)
 Actual state:
 
 - Both checks are green at the candidate CI run:
-  <https://github.com/JunxiangPan/cbe/actions/runs/42808359187>
+  <https://github.com/JunxiangPan/cbe/actions/runs/42841108822>
 - They are **not required checks** because `main` is unprotected.
 - `pypi` environment has a required reviewer (`JunxiangPan`) and a branch
   policy; this is good but does not protect `main`.
 - Tag protection API returned 404; `v0.1.0`, `v0.1.1`, and future `v0.2.0`
   are not protected by a GitHub tag rule.
 
-Owner must configure required checks and tag protection before release.
+Owner must configure required checks/tag protection **or** approve an explicit external-control waiver before release.
 
 ---
 
@@ -119,17 +119,18 @@ when explicitly fetched; fetch success is not trust.
 
 ## 5. Owner approval
 
-**NOT APPROVED.**
+**CONDITIONAL — FINAL CONFIRMATION PENDING.**
 
 ```text
 approval.required: true
+approval.conditional: true
 approval.approved: false
-approver: null
-approved_at: null
-scope: null
+approver: human operator (conditional approval)
+scope: GitHub Release + PyPI cbe-review 0.2.0
 ```
 
-Release actions still prohibited:
+Release actions still prohibited until the owner confirms branch/tag protection
+or an explicit waiver and gives final release approval:
 
 - no `v0.2.0` tag;
 - no GitHub Release;
@@ -170,21 +171,21 @@ If this waiver is used, all release text must say **unsigned**.
 Release may proceed only after all are true:
 
 - [ ] owner approval record completed;
-- [ ] `main` branch protection configured;
-- [ ] required checks configured (`e2e (ubuntu-latest)`, `e2e (windows-latest)`);
-- [ ] tag protection configured for `v*`;
+- [ ] `main` branch protection configured **or** explicit external-control waiver;
+- [ ] required checks configured (`e2e (ubuntu-latest)`, `e2e (windows-latest)`) **or** explicit waiver;
+- [ ] tag protection configured for `v*` **or** explicit waiver;
 - [ ] signed identity configured **or** unsigned waiver approved;
 - [ ] remote parent-call boundary explicitly accepted;
 - [ ] staging artifacts unchanged:
-  - wheel `a55a14e5a730641afecb0d8dce4c06d2c4e564c0eb6e83aa2f37c436e49d8483`
-  - sdist `219397728d677b7717b8f8b9395773cb333fd213540d6d268b59850436656c96`
+  - wheel `cb4c07ea316836b63f8c9c9538417fb430ab82021d8a6ca10d713add79ab01bc`
+  - sdist `d04b60e0b0cf057370d23c042b6c48f8ac150d75a957c73d288ef69de3e77bdf`
 - [ ] required CI green at the approved commit.
 
-Current verdict: **HOLD.**
+Current verdict: **READY — awaiting owner final confirmation / external-control waiver.**
 
 ## Evidence
 
-- CI: <https://github.com/JunxiangPan/cbe/actions/runs/42808359187>
+- CI: <https://github.com/JunxiangPan/cbe/actions/runs/42841108822>
 - Mutation recall: `artifacts/mutation/cbe-0.2.0.json` (10/10, 1.0)
 - Self-protection: `security/SELF_PROTECTION.sha256`
 - Signing status: `docs/SIGNING.md`
