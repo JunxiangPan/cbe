@@ -1,0 +1,8 @@
+name: enforce-gate
+on: [push]
+jobs:
+  enforce:
+    if: false
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo should-not-run

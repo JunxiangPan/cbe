@@ -153,9 +153,9 @@ def workflow_files(root: str | Path) -> list[Path]:
 def is_cbe_repository(root: str | Path) -> bool:
     """Detect the CBE repository for the self-workflow guard.
 
-    The check is intentionally narrow: a pyproject.toml naming the project
-    `cbe` plus the CBE CLI package. A target repository that merely contains a
-    `cbe` string is not treated as CBE.
+    The check is intentionally narrow: a pyproject.toml naming the distribution
+    `cbe` or `cbe-review` plus the CBE CLI package. A target repository that
+    merely contains a `cbe` string is not treated as CBE.
     """
 
     root_path = Path(root).resolve()
@@ -166,7 +166,10 @@ def is_cbe_repository(root: str | Path) -> bool:
         text = pyproject.read_text(encoding="utf-8")
     except OSError:
         return False
-    return any(line.strip().replace('"', "").replace("'", "") == "name = cbe" for line in text.splitlines())
+    return any(
+        line.strip().replace('"', "").replace("'", "") in {"name = cbe", "name = cbe-review"}
+        for line in text.splitlines()
+    )
 
 
 def exclude_matches(relative: str, patterns: Iterable[str]) -> bool:

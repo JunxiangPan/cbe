@@ -147,10 +147,22 @@ cbe symbol-index --source-root PATH --out PATH
 cbe enforce-no-bypass --manifest PATH --source-root PATH
     --package-type TYPE --package-version vX.Y.Z
     [--config PATH ...] [--env-file PATH ...]
-    [--exemptions PATH] [--workflows]
-    [--exclude-workflow GLOB ...]
+    [--exemptions PATH] [--workflows] [--strict]
+    [--gate-job REGEX] [--exclude-workflow GLOB ...]
     [--output PATH] [--help]
 ```
+
+`--gate-job` defaults to `^cbe[-_]gate$`. Use a different regex when a
+repository renames the gate job (for example `^security-gate$`, `^enforce$`,
+or `^policy-check$`). A workflow with no matching job emits
+`GATE_JOB_NOT_FOUND`; the default remains PASS-with-warning, while `--strict`
+turns it into exit 3.
+
+`--strict` turns unverifiable workflow facts into exit 3:
+`UNVERIFIABLE_CONDITION`, `UNVERIFIABLE_NEEDS_CHAIN`,
+`UNVERIFIABLE_REMOTE_WORKFLOW`, `UNVERIFIABLE_LOCAL_WORKFLOW`, and
+`GATE_JOB_NOT_FOUND`. Without `--strict`, these remain warnings and the result
+is unchanged.
 
 Detection matrix:
 
@@ -168,10 +180,18 @@ Static-analysis limits:
 
 - Conditions that need runtime context (`inputs.*`, `vars.*`, `github.*`,
   `secrets.*`, `env.*`, `needs.*`, matrix/steps, and functions such as
-  `always()`) are not evaluated. A `cbe-gate` job with such an `if` emits
-  warning `UNVERIFIABLE_CONDITION`; exit stays 0 unless another bypass exists.
+  `always()`) are not evaluated. A gate job with such an `if` emits
+  warning `UNVERIFIABLE_CONDITION`; exit stays 0 unless another bypass exists
+  or `--strict` is set.
 - A `needs` chain that contains such a condition emits warning
   `UNVERIFIABLE_NEEDS_CHAIN`; it is never silently treated as reachable.
+- A remote reusable workflow (`uses: owner/repo/.github/workflows/...@ref`)
+  emits `UNVERIFIABLE_REMOTE_WORKFLOW`. It is not fetched and never silently
+  counted as PASS. Local reusable workflows (`uses:
+  ./.github/workflows/*.yml`) are resolved recursively; missing/unsafe local
+  references emit `UNVERIFIABLE_LOCAL_WORKFLOW`.
+- A workflow with no job matching `--gate-job` emits `GATE_JOB_NOT_FOUND`; use
+  `--gate-job` for renamed gates, or `--strict` to fail.
 - Literal expressions that can be evaluated (`!true`, `1 == 2`, `true && false`)
   are evaluated. A statically false gate condition is `WORKFLOW_SKIPS_CBE_GATE`
   exit 3. A statically true condition is reachable.
@@ -180,7 +200,10 @@ Static-analysis limits:
 
 Workflow scope:
 
-- `--workflows` scans only the target repository's `.github/workflows/`.
+- `--workflows` scans the target repository's `.github/workflows/` and
+  recursively follows local job-level `uses: ./.github/workflows/*.yml`
+  references. Remote reusable workflows are reported as unverifiable, not
+  fetched.
 - CBE's own gate workflow is never scanned implicitly.
 - When the target is CBE itself (detected by `pyproject.toml` naming `cbe` plus
   `src/cbe/cli.py`), the command exits 2
@@ -206,10 +229,13 @@ SKIPPED: CBE-QUALITY-001 reason=legacy fixture, tracked in ISSUE-42
   denominator.
 - Output keys: `bypass_attempts`, `exemptions`, `scanned`,
   `applicable_count`, `skip_count`, `not_applicable_count`, `skip_ratio`,
-  `blocking_skip`, `blocking_applicable_count`, `warn_count`, `warnings`.
+  `blocking_skip`, `blocking_applicable_count`, `strict`, `gate_job`,
+  `warn_count`, `warnings`.
 - `warn_count == len(warnings)` and includes `UNVERIFIABLE_CONDITION`,
-  `UNVERIFIABLE_NEEDS_CHAIN`, `EXEMPTION_NOT_APPLICABLE`, `NO_ADVISORY_CHECKS`,
-  and manifest warnings. It is machine-readable output, not stderr-only.
+  `UNVERIFIABLE_NEEDS_CHAIN`, `UNVERIFIABLE_REMOTE_WORKFLOW`,
+  `UNVERIFIABLE_LOCAL_WORKFLOW`, `GATE_JOB_NOT_FOUND`,
+  `EXEMPTION_NOT_APPLICABLE`, `NO_ADVISORY_CHECKS`, and manifest warnings. It
+  is machine-readable output, not stderr-only.
 - Each `bypass_attempts[]` entry includes `reason`. A skipped gate job carries
   `reason=WORKFLOW_SKIPS_CBE_GATE`; `continue-on-error`/`|| true` entries carry
   an empty reason and remain generic workflow bypasses.

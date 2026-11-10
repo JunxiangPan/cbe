@@ -1,0 +1,5 @@
+name: local-call
+on: [push]
+jobs:
+  call-gate:
+    uses: ./.github/workflows/cbe-gate.yml

@@ -218,6 +218,17 @@ def build_parser() -> JsonArgumentParser:
         help="scan target repository .github/workflows; CBE's own workflow must be excluded explicitly",
     )
     bypass_parser.add_argument(
+        "--strict",
+        action="store_true",
+        help="fail (exit 3) when a workflow gate condition or reusable workflow cannot be statically verified",
+    )
+    bypass_parser.add_argument(
+        "--gate-job",
+        default=enforce_no_bypass.DEFAULT_GATE_JOB,
+        metavar="REGEX",
+        help="regex for the gate job name (default: ^cbe[-_]gate$); use when a repository renames the gate",
+    )
+    bypass_parser.add_argument(
         "--exclude-workflow",
         action="append",
         metavar="GLOB",

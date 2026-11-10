@@ -244,7 +244,7 @@ def _run_one(
                 {
                     "schema_version": "1",
                     "provider_id": provider_id,
-                    "tool": {"name": "cbe-builtin", "version": "0.1.0"},
+                    "tool": {"name": "cbe-builtin", "version": "0.1.1"},
                     "results": [],
                 }
             ),

@@ -306,3 +306,105 @@ def test_cbe_self_workflow_requires_explicit_exclusion(tmp_path: Path) -> None:
     assert data is not None
     assert data["bypass_attempts"] == []
     assert data["scanned"]["workflows"] == 0
+
+
+@pytest.mark.parametrize("gate_name", ["security-gate", "enforce", "policy-check"])
+def test_renamed_gate_requires_gate_job_regex(gate_name: str) -> None:
+    repo = fixture("bypass", "renamed-gates-repo")
+    code, data, _, _ = run_cbe(*BASE, "--source-root", repo, "--workflows")
+    assert code == 0
+    assert data is not None
+    assert any(warning["code"] == "GATE_JOB_NOT_FOUND" for warning in data["warnings"])
+
+    code, data, _, _ = run_cbe(
+        *BASE,
+        "--source-root",
+        repo,
+        "--workflows",
+        "--gate-job",
+        f"^{gate_name}$",
+    )
+    assert code == 3
+    assert data is not None
+    assert data["gate_job"] == f"^{gate_name}$"
+    assert any(
+        attempt["reason"] == "WORKFLOW_SKIPS_CBE_GATE" for attempt in data["bypass_attempts"]
+    ), data["bypass_attempts"]
+
+
+@pytest.mark.parametrize(
+    "repo,warning_code",
+    [
+        ("workflow-dynamic-if-repo", "UNVERIFIABLE_CONDITION"),
+        ("workflow-dynamic-needs-repo", "UNVERIFIABLE_NEEDS_CHAIN"),
+    ],
+)
+def test_strict_unverifiable_condition_exits_3(repo: str, warning_code: str) -> None:
+    code, data, _, _ = run_cbe(
+        *BASE,
+        "--source-root",
+        fixture("bypass", repo),
+        "--workflows",
+        "--strict",
+    )
+    assert code == 3
+    assert data is not None
+    assert data["strict"] is True
+    assert data["gate_status"] == "FAIL"
+    assert data["error"]["code"] == warning_code
+
+
+def test_local_reusable_workflow_gate_is_scanned() -> None:
+    code, data, _, _ = run_cbe(
+        *BASE,
+        "--source-root",
+        fixture("bypass", "local-call-repo"),
+        "--workflows",
+    )
+    assert code == 3
+    assert data is not None
+    assert data["scanned"]["workflows"] == 2
+    assert any(
+        attempt["path"].endswith("cbe-gate.yml")
+        and attempt["reason"] == "WORKFLOW_SKIPS_CBE_GATE"
+        for attempt in data["bypass_attempts"]
+    ), data["bypass_attempts"]
+
+
+def test_remote_reusable_workflow_is_unverifiable_not_pass() -> None:
+    code, data, _, _ = run_cbe(
+        *BASE,
+        "--source-root",
+        fixture("bypass", "remote-call-repo"),
+        "--workflows",
+    )
+    assert code == 0
+    assert data is not None
+    assert any(
+        warning["code"] == "UNVERIFIABLE_REMOTE_WORKFLOW" for warning in data["warnings"]
+    ), data["warnings"]
+
+    code, data, _, _ = run_cbe(
+        *BASE,
+        "--source-root",
+        fixture("bypass", "remote-call-repo"),
+        "--workflows",
+        "--strict",
+    )
+    assert code == 3
+    assert data is not None
+    assert data["error"]["code"] == "UNVERIFIABLE_REMOTE_WORKFLOW"
+
+
+def test_invalid_gate_job_regex_is_input_error() -> None:
+    code, data, _, _ = run_cbe(
+        *BASE,
+        "--source-root",
+        fixture("bypass", "clean-repo"),
+        "--workflows",
+        "--gate-job",
+        "[",
+    )
+    assert code == 2
+    assert data is not None
+    assert data["error"]["code"] == "INVALID_GATE_JOB_REGEX"

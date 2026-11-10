@@ -46,8 +46,9 @@ contract.
 - Fixtures: `bypass/config/`, `bypass/comments/`, `bypass/env/`,
   `bypass/workflow-repo/`, `bypass/workflow-if-false-repo/`,
   `bypass/workflow-needs-repo/`, `bypass/workflow-commented-repo/`,
-  `bypass/reachable-repo/`, `bypass/clean-repo/`, `exemptions/`,
-  `manifests/five_advisory.json`
+  `bypass/reachable-repo/`, `bypass/clean-repo/`,
+  `bypass/renamed-gates-repo/`, `bypass/local-call-repo/`,
+  `bypass/remote-call-repo/`, `exemptions/`, `manifests/five_advisory.json`
 - Check: config, comment, env, and target-workflow disable attempts exit 3
   with `bypass_attempts[]`; clean control exits 0; CLI has no disable flags
   (unknown flag = 2); CBE's own `cbe-e2e.yml` is not scanned implicitly; a
@@ -61,7 +62,15 @@ contract.
   passes. Dynamic `if`/`needs` conditions, `env.FOO()`, and
   `inputs.foo == inputs.bar` exit 0 but emit `UNVERIFIABLE_CONDITION` /
   `UNVERIFIABLE_NEEDS_CHAIN` warnings; they are not silently treated as safe.
-  `warn_count` equals `len(warnings)`.
+  `--strict` turns those warnings into exit 3.
+- Renamed gate controls: `security-gate`, `enforce`, and `policy-check` are
+  detected when passed via `--gate-job '^<name>$'`; without the option the
+  default `^cbe[-_]gate$` reports `GATE_JOB_NOT_FOUND` (warning by default,
+  exit 3 under `--strict`).
+- Local/remote calls: job-level `uses: ./.github/workflows/*.yml` is followed
+  recursively and a skipped delegated gate exits 3; a remote reusable workflow
+  emits `UNVERIFIABLE_REMOTE_WORKFLOW`, never a silent PASS.
+- `warn_count` equals `len(warnings)`.
 - Expected: 3 / `FAIL`; clean/reachable = 0; unknown flag = 2; 1/5 = 0; 2/5 = 4.
 
 ## CBE-05 — exemptions

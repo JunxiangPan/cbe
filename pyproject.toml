@@ -1,13 +1,42 @@
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "cbe-review"
-version = "0.1.0"
+version = "0.1.1"
 description = "Cyber-Butler Enforcement gate: rule-pack manifest, provider execution, no-bypass enforcement, and SARIF evidence."
 readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
 requires-python = ">=3.10"
+authors = [
+  { name = "Junxiang Pan" },
+]
+maintainers = [
+  { name = "Junxiang Pan" },
+]
+keywords = [
+  "cbe",
+  "release-gate",
+  "sarif",
+  "supply-chain",
+  "cyber-butler",
+  "provenance",
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Security",
+  "Topic :: Software Development :: Quality Assurance",
+]
 dependencies = [
   "jsonschema>=4.20",
   "pyyaml>=6.0",
@@ -22,6 +51,13 @@ e2e = [
 
 [project.scripts]
 cbe = "cbe.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/JunxiangPan/cbe"
+Repository = "https://github.com/JunxiangPan/cbe"
+Issues = "https://github.com/JunxiangPan/cbe/issues"
+Changelog = "https://github.com/JunxiangPan/cbe/releases"
+Documentation = "https://github.com/JunxiangPan/cbe/blob/main/docs/CLI_V1.md"
 
 [tool.setuptools.packages.find]
 where = ["src"]

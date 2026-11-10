@@ -251,3 +251,24 @@ manifest, including the object `artifact_repository`.
 16. **Commit 16 (CBE-08 PASS, done)**: consume
     `FREEZE_NOTICE_ADDENDUM.md` at `e318cbd` / `51604f56…`; all four frozen F2
     checks match; CBE-08 flips to PASS. No tag/release.
+
+## 0.1.1 decisions
+
+### D17. External-use package and strict workflow gate
+
+CBE 0.1.1 is a metadata/licensing and gate-hardening release:
+
+- Apache-2.0 `LICENSE`, `License-Expression`, and wheel `License-File`.
+- Distribution `cbe-review`; import/CLI remain `cbe`; `pip install cbe` is
+  explicitly documented as the unrelated project.
+- `enforce-no-bypass --strict` turns unverifiable workflow conditions into
+  exit 3; default behavior is unchanged.
+- `--gate-job REGEX` defaults to `^cbe[-_]gate$`; renamed gates can be checked
+  explicitly.
+- Local job-level reusable workflows are followed recursively; remote reusable
+  workflows are `UNVERIFIABLE_REMOTE_WORKFLOW`, never silent PASS.
+
+0.1.0 PyPI metadata is immutable; no 0.1.0 artifact or tag is changed.
+
+17. **Commit 17 (0.1.1 prep)**: license/metadata/README and Batch 2 gate
+    hardening. No tag/release.

@@ -1,0 +1,8 @@
+name: renamed-gates
+on: [push]
+jobs:
+  security-gate:
+    if: false
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo should-not-run

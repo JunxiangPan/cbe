@@ -1,0 +1,5 @@
+name: remote-call
+on: [push]
+jobs:
+  call-remote:
+    uses: example-org/example-repo/.github/workflows/gate.yml@v1

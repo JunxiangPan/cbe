@@ -58,8 +58,14 @@ DEFAULT_CONFIG_PATHS = (
     ".cbe/config.json",
 )
 CBE_WORKFLOW = ".github/workflows/cbe-e2e.yml"
-CBE_GATE_JOB_RE = re.compile(r"(?i)^cbe[-_]gate$")
-COMMENTED_GATE_RE = re.compile(r"(?im)^\s*#\s*cbe[-_]gate\s*:")
+DEFAULT_GATE_JOB = r"^cbe[-_]gate$"
+STRICT_UNVERIFIABLE_CODES = {
+    "UNVERIFIABLE_CONDITION",
+    "UNVERIFIABLE_NEEDS_CHAIN",
+    "UNVERIFIABLE_REMOTE_WORKFLOW",
+    "UNVERIFIABLE_LOCAL_WORKFLOW",
+    "GATE_JOB_NOT_FOUND",
+}
 
 
 @dataclass
@@ -394,21 +400,68 @@ def _line_for(text: str, needle: str) -> int:
     return 0
 
 
-def _scan_workflow_jobs(relative: str, text: str, state: ScanState) -> None:
+def _workflow_job_uses(document: dict[str, Any]) -> list[str]:
+    jobs = document.get("jobs")
+    if not isinstance(jobs, dict):
+        return []
+    uses: list[str] = []
+    for job in jobs.values():
+        if not isinstance(job, dict):
+            continue
+        value = job.get("uses")
+        if isinstance(value, str) and value.strip():
+            uses.append(value.strip())
+    return uses
+
+
+def _resolve_local_workflow(root: Path, raw: str) -> tuple[Path | None, str]:
+    if not raw.startswith("./.github/workflows/"):
+        return None, "local workflow must be under ./.github/workflows/"
+    target = (root / raw[2:]).resolve()
+    try:
+        target.relative_to(root.resolve())
+    except ValueError:
+        return None, "local workflow escapes the source root"
+    if target.suffix.lower() not in {".yml", ".yaml"}:
+        return None, "local workflow is not a YAML file"
+    if not target.is_file():
+        return None, "local workflow file is missing"
+    return target, ""
+
+
+def _commented_gate_lines(text: str, gate_job_re: re.Pattern[str]) -> Iterable[tuple[int, str]]:
+    for line_no, line in enumerate(text.splitlines(), start=1):
+        stripped = line.lstrip()
+        if not stripped.startswith("#"):
+            continue
+        body = stripped[1:].strip()
+        match = re.match(r"([A-Za-z0-9_.-]+)\s*:", body)
+        if match and gate_job_re.search(match.group(1)):
+            yield line_no, line.strip()
+
+
+def _scan_workflow_jobs(
+    relative: str,
+    text: str,
+    state: ScanState,
+    gate_job_re: re.Pattern[str],
+) -> dict[str, Any] | None:
     try:
         document = yaml.safe_load(text)
     except yaml.YAMLError as exc:
         _warn(state, "WORKFLOW_PARSE_FAILED", f"cannot parse workflow: {exc}", path=relative)
-        return
+        return None
     if not isinstance(document, dict):
-        return
+        return None
     jobs = document.get("jobs")
     if not isinstance(jobs, dict):
-        return
+        return document
 
+    matched = False
     for job_name, job in jobs.items():
-        if not isinstance(job_name, str) or not CBE_GATE_JOB_RE.match(job_name):
+        if not isinstance(job_name, str) or not gate_job_re.search(job_name):
             continue
+        matched = True
         line_no = _line_for(text, f"{job_name}:")
         reachability = _job_reachability(job_name, jobs)
         if reachability.status == "unreachable":
@@ -452,21 +505,34 @@ def _scan_workflow_jobs(relative: str, text: str, state: ScanState) -> None:
                     line=line_no,
                 )
 
-    for match in COMMENTED_GATE_RE.finditer(text):
-        line_no = text.count("\n", 0, match.start()) + 1
+    if not matched:
+        _warn(
+            state,
+            "GATE_JOB_NOT_FOUND",
+            f"no job matches gate-job regex {gate_job_re.pattern!r}; use --gate-job for renamed gates",
+            path=relative,
+        )
+
+    for line_no, evidence in _commented_gate_lines(text, gate_job_re):
         state.add(
             BypassAttempt(
                 kind="workflow",
                 path=relative,
                 line=line_no,
                 rule_id="*",
-                evidence=match.group(0).strip(),
+                evidence=evidence,
                 reason="WORKFLOW_SKIPS_CBE_GATE",
             )
         )
+    return document
 
 
-def _scan_workflows(root: Path, patterns: Iterable[str] | None, state: ScanState) -> None:
+def _scan_workflows(
+    root: Path,
+    patterns: Iterable[str] | None,
+    state: ScanState,
+    gate_job_re: re.Pattern[str],
+) -> None:
     excluded = list(patterns or [])
     if is_cbe_repository(root) and not exclude_matches(CBE_WORKFLOW, excluded):
         raise InputError(
@@ -474,16 +540,19 @@ def _scan_workflows(root: Path, patterns: Iterable[str] | None, state: ScanState
             "scanning CBE itself requires --exclude-workflow .github/workflows/cbe-e2e.yml",
         )
 
-    for path in workflow_files(root):
+    seen: set[str] = set()
+
+    def scan(path: Path) -> None:
         relative = path.relative_to(root).as_posix()
-        if exclude_matches(relative, excluded):
-            continue
+        if relative in seen or exclude_matches(relative, excluded):
+            return
+        seen.add(relative)
         text = read_text(path)
         if text is None:
             _warn(state, "WORKFLOW_BINARY_SKIPPED", "workflow is not UTF-8 text", path=relative)
-            continue
+            return
         state.workflows += 1
-        _scan_workflow_jobs(relative, text, state)
+        document = _scan_workflow_jobs(relative, text, state, gate_job_re)
         for line_no, line in enumerate(text.splitlines(), start=1):
             lowered = line.lower()
             if (
@@ -500,6 +569,33 @@ def _scan_workflows(root: Path, patterns: Iterable[str] | None, state: ScanState
                         evidence=line.strip(),
                     )
                 )
+        if not isinstance(document, dict):
+            return
+        for use in _workflow_job_uses(document):
+            line_no = _line_for(text, use)
+            if use.startswith("./"):
+                target, error = _resolve_local_workflow(root, use)
+                if error:
+                    _warn(
+                        state,
+                        "UNVERIFIABLE_LOCAL_WORKFLOW",
+                        f"cannot inspect local reusable workflow {use}: {error}",
+                        path=relative,
+                        line=line_no,
+                    )
+                elif target is not None:
+                    scan(target)
+            else:
+                _warn(
+                    state,
+                    "UNVERIFIABLE_REMOTE_WORKFLOW",
+                    f"remote reusable workflow is not fetched: {use}",
+                    path=relative,
+                    line=line_no,
+                )
+
+    for path in workflow_files(root):
+        scan(path)
 
 
 def _inspection_failure(inspection: Inspection) -> dict[str, Any] | None:
@@ -550,6 +646,35 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     advisory_count = sum(1 for rule in applicable_rules if rule.gate == "advisory")
     blocking_count = sum(1 for rule in applicable_rules if rule.gate == "blocking")
 
+    gate_job_pattern = getattr(args, "gate_job", DEFAULT_GATE_JOB) or DEFAULT_GATE_JOB
+    try:
+        gate_job_re = re.compile(gate_job_pattern)
+    except re.error as exc:
+        return {
+            "schema_version": "1",
+            "command": COMMAND,
+            "ok": False,
+            "exit_code": 2,
+            "gate_status": "FAIL",
+            "bypass_attempts": [],
+            "exemptions": [],
+            "scanned": {"files": 0, "configs": 0, "env_vars": 0, "workflows": 0},
+            "applicable_count": advisory_count,
+            "skip_count": 0,
+            "not_applicable_count": inspection.not_applicable_rule_count or 0,
+            "skip_ratio": 0.0,
+            "blocking_skip": False,
+            "warn_count": len(inspection.warnings),
+            "strict": bool(getattr(args, "strict", False)),
+            "gate_job": gate_job_pattern,
+            "error": {
+                "code": "INVALID_GATE_JOB_REGEX",
+                "message": f"invalid --gate-job regex: {exc}",
+                "details": [],
+            },
+            "warnings": inspection.warnings,
+        }
+
     exemptions, exemption_errors = parse_exemptions(args.exemptions, ruleset, applicable_ids)
     if exemption_errors:
         return {
@@ -581,7 +706,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     _scan_comments(root, state)
     _scan_env(args.env_file, state)
     if args.workflows:
-        _scan_workflows(root, args.exclude_workflow, state)
+        _scan_workflows(root, args.exclude_workflow, state, gate_job_re)
 
     skip_count = sum(1 for exemption in exemptions if exemption.counted)
     blocking_skip = any(exemption.blocking for exemption in exemptions) or any(
@@ -602,6 +727,11 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
 
     exit_code = 0
     error: dict[str, Any] | None = None
+    strict_warnings = (
+        [warning for warning in state.warnings if warning.get("code") in STRICT_UNVERIFIABLE_CODES]
+        if getattr(args, "strict", False)
+        else []
+    )
     if state.attempts:
         exit_code = 3
         error = {
@@ -615,6 +745,17 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             "code": "BLOCKING_SKIP",
             "message": "a blocking rule or check was skipped",
             "details": inspection.gate_errors,
+        }
+    elif strict_warnings:
+        exit_code = 3
+        first = next(
+            (warning for warning in strict_warnings if warning.get("code") != "GATE_JOB_NOT_FOUND"),
+            strict_warnings[0],
+        )
+        error = {
+            "code": first["code"],
+            "message": "strict mode: an unverifiable gate condition cannot be treated as PASS",
+            "details": strict_warnings,
         }
     elif inspection.gate_errors:
         exit_code = 3
@@ -648,6 +789,8 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "skip_ratio": round(skip_ratio, 6),
         "blocking_skip": blocking_skip,
         "blocking_applicable_count": blocking_count,
+        "strict": bool(getattr(args, "strict", False)),
+        "gate_job": gate_job_pattern,
         "warn_count": len(state.warnings),
         "error": error,
         "warnings": state.warnings,
