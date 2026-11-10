@@ -20,7 +20,7 @@ This is a gate-integrity release, not a runtime security boundary.
   gate script, manifest core, and contract guard; tamper tests are red.
 - **CBE-CONTRACT-01**: schema, exit codes, object `artifact_repository`, body
   scope, and 20% threshold pinned by tests.
-- **CBE-COV-01**: unit coverage gate raised to 80%; current **82.98%**,
+- **CBE-COV-01**: unit coverage gate raised to 80%; current **83.00%**,
   `enforce_no_bypass.py` **91%**.
 - **CBE-WIN-01**: Windows path/backslash test, SHA-pinned Actions, no
   self-hosted runner.
@@ -35,8 +35,8 @@ This is a gate-integrity release, not a runtime security boundary.
 
 | File | SHA256 | Size |
 |---|---|---|
-| `cbe_review-0.2.0-py3-none-any.whl` | `a55a14e5a730641afecb0d8dce4c06d2c4e564c0eb6e83aa2f37c436e49d8483` | 57,162 B |
-| `cbe_review-0.2.0.tar.gz` | `219397728d677b7717b8f8b9395773cb333fd213540d6d268b59850436656c96` | 47,932 B |
+| `cbe_review-0.2.0-py3-none-any.whl` | `cb4c07ea316836b63f8c9c9538417fb430ab82021d8a6ca10d713add79ab01bc` | 57,179 B |
+| `cbe_review-0.2.0.tar.gz` | `d04b60e0b0cf057370d23c042b6c48f8ac150d75a957c73d288ef69de3e77bdf` | 47,966 B |
 
 Wheel metadata:
 

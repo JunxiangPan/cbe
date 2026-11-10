@@ -197,15 +197,28 @@ def test_workflow_parse_binary_and_no_jobs(tmp_path: Path) -> None:
     assert any(item["code"] == "WORKFLOW_BINARY_SKIPPED" for item in state.warnings)
 
 
-def test_no_matching_gate_job_warns() -> None:
+def test_no_matching_gate_job_warns(tmp_path: Path) -> None:
+    wf = tmp_path / ".github" / "workflows" / "x.yml"
+    wf.parent.mkdir(parents=True)
+    wf.write_text("jobs:\n  other:\n    runs-on: ubuntu-latest\n", encoding="utf-8")
     state = _state()
-    enb._scan_workflow_jobs(
-        "x.yml",
-        "jobs:\n  other:\n    runs-on: ubuntu-latest\n",
-        state,
-        re.compile(enb.DEFAULT_GATE_JOB),
-    )
+    enb._scan_workflows(tmp_path, None, state, re.compile(enb.DEFAULT_GATE_JOB))
     assert any(item["code"] == "GATE_JOB_NOT_FOUND" for item in state.warnings)
+
+
+def test_one_matching_gate_avoids_global_missing_warning(tmp_path: Path) -> None:
+    workflows = tmp_path / ".github" / "workflows"
+    workflows.mkdir(parents=True)
+    (workflows / "gate.yml").write_text(
+        "jobs:\n  cbp-gate:\n    runs-on: ubuntu-latest\n", encoding="utf-8"
+    )
+    (workflows / "other.yml").write_text(
+        "jobs:\n  build:\n    runs-on: ubuntu-latest\n", encoding="utf-8"
+    )
+    state = _state()
+    enb._scan_workflows(tmp_path, None, state, re.compile("^cbp-gate$"))
+    assert not any(item["code"] == "GATE_JOB_NOT_FOUND" for item in state.warnings)
+    assert state.gate_jobs == 1
 
 
 def test_commented_gate_is_bypass() -> None:

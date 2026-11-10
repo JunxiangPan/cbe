@@ -109,6 +109,7 @@ class ScanState:
     configs: int = 0
     env_vars: int = 0
     workflows: int = 0
+    gate_jobs: int = 0
 
     def add(self, attempt: BypassAttempt) -> None:
         key = (attempt.kind, attempt.path, attempt.line, attempt.rule_id)
@@ -518,13 +519,8 @@ def _scan_workflow_jobs(
                     line=line_no,
                 )
 
-    if not matched:
-        _warn(
-            state,
-            "GATE_JOB_NOT_FOUND",
-            f"no job matches gate-job regex {gate_job_re.pattern!r}; use --gate-job for renamed gates",
-            path=relative,
-        )
+    if matched:
+        state.gate_jobs += 1
 
     for line_no, evidence in _commented_gate_lines(text, gate_job_re):
         state.add(
@@ -716,6 +712,12 @@ def _scan_workflows(
 
     for path in workflow_files(root):
         scan_local(path)
+    if state.gate_jobs == 0:
+        _warn(
+            state,
+            "GATE_JOB_NOT_FOUND",
+            f"no scanned workflow has a job matching {gate_job_re.pattern!r}; use --gate-job for renamed gates",
+        )
 
 
 def _inspection_failure(inspection: Inspection) -> dict[str, Any] | None:
