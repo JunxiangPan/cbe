@@ -1,6 +1,6 @@
 # CBE 0.1.1 — External-use package
 
-Status: **prepared, NOT tagged and NOT released.**
+Status: **APPROVED — release in progress (GitHub + PyPI cbe-review 0.1.1).**
 This is a staging package for external use; `v0.1.0` and its artifacts are
 unchanged.
 

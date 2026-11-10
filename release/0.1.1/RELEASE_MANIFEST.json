@@ -1,0 +1,65 @@
+{
+  "schema_version": "1",
+  "product": "cbe",
+  "distribution_name": "cbe-review",
+  "import_package": "cbe",
+  "cli": "cbe",
+  "version": "0.1.1",
+  "status": "APPROVED_FOR_RELEASE",
+  "source_commit": "06f8f50939be8e3689d6da17f4b78ec49619795b",
+  "source_tag": "v0.1.1",
+  "tag_target": "06f8f50939be8e3689d6da17f4b78ec49619795b",
+  "tag_created": false,
+  "release_created": false,
+  "pypi_uploaded": false,
+  "artifacts": [
+    {
+      "name": "cbe_review-0.1.1-py3-none-any.whl",
+      "sha256": "b838e4366196933e043119614d982f5bebdf3cc9a3d382ce7a302b96fd882f58",
+      "size": 54261
+    },
+    {
+      "name": "cbe_review-0.1.1.tar.gz",
+      "sha256": "768d2ea635e263b168871df2080537c0a6d84a316cfb34623240e54931bc4c96",
+      "size": 45387
+    }
+  ],
+  "approval": {
+    "required": true,
+    "approved": true,
+    "approver": "human operator (chat approval)",
+    "approved_at": "2026-11-10T09:37:57+08:00",
+    "scope": "GitHub Release + PyPI cbe-review 0.1.1"
+  },
+  "verification": {
+    "smoke": "PASS",
+    "tests_total": 217,
+    "unit": 107,
+    "full_unit_coverage": "82.43%",
+    "enforce_no_bypass_coverage": "90%",
+    "ci_run": "https://github.com/JunxiangPan/cbe/actions/runs/42738752814",
+    "ci_ubuntu": "success",
+    "ci_windows": "success"
+  },
+  "pypi_workflow": {
+    "file": ".github/workflows/pypi-publish.yml",
+    "default_tag": "v0.1.1",
+    "download_pattern": "cbe_review-*",
+    "rebuild": false
+  },
+  "pypi": {
+    "status": "PENDING_WORKFLOW",
+    "uploaded": false,
+    "requested_name": "cbe-review",
+    "version": "0.1.1",
+    "url": null,
+    "old_name": "cbe",
+    "old_name_owner": "azizo-b/CBE",
+    "old_name_never_used": true
+  },
+  "github_release": {
+    "status": "PENDING",
+    "url": null
+  },
+  "notes": "Release only from staged wheel/sdist. v0.1.0 tag and assets are immutable. No rebuild."
+}
