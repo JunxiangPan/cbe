@@ -1,6 +1,10 @@
 # CBE 0.1.1 metadata and licensing
 
-Status: **prepared for 0.1.1; 0.1.0 remains immutable.**
+Status: **released as 0.1.1; 0.1.0 remains immutable.**
+
+- GitHub Release: <https://github.com/JunxiangPan/cbe/releases/tag/v0.1.1>
+- PyPI: <https://pypi.org/project/cbe-review/0.1.1/>
+- Tag: `v0.1.1` → `06f8f50`
 
 ## Distribution identity
 

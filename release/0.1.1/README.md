@@ -1,8 +1,11 @@
 # CBE 0.1.1 — External-use package
 
-Status: **APPROVED — release in progress (GitHub + PyPI cbe-review 0.1.1).**
-This is a staging package for external use; `v0.1.0` and its artifacts are
-unchanged.
+Status: **RELEASED on GitHub and PyPI.**
+This is the external-use package; `v0.1.0` and its artifacts are unchanged.
+
+- GitHub Release: <https://github.com/JunxiangPan/cbe/releases/tag/v0.1.1>
+- PyPI: <https://pypi.org/project/cbe-review/0.1.1/>
+- Tag: `v0.1.1` → `06f8f50`
 
 ## Distribution identity
 

@@ -5,13 +5,13 @@
   "import_package": "cbe",
   "cli": "cbe",
   "version": "0.1.1",
-  "status": "APPROVED_FOR_RELEASE",
+  "status": "RELEASED",
   "source_commit": "06f8f50939be8e3689d6da17f4b78ec49619795b",
   "source_tag": "v0.1.1",
   "tag_target": "06f8f50939be8e3689d6da17f4b78ec49619795b",
-  "tag_created": false,
-  "release_created": false,
-  "pypi_uploaded": false,
+  "tag_created": true,
+  "release_created": true,
+  "pypi_uploaded": true,
   "artifacts": [
     {
       "name": "cbe_review-0.1.1-py3-none-any.whl",
@@ -48,18 +48,43 @@
     "rebuild": false
   },
   "pypi": {
-    "status": "PENDING_WORKFLOW",
-    "uploaded": false,
+    "status": "UPLOADED_VERIFIED",
+    "uploaded": true,
     "requested_name": "cbe-review",
+    "name": "cbe-review",
     "version": "0.1.1",
-    "url": null,
+    "url": "https://pypi.org/project/cbe-review/0.1.1/",
+    "json_url": "https://pypi.org/pypi/cbe-review/0.1.1/json",
+    "wheel": {
+      "filename": "cbe_review-0.1.1-py3-none-any.whl",
+      "sha256": "b838e4366196933e043119614d982f5bebdf3cc9a3d382ce7a302b96fd882f58",
+      "size": 54261
+    },
+    "sdist": {
+      "filename": "cbe_review-0.1.1.tar.gz",
+      "sha256": "768d2ea635e263b168871df2080537c0a6d84a316cfb34623240e54931bc4c96",
+      "size": 45387
+    },
+    "verified": {
+      "pip_install": "PASS",
+      "metadata_version": "0.1.1",
+      "license": "Apache-2.0",
+      "import": "cbe",
+      "cli": "cbe 0.1.1",
+      "subcommands": 5
+    },
     "old_name": "cbe",
     "old_name_owner": "azizo-b/CBE",
     "old_name_never_used": true
   },
   "github_release": {
-    "status": "PENDING",
-    "url": null
+    "status": "RELEASED",
+    "url": "https://github.com/JunxiangPan/cbe/releases/tag/v0.1.1"
   },
-  "notes": "Release only from staged wheel/sdist. v0.1.0 tag and assets are immutable. No rebuild."
+  "notes": "Release only from staged wheel/sdist. v0.1.0 tag and assets are immutable. No rebuild.",
+  "tag": "v0.1.1",
+  "tag_object_sha": "b1673e4328935788b8aca420abb27ad5d0831f82",
+  "release_url": "https://github.com/JunxiangPan/cbe/releases/tag/v0.1.1",
+  "workflow_run": "https://github.com/JunxiangPan/cbe/actions/runs/42739625465",
+  "release_package_commit": "31febc07229a6305bae5a887cf6b4989ef97ebf8"
 }

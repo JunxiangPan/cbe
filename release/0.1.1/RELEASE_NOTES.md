@@ -1,6 +1,10 @@
 # CBE 0.1.1 Release Notes
 
-Status: **APPROVED — release in progress (GitHub + PyPI cbe-review 0.1.1).**
+Status: **RELEASED on GitHub and PyPI.**
+
+- GitHub Release: <https://github.com/JunxiangPan/cbe/releases/tag/v0.1.1>
+- PyPI: <https://pypi.org/project/cbe-review/0.1.1/>
+- Tag: `v0.1.1` → `06f8f50`
 
 CBE 0.1.1 is the external-use hardening release. Distribution remains
 `cbe-review`; the import package and CLI remain `cbe`.

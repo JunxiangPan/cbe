@@ -82,15 +82,14 @@ Topics: `release-gate`, `sarif`, `supply-chain`, `provenance`, `python`.
 
 ## Status and compatibility
 
-CBE 0.1.0 is released on GitHub and PyPI
-([`cbe-review==0.1.0`](https://pypi.org/project/cbe-review/0.1.0/)).
-This tree is **0.1.1**, adding Apache-2.0 licensing and complete package
-metadata.
+CBE 0.1.1 is released on GitHub and PyPI
+([`cbe-review==0.1.1`](https://pypi.org/project/cbe-review/0.1.1/)).
+It adds Apache-2.0 licensing, complete package metadata, and the hardened
+workflow gate (`--strict`, `--gate-job`, local reusable-workflow recursion).
 
-**0.1.0 metadata is immutable.** PyPI metadata (license, classifiers, project
-URLs, author) cannot be changed after upload; the corrections in 0.1.1 take
-effect only in the new release. The 0.1.0 artifacts and `v0.1.0` tag are
-unchanged.
+`0.1.0` remains available for historical installs
+([`cbe-review==0.1.0`](https://pypi.org/project/cbe-review/0.1.0/)); its
+metadata is immutable. The 0.1.0 artifacts and `v0.1.0` tag are unchanged.
 
 ## License
 

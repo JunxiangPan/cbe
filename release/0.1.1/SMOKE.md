@@ -40,3 +40,15 @@ remote uses + --strict                  exit 3  UNVERIFIABLE_REMOTE_WORKFLOW
 ```
 
 No rebuild was performed for this smoke; the staged wheel was used.
+
+## Post-release PyPI smoke
+
+```text
+pip install cbe-review==0.1.1     PASS
+cbe --version                     cbe 0.1.1
+cbe --help / five subcommands     PASS
+metadata version                  0.1.1
+License-Expression / License-File Apache-2.0 / LICENSE
+```
+
+PyPI wheel/sdist digests match the staged hashes exactly.
