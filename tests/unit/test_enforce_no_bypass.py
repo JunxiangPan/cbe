@@ -28,6 +28,7 @@ def _args(source: Path, **overrides: object) -> SimpleNamespace:
         exclude_workflow=None,
         strict=False,
         gate_job=enb.DEFAULT_GATE_JOB,
+        fetch_remote=False,
     )
     base.update(overrides)
     return SimpleNamespace(**base)
@@ -298,3 +299,271 @@ def test_inspection_failure_for_invalid_manifest(tmp_path: Path) -> None:
     data = enb.run(_args(FIXTURES / "bypass" / "clean-repo", manifest=str(bad)))
     assert data["exit_code"] == 2
     assert data["error"]["code"] == "MANIFEST_INVALID"
+
+
+REMOTE_USE = "example-org/example-repo/.github/workflows/gate.yml@v1"
+
+
+def _remote_root(tmp_path: Path) -> Path:
+    wf = tmp_path / ".github" / "workflows" / "ci.yml"
+    wf.parent.mkdir(parents=True)
+    wf.write_text(
+        "jobs:\n  call:\n    uses: "
+        + REMOTE_USE
+        + "\n",
+        encoding="utf-8",
+    )
+    return tmp_path
+
+
+def test_remote_workflow_default_warns_and_strict_fails(tmp_path: Path) -> None:
+    root = _remote_root(tmp_path)
+    data = enb.run(_args(root))
+    assert data["exit_code"] == 0
+    assert any(item["code"] == "UNVERIFIABLE_REMOTE_WORKFLOW" for item in data["warnings"])
+
+    data = enb.run(_args(root, strict=True))
+    assert data["exit_code"] == 3
+    assert data["error"]["code"] == "UNVERIFIABLE_REMOTE_WORKFLOW"
+
+
+def test_remote_workflow_fetch_if_false_detected(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    root = _remote_root(tmp_path)
+    content = (
+        "on: [push]\n"
+        "jobs:\n"
+        "  cbe-gate:\n"
+        "    if: false\n"
+        "    runs-on: ubuntu-latest\n"
+        "    steps:\n"
+        "      - run: echo skipped\n"
+    )
+    monkeypatch.setattr(enb, "_fetch_remote_workflow", lambda use: content)
+    data = enb.run(_args(root, fetch_remote=True))
+    assert data["exit_code"] == 3
+    assert any(item["reason"] == "WORKFLOW_SKIPS_CBE_GATE" for item in data["bypass_attempts"])
+    assert data["scanned"]["workflows"] == 2
+
+
+def test_remote_workflow_fetch_ghost_needs_detected(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    root = _remote_root(tmp_path)
+    content = (
+        "on: [push]\n"
+        "jobs:\n"
+        "  cbe-gate:\n"
+        "    needs: ghost\n"
+        "    runs-on: ubuntu-latest\n"
+    )
+    monkeypatch.setattr(enb, "_fetch_remote_workflow", lambda use: content)
+    data = enb.run(_args(root, fetch_remote=True))
+    assert data["exit_code"] == 3
+    assert any(item["reason"] == "WORKFLOW_SKIPS_CBE_GATE" for item in data["bypass_attempts"])
+
+
+def test_remote_workflow_empty_shell_fails_strict(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    root = _remote_root(tmp_path)
+    monkeypatch.setattr(enb, "_fetch_remote_workflow", lambda use: "name: shell\non: [push]\njobs: {}\n")
+    data = enb.run(_args(root, fetch_remote=True, strict=True))
+    assert data["exit_code"] == 3
+    assert data["error"]["code"] == "GATE_JOB_NOT_FOUND"
+
+
+def test_remote_workflow_network_failure_warns_and_strict_fails(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    root = _remote_root(tmp_path)
+
+    def fail(use: str) -> str:
+        raise enb.RemoteWorkflowError("network failure")
+
+    monkeypatch.setattr(enb, "_fetch_remote_workflow", fail)
+    data = enb.run(_args(root, fetch_remote=True))
+    assert data["exit_code"] == 0
+    assert any("network failure" in item["message"] for item in data["warnings"])
+
+    data = enb.run(_args(root, fetch_remote=True, strict=True))
+    assert data["exit_code"] == 3
+    assert data["error"]["code"] == "UNVERIFIABLE_REMOTE_WORKFLOW"
+
+
+def test_remote_workflow_auth_failure_warns(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    root = _remote_root(tmp_path)
+
+    def fail(use: str) -> str:
+        raise enb.RemoteWorkflowError("auth failure: HTTP 403")
+
+    monkeypatch.setattr(enb, "_fetch_remote_workflow", fail)
+    data = enb.run(_args(root, fetch_remote=True))
+    assert data["exit_code"] == 0
+    assert any("auth failure" in item["message"] for item in data["warnings"])
+
+
+def test_skip_ratio_early_warnings_do_not_change_20_percent_gate() -> None:
+    manifest = FIXTURES / "manifests" / "five_advisory.json"
+    args = _args(
+        FIXTURES / "bypass" / "clean-repo",
+        manifest=str(manifest),
+        exemptions=str(FIXTURES / "exemptions" / "valid.txt"),
+    )
+    data = enb.run(args)
+    assert data["exit_code"] == 0
+    assert any(item["code"] == "SKIP_RATIO_EARLY_WARNING_15" for item in data["warnings"])
+
+    args = _args(
+        FIXTURES / "bypass" / "clean-repo",
+        manifest=str(manifest),
+        exemptions=str(FIXTURES / "exemptions" / "two_valid.txt"),
+    )
+    data = enb.run(args)
+    assert data["exit_code"] == 4
+    assert data["error"]["code"] == "SKIP_RATIO_EXCEEDED"
+
+
+def test_local_workflow_accepts_windows_backslashes(tmp_path: Path) -> None:
+    wf = tmp_path / ".github" / "workflows" / "child.yml"
+    wf.parent.mkdir(parents=True)
+    wf.write_text("jobs:\n  cbe-gate:\n    if: false\n    runs-on: ubuntu-latest\n", encoding="utf-8")
+    target, error = enb._resolve_local_workflow(
+        tmp_path, r".\.github\workflows\child.yml"
+    )
+    assert error == ""
+    assert target == wf.resolve()
+
+
+def test_cbp_gate_job_can_be_selected_separately(tmp_path: Path) -> None:
+    wf = tmp_path / ".github" / "workflows" / "cross.yml"
+    wf.parent.mkdir(parents=True)
+    wf.write_text(
+        "jobs:\n"
+        "  cbe-gate:\n"
+        "    runs-on: ubuntu-latest\n"
+        "  cbp-gate:\n"
+        "    if: false\n"
+        "    runs-on: ubuntu-latest\n",
+        encoding="utf-8",
+    )
+    data = enb.run(_args(tmp_path, gate_job="^cbp-gate$"))
+    assert data["exit_code"] == 3
+    assert any(item["reason"] == "WORKFLOW_SKIPS_CBE_GATE" for item in data["bypass_attempts"])
+
+
+class _Response:
+    def __init__(self, data: bytes) -> None:
+        self.data = data
+
+    def __enter__(self) -> "_Response":
+        return self
+
+    def __exit__(self, *args: object) -> None:
+        return None
+
+    def read(self, limit: int = -1) -> bytes:
+        return self.data
+
+
+def test_fetch_remote_workflow_success(monkeypatch: pytest.MonkeyPatch) -> None:
+    captured: dict[str, object] = {}
+
+    def fake_urlopen(request, timeout: int):
+        captured["url"] = request.full_url
+        captured["timeout"] = timeout
+        return _Response(b"jobs: {}\n")
+
+    monkeypatch.setattr(enb.urllib.request, "urlopen", fake_urlopen)
+    text = enb._fetch_remote_workflow(REMOTE_USE, timeout=5)
+    assert text == "jobs: {}\n"
+    assert "raw.githubusercontent.com" in str(captured["url"])
+    assert captured["timeout"] == 5
+
+
+@pytest.mark.parametrize("kind", ["auth", "http", "network"])
+def test_fetch_remote_workflow_errors(
+    monkeypatch: pytest.MonkeyPatch,
+    kind: str,
+) -> None:
+    def fail(request, timeout: int):
+        if kind == "network":
+            raise enb.urllib.error.URLError("offline")
+        raise enb.urllib.error.HTTPError("u", 403 if kind == "auth" else 404, kind, {}, None)
+
+    monkeypatch.setattr(enb.urllib.request, "urlopen", fail)
+    with pytest.raises(enb.RemoteWorkflowError) as caught:
+        enb._fetch_remote_workflow(REMOTE_USE)
+    assert kind in str(caught.value)
+
+
+def test_fetch_remote_workflow_size_and_encoding(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        enb.urllib.request,
+        "urlopen",
+        lambda request, timeout: _Response(b"x" * 2_000_001),
+    )
+    with pytest.raises(enb.RemoteWorkflowError):
+        enb._fetch_remote_workflow(REMOTE_USE)
+
+    monkeypatch.setattr(
+        enb.urllib.request,
+        "urlopen",
+        lambda request, timeout: _Response(b"\xff\xfe"),
+    )
+    with pytest.raises(enb.RemoteWorkflowError):
+        enb._fetch_remote_workflow(REMOTE_USE)
+
+
+def test_remote_reference_parse_and_unsupported() -> None:
+    assert enb._parse_remote_use("nope") is None
+    assert enb._parse_remote_use("owner/repo/.github/workflows/x.yml@v1") is not None
+    with pytest.raises(enb.RemoteWorkflowError):
+        enb._fetch_remote_workflow("nope")
+
+
+def test_remote_nested_local_workflow_is_followed(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root = _remote_root(tmp_path)
+    calls: list[str] = []
+
+    def fetcher(use: str) -> str:
+        calls.append(use)
+        if use.endswith("gate.yml@v1"):
+            return (
+                "jobs:\n"
+                "  delegate:\n"
+                "    uses: ./.github/workflows/child.yml\n"
+            )
+        if use.endswith("child.yml@v1"):
+            return (
+                "jobs:\n"
+                "  cbe-gate:\n"
+                "    if: false\n"
+                "    runs-on: ubuntu-latest\n"
+            )
+        raise enb.RemoteWorkflowError("unexpected")
+
+    monkeypatch.setattr(enb, "_fetch_remote_workflow", fetcher)
+    data = enb.run(_args(root, fetch_remote=True))
+    assert data["exit_code"] == 3
+    assert data["scanned"]["workflows"] == 3
+    assert any(item["reason"] == "WORKFLOW_SKIPS_CBE_GATE" for item in data["bypass_attempts"])
+    assert any("child.yml@v1" in item for item in calls)
+
+
+def test_remote_local_reference_outside_workflows_is_unverifiable(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root = _remote_root(tmp_path)
+
+    def fetcher(use: str) -> str:
+        return "jobs:\n  delegate:\n    uses: ./actions/local\n"
+
+    monkeypatch.setattr(enb, "_fetch_remote_workflow", fetcher)
+    data = enb.run(_args(root, fetch_remote=True, strict=True))
+    assert data["exit_code"] == 3
+    assert any(item["code"] == "UNVERIFIABLE_LOCAL_WORKFLOW" for item in data["warnings"])
+
+
+def test_remote_unsupported_reference_warns(tmp_path: Path) -> None:
+    wf = tmp_path / ".github" / "workflows" / "ci.yml"
+    wf.parent.mkdir(parents=True)
+    wf.write_text("jobs:\n  call:\n    uses: not-a-workflow\n", encoding="utf-8")
+    data = enb.run(_args(tmp_path, fetch_remote=True, strict=True))
+    assert data["exit_code"] == 3
+    assert any("unsupported remote reusable workflow" in item["message"] for item in data["warnings"])

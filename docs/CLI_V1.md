@@ -148,7 +148,7 @@ cbe enforce-no-bypass --manifest PATH --source-root PATH
     --package-type TYPE --package-version vX.Y.Z
     [--config PATH ...] [--env-file PATH ...]
     [--exemptions PATH] [--workflows] [--strict]
-    [--gate-job REGEX] [--exclude-workflow GLOB ...]
+    [--gate-job REGEX] [--fetch-remote] [--exclude-workflow GLOB ...]
     [--output PATH] [--help]
 ```
 
@@ -158,11 +158,22 @@ or `^policy-check$`). A workflow with no matching job emits
 `GATE_JOB_NOT_FOUND`; the default remains PASS-with-warning, while `--strict`
 turns it into exit 3.
 
+`--fetch-remote` opts in to fetching GitHub job-level reusable workflows
+(`owner/repo/.github/workflows/*.yml@ref`). Fetched workflows are scanned
+recursively, including local `./.github/workflows/*.yml` references resolved
+inside the same remote repository/ref. Network/auth/404/unsupported references
+remain `UNVERIFIABLE_REMOTE_WORKFLOW`; they are never silently treated as
+verified. Without `--fetch-remote`, remote references warn by default.
+
 `--strict` turns unverifiable workflow facts into exit 3:
 `UNVERIFIABLE_CONDITION`, `UNVERIFIABLE_NEEDS_CHAIN`,
-`UNVERIFIABLE_REMOTE_WORKFLOW`, `UNVERIFIABLE_LOCAL_WORKFLOW`, and
-`GATE_JOB_NOT_FOUND`. Without `--strict`, these remain warnings and the result
-is unchanged.
+`UNVERIFIABLE_REMOTE_WORKFLOW`, `UNVERIFIABLE_LOCAL_WORKFLOW`,
+`GATE_JOB_NOT_FOUND`, and `WORKFLOW_PARSE_FAILED`. Without `--strict`, these
+remain warnings and the result is unchanged.
+
+Skip-ratio warnings are additive: `SKIP_RATIO_EARLY_WARNING_10` at 10%,
+`SKIP_RATIO_EARLY_WARNING_15` at 15%; the contract threshold remains exit 4
+only above 20%.
 
 Detection matrix:
 
@@ -202,11 +213,12 @@ Workflow scope:
 
 - `--workflows` scans the target repository's `.github/workflows/` and
   recursively follows local job-level `uses: ./.github/workflows/*.yml`
-  references. Remote reusable workflows are reported as unverifiable, not
-  fetched.
+  references. Remote reusable workflows are reported as unverifiable unless
+  `--fetch-remote` is explicitly supplied; fetched workflows are scanned
+  recursively inside their repository/ref.
 - CBE's own gate workflow is never scanned implicitly.
-- When the target is CBE itself (detected by `pyproject.toml` naming `cbe` plus
-  `src/cbe/cli.py`), the command exits 2
+- When the target is CBE itself (detected by `pyproject.toml` naming `cbe` or
+  `cbe-review` plus `src/cbe/cli.py`), the command exits 2
   `SELF_WORKFLOW_EXCLUSION_REQUIRED` unless the caller passes
   `--exclude-workflow .github/workflows/cbe-e2e.yml`.
 - It never silently scans CBE's own workflow and never silently skips an
@@ -230,10 +242,11 @@ SKIPPED: CBE-QUALITY-001 reason=legacy fixture, tracked in ISSUE-42
 - Output keys: `bypass_attempts`, `exemptions`, `scanned`,
   `applicable_count`, `skip_count`, `not_applicable_count`, `skip_ratio`,
   `blocking_skip`, `blocking_applicable_count`, `strict`, `gate_job`,
-  `warn_count`, `warnings`.
+  `fetch_remote`, `warn_count`, `warnings`.
 - `warn_count == len(warnings)` and includes `UNVERIFIABLE_CONDITION`,
   `UNVERIFIABLE_NEEDS_CHAIN`, `UNVERIFIABLE_REMOTE_WORKFLOW`,
   `UNVERIFIABLE_LOCAL_WORKFLOW`, `GATE_JOB_NOT_FOUND`,
+  `SKIP_RATIO_EARLY_WARNING_10`, `SKIP_RATIO_EARLY_WARNING_15`,
   `EXEMPTION_NOT_APPLICABLE`, `NO_ADVISORY_CHECKS`, and manifest warnings. It
   is machine-readable output, not stderr-only.
 - Each `bypass_attempts[]` entry includes `reason`. A skipped gate job carries

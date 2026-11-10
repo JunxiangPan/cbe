@@ -229,6 +229,11 @@ def build_parser() -> JsonArgumentParser:
         help="regex for the gate job name (default: ^cbe[-_]gate$); use when a repository renames the gate",
     )
     bypass_parser.add_argument(
+        "--fetch-remote",
+        action="store_true",
+        help="opt in to fetching GitHub remote reusable workflows; failures remain UNVERIFIABLE and fail under --strict",
+    )
+    bypass_parser.add_argument(
         "--exclude-workflow",
         action="append",
         metavar="GLOB",

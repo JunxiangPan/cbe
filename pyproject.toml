@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cbe-review"
-version = "0.1.1"
+version = "0.2.0"
 description = "Cyber-Butler Enforcement gate: rule-pack manifest, provider execution, no-bypass enforcement, and SARIF evidence."
 readme = "README.md"
 license = "Apache-2.0"
@@ -47,6 +47,10 @@ e2e = [
   "pytest>=8",
   "pytest-cov>=7",
   "cbp-action==1.2.2",
+  "cryptography>=42",
+]
+sign = [
+  "cryptography>=42",
 ]
 
 [project.scripts]
@@ -63,7 +67,7 @@ Documentation = "https://github.com/JunxiangPan/cbe/blob/main/docs/CLI_V1.md"
 where = ["src"]
 
 [tool.setuptools.package-data]
-cbe = ["schemas/*.json", "schemas/v1.7/*.json"]
+cbe = ["schemas/*.json", "schemas/v1.7/*.json", "schemas/sidecar/*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

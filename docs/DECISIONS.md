@@ -272,3 +272,22 @@ CBE 0.1.1 is a metadata/licensing and gate-hardening release:
 
 17. **Commit 17 (0.1.1 prep)**: license/metadata/README and Batch 2 gate
     hardening. No tag/release.
+
+## 0.2.0 decisions
+
+### D18. Gate-integrity release
+
+CBE 0.2.0 is a gate-integrity release, not a runtime defence boundary.
+
+- Mutation corpus: 10 known bypasses, recall 1.0, no PASS.
+- Remote reusable workflows are opt-in fetched (`--fetch-remote`); otherwise
+  they remain `UNVERIFIABLE_REMOTE_WORKFLOW`; `--strict` fails them.
+- Sidecar schemas/signer/offline verifier are delivered; production signing is
+  `BLOCKED_NO_SIGNING_IDENTITY`.
+- Self-protection pins workflow/gate/contract guard hashes and CI verifies them.
+- Coverage gate raised to 80%; report schema and 20% threshold unchanged.
+- Actions are pinned to full commit SHAs; self-hosted runners are not used.
+- 0.1.0/0.1.1 tags and artifacts are immutable.
+
+18. **Commit 18 (0.2.0 preparation)**: mutation, remote closure, sidecar,
+    self-protection, contract tests, coverage 80. No tag, no release, no PyPI.

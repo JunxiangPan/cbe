@@ -1,0 +1,56 @@
+# CBE 0.2.0 release staging
+
+Status: **AWAITING HUMAN APPROVAL — no tag, no GitHub Release, no PyPI upload.**
+
+Distribution: `cbe-review`; import package and CLI remain `cbe`.
+This is a gate-integrity release, not a runtime security boundary.
+
+## What is included
+
+- **CBE-MUT-01**: 10 bypass mutants, recall **1.0**; no mutant is PASS.
+- **CBE-REMOTE-01**: opt-in `--fetch-remote`; fetched GitHub reusable workflows
+  are scanned recursively. Unfetched/network/auth/404 references remain
+  `UNVERIFIABLE_REMOTE_WORKFLOW`; `--strict` exits 3.
+- **CBE-TRUST-01**: Ed25519 sidecar schema, signer, and offline verifier.
+  Production signing is **BLOCKED_NO_SIGNING_IDENTITY**; no signature is
+  fabricated.
+- **CBE-SELF-01**: `security/SELF_PROTECTION.sha256` and CI check for workflow,
+  gate script, manifest core, and contract guard; tamper tests are red.
+- **CBE-CONTRACT-01**: schema, exit codes, object `artifact_repository`, body
+  scope, and 20% threshold pinned by tests.
+- **CBE-COV-01**: unit coverage gate raised to 80%; current **82.98%**,
+  `enforce_no_bypass.py` **91%**.
+- **CBE-WIN-01**: Windows path/backslash test, SHA-pinned Actions, no
+  self-hosted runner.
+- **CBE-SKIP-01**: 10%/15% early warnings; 20% exit 4 is unchanged.
+- **CBE-NAME-01**: `cbe` name collision documented; never upload `cbe`.
+- **CBE-THREAT-01**: threat model documents what CBE does and does not defend.
+- **CBE-SCHEMA-01**: report schema untouched; sidecars are external.
+- **CBE-SBOM-01**: CycloneDX SBOM and SHA-pinned Actions.
+- **CBE-CBP-01**: `--gate-job` can select `cbp-gate`; cross-gate test added.
+
+## Artifacts
+
+| File | SHA256 | Size |
+|---|---|---|
+| `cbe_review-0.2.0-py3-none-any.whl` | `a55a14e5a730641afecb0d8dce4c06d2c4e564c0eb6e83aa2f37c436e49d8483` | 57,162 B |
+| `cbe_review-0.2.0.tar.gz` | `219397728d677b7717b8f8b9395773cb333fd213540d6d268b59850436656c96` | 47,932 B |
+
+Wheel metadata:
+
+```text
+Name: cbe-review
+Version: 0.2.0
+License-Expression: Apache-2.0
+License-File: LICENSE
+sidecar schemas: present
+```
+
+## Boundaries
+
+- `v0.1.0` and `v0.1.1` tags/assets are unchanged.
+- CBE report schema unchanged (CBS amendment still required for any change).
+- 20% skip threshold unchanged.
+- Sidecar signing is blocked, not faked.
+- Remote workflow fetch is opt-in; no remote workflow is called “verified”.
+- Human approval is required before tag/release/PyPI.

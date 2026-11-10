@@ -5,6 +5,9 @@ from __future__ import annotations
 import argparse
 import os
 import re
+import urllib.error
+import urllib.parse
+import urllib.request
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Iterable
@@ -65,7 +68,16 @@ STRICT_UNVERIFIABLE_CODES = {
     "UNVERIFIABLE_REMOTE_WORKFLOW",
     "UNVERIFIABLE_LOCAL_WORKFLOW",
     "GATE_JOB_NOT_FOUND",
+    "WORKFLOW_PARSE_FAILED",
 }
+REMOTE_USE_RE = re.compile(
+    r"^(?P<owner>[A-Za-z0-9_.-]+)/(?P<repo>[A-Za-z0-9_.-]+)/"
+    r"(?P<path>\.github/workflows/[^@]+\.ya?ml)@(?P<ref>\S+)$"
+)
+
+
+class RemoteWorkflowError(RuntimeError):
+    """A remote reusable workflow could not be fetched or parsed."""
 
 
 @dataclass
@@ -415,6 +427,7 @@ def _workflow_job_uses(document: dict[str, Any]) -> list[str]:
 
 
 def _resolve_local_workflow(root: Path, raw: str) -> tuple[Path | None, str]:
+    raw = raw.replace("\\", "/")
     if not raw.startswith("./.github/workflows/"):
         return None, "local workflow must be under ./.github/workflows/"
     target = (root / raw[2:]).resolve()
@@ -455,7 +468,7 @@ def _scan_workflow_jobs(
         return None
     jobs = document.get("jobs")
     if not isinstance(jobs, dict):
-        return document
+        jobs = {}
 
     matched = False
     for job_name, job in jobs.items():
@@ -527,11 +540,55 @@ def _scan_workflow_jobs(
     return document
 
 
+def _parse_remote_use(use: str) -> re.Match[str] | None:
+    return REMOTE_USE_RE.match(use)
+
+
+def _fetch_remote_workflow(use: str, timeout: int = 20) -> str:
+    match = _parse_remote_use(use)
+    if match is None:
+        raise RemoteWorkflowError("unsupported remote reusable workflow reference")
+    owner = match.group("owner")
+    repo = match.group("repo")
+    path = urllib.parse.quote(match.group("path"), safe="/")
+    ref = urllib.parse.quote(match.group("ref"), safe="")
+    url = f"https://raw.githubusercontent.com/{owner}/{repo}/{ref}/{path}"
+    request = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": "cbe-enforce-no-bypass/0.2",
+            "Accept": "text/plain",
+        },
+    )
+    token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+    if token:
+        request.add_header("Authorization", f"Bearer {token}")
+    try:
+        with urllib.request.urlopen(request, timeout=timeout) as response:
+            raw = response.read(2_000_001)
+    except urllib.error.HTTPError as exc:
+        kind = "auth" if exc.code in {401, 403} else "http"
+        raise RemoteWorkflowError(f"{kind} failure fetching {owner}/{repo}: HTTP {exc.code}") from exc
+    except urllib.error.URLError as exc:
+        raise RemoteWorkflowError(f"network failure fetching {owner}/{repo}: {exc.reason}") from exc
+    except (TimeoutError, OSError) as exc:
+        raise RemoteWorkflowError(f"network failure fetching {owner}/{repo}: {exc}") from exc
+    if len(raw) > 2_000_000:
+        raise RemoteWorkflowError(f"remote workflow is too large: {use}")
+    try:
+        return raw.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise RemoteWorkflowError(f"remote workflow is not UTF-8: {use}") from exc
+
+
 def _scan_workflows(
     root: Path,
     patterns: Iterable[str] | None,
     state: ScanState,
     gate_job_re: re.Pattern[str],
+    *,
+    fetch_remote: bool = False,
+    remote_fetcher: Any = None,
 ) -> None:
     excluded = list(patterns or [])
     if is_cbe_repository(root) and not exclude_matches(CBE_WORKFLOW, excluded):
@@ -541,16 +598,9 @@ def _scan_workflows(
         )
 
     seen: set[str] = set()
+    fetcher = remote_fetcher or _fetch_remote_workflow
 
-    def scan(path: Path) -> None:
-        relative = path.relative_to(root).as_posix()
-        if relative in seen or exclude_matches(relative, excluded):
-            return
-        seen.add(relative)
-        text = read_text(path)
-        if text is None:
-            _warn(state, "WORKFLOW_BINARY_SKIPPED", "workflow is not UTF-8 text", path=relative)
-            return
+    def scan_text(relative: str, text: str) -> dict[str, Any] | None:
         state.workflows += 1
         document = _scan_workflow_jobs(relative, text, state, gate_job_re)
         for line_no, line in enumerate(text.splitlines(), start=1):
@@ -569,11 +619,73 @@ def _scan_workflows(
                         evidence=line.strip(),
                     )
                 )
-        if not isinstance(document, dict):
+        return document
+
+    def scan_remote(use: str, parent: str, parent_line: int = 0) -> None:
+        match = _parse_remote_use(use)
+        if match is None:
+            _warn(
+                state,
+                "UNVERIFIABLE_REMOTE_WORKFLOW",
+                f"unsupported remote reusable workflow reference: {use}",
+                path=parent,
+                line=parent_line,
+            )
             return
+        key = f"remote:{use}"
+        if key in seen:
+            return
+        seen.add(key)
+        if not fetch_remote:
+            _warn(
+                state,
+                "UNVERIFIABLE_REMOTE_WORKFLOW",
+                f"remote reusable workflow is not fetched: {use}",
+                path=parent,
+                line=parent_line,
+            )
+            return
+        try:
+            text = fetcher(use)
+        except RemoteWorkflowError as exc:
+            _warn(
+                state,
+                "UNVERIFIABLE_REMOTE_WORKFLOW",
+                f"cannot fetch remote reusable workflow {use}: {exc}",
+                path=parent,
+                line=parent_line,
+            )
+            return
+        document = scan_text(key, text)
+        if isinstance(document, dict):
+            handle_uses(key, text, document, match)
+
+    def handle_uses(
+        relative: str,
+        text: str,
+        document: dict[str, Any],
+        remote: re.Match[str] | None,
+    ) -> None:
         for use in _workflow_job_uses(document):
             line_no = _line_for(text, use)
             if use.startswith("./"):
+                if remote is not None:
+                    local = use[2:]
+                    if not local.startswith(".github/workflows/"):
+                        _warn(
+                            state,
+                            "UNVERIFIABLE_LOCAL_WORKFLOW",
+                            f"local workflow must be under .github/workflows/: {use}",
+                            path=relative,
+                            line=line_no,
+                        )
+                    else:
+                        nested = (
+                            f"{remote.group('owner')}/{remote.group('repo')}/"
+                            f"{local}@{remote.group('ref')}"
+                        )
+                        scan_remote(nested, relative, line_no)
+                    continue
                 target, error = _resolve_local_workflow(root, use)
                 if error:
                     _warn(
@@ -584,18 +696,26 @@ def _scan_workflows(
                         line=line_no,
                     )
                 elif target is not None:
-                    scan(target)
+                    scan_local(target)
             else:
-                _warn(
-                    state,
-                    "UNVERIFIABLE_REMOTE_WORKFLOW",
-                    f"remote reusable workflow is not fetched: {use}",
-                    path=relative,
-                    line=line_no,
-                )
+                scan_remote(use, relative, line_no)
+
+    def scan_local(path: Path) -> None:
+        relative = path.relative_to(root).as_posix()
+        key = f"local:{relative}"
+        if key in seen or exclude_matches(relative, excluded):
+            return
+        seen.add(key)
+        text = read_text(path)
+        if text is None:
+            _warn(state, "WORKFLOW_BINARY_SKIPPED", "workflow is not UTF-8 text", path=relative)
+            return
+        document = scan_text(relative, text)
+        if isinstance(document, dict):
+            handle_uses(relative, text, document, None)
 
     for path in workflow_files(root):
-        scan(path)
+        scan_local(path)
 
 
 def _inspection_failure(inspection: Inspection) -> dict[str, Any] | None:
@@ -706,7 +826,13 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     _scan_comments(root, state)
     _scan_env(args.env_file, state)
     if args.workflows:
-        _scan_workflows(root, args.exclude_workflow, state, gate_job_re)
+        _scan_workflows(
+            root,
+            args.exclude_workflow,
+            state,
+            gate_job_re,
+            fetch_remote=bool(getattr(args, "fetch_remote", False)),
+        )
 
     skip_count = sum(1 for exemption in exemptions if exemption.counted)
     blocking_skip = any(exemption.blocking for exemption in exemptions) or any(
@@ -724,6 +850,20 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             )
     if advisory_count == 0 and not inspection.gate_errors:
         _warn(state, "NO_ADVISORY_CHECKS", "no applicable advisory check; skip_ratio is 0 by definition")
+    if advisory_count:
+        ratio = skip_count / advisory_count
+        if ratio >= 0.15:
+            _warn(
+                state,
+                "SKIP_RATIO_EARLY_WARNING_15",
+                f"skip ratio {skip_count}/{advisory_count} is at or above 15%; exit 4 remains at >20%",
+            )
+        elif ratio >= 0.10:
+            _warn(
+                state,
+                "SKIP_RATIO_EARLY_WARNING_10",
+                f"skip ratio {skip_count}/{advisory_count} is at or above 10%; exit 4 remains at >20%",
+            )
 
     exit_code = 0
     error: dict[str, Any] | None = None
@@ -791,6 +931,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "blocking_applicable_count": blocking_count,
         "strict": bool(getattr(args, "strict", False)),
         "gate_job": gate_job_pattern,
+        "fetch_remote": bool(getattr(args, "fetch_remote", False)),
         "warn_count": len(state.warnings),
         "error": error,
         "warnings": state.warnings,

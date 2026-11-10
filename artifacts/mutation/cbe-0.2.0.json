@@ -1,0 +1,100 @@
+{
+  "schema_version": "1",
+  "harness": "cbe-no-bypass-mutation",
+  "total": 10,
+  "matched": 10,
+  "recall": 1.0,
+  "target_recall": 0.95,
+  "results": [
+    {
+      "id": "if_false",
+      "expected_exit": 3,
+      "expected_reason": "WORKFLOW_SKIPS_CBE_GATE",
+      "actual_exit": 3,
+      "actual_reason": "WORKFLOW_SKIPS_CBE_GATE",
+      "gate_status": "FAIL",
+      "matched": true
+    },
+    {
+      "id": "commented_gate",
+      "expected_exit": 3,
+      "expected_reason": "WORKFLOW_SKIPS_CBE_GATE",
+      "actual_exit": 3,
+      "actual_reason": "WORKFLOW_SKIPS_CBE_GATE",
+      "gate_status": "FAIL",
+      "matched": true
+    },
+    {
+      "id": "ghost_needs",
+      "expected_exit": 3,
+      "expected_reason": "WORKFLOW_SKIPS_CBE_GATE",
+      "actual_exit": 3,
+      "actual_reason": "WORKFLOW_SKIPS_CBE_GATE",
+      "gate_status": "FAIL",
+      "matched": true
+    },
+    {
+      "id": "continue_on_error",
+      "expected_exit": 3,
+      "expected_reason": "BYPASS_ATTEMPT",
+      "actual_exit": 3,
+      "actual_reason": "BYPASS_ATTEMPT",
+      "gate_status": "FAIL",
+      "matched": true
+    },
+    {
+      "id": "renamed_gate_security_gate",
+      "expected_exit": 3,
+      "expected_reason": "WORKFLOW_SKIPS_CBE_GATE",
+      "actual_exit": 3,
+      "actual_reason": "WORKFLOW_SKIPS_CBE_GATE",
+      "gate_status": "FAIL",
+      "matched": true
+    },
+    {
+      "id": "local_reusable_shell",
+      "expected_exit": 3,
+      "expected_reason": "WORKFLOW_SKIPS_CBE_GATE",
+      "actual_exit": 3,
+      "actual_reason": "WORKFLOW_SKIPS_CBE_GATE",
+      "gate_status": "FAIL",
+      "matched": true
+    },
+    {
+      "id": "remote_reusable_shell",
+      "expected_exit": 3,
+      "expected_reason": "UNVERIFIABLE_REMOTE_WORKFLOW",
+      "actual_exit": 3,
+      "actual_reason": "UNVERIFIABLE_REMOTE_WORKFLOW",
+      "gate_status": "FAIL",
+      "matched": true
+    },
+    {
+      "id": "config_disable",
+      "expected_exit": 3,
+      "expected_reason": "BYPASS_ATTEMPT",
+      "actual_exit": 3,
+      "actual_reason": "BYPASS_ATTEMPT",
+      "gate_status": "FAIL",
+      "matched": true
+    },
+    {
+      "id": "env_disable",
+      "expected_exit": 3,
+      "expected_reason": "BYPASS_ATTEMPT",
+      "actual_exit": 3,
+      "actual_reason": "BYPASS_ATTEMPT",
+      "gate_status": "FAIL",
+      "matched": true
+    },
+    {
+      "id": "comment_disable",
+      "expected_exit": 3,
+      "expected_reason": "BYPASS_ATTEMPT",
+      "actual_exit": 3,
+      "actual_reason": "BYPASS_ATTEMPT",
+      "gate_status": "FAIL",
+      "matched": true
+    }
+  ]
+}

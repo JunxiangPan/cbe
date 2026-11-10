@@ -237,6 +237,25 @@ tests/e2e/fixtures/
   cli/              .keep
 ```
 
+
+## CBE 0.2.0 additions
+
+- `tests/mutation/` runs 10 known bypass mutants and requires recall >= 0.95;
+  every mutant must be non-PASS. Artifact:
+  `artifacts/mutation/cbe-0.2.0.json`.
+- Remote reusable workflows: default `UNVERIFIABLE_REMOTE_WORKFLOW`; optional
+  `--fetch-remote` recursively scans fetched GitHub workflows. Network/auth/
+  404/empty-shell/if:false/ghost-needs tests are in
+  `tests/unit/test_enforce_no_bypass.py`; `--strict` exits 3 for unverifiable
+  cases.
+- Sidecar sign/verify tests use ephemeral Ed25519 keys; production signature is
+  `BLOCKED_NO_SIGNING_IDENTITY`.
+- Self-protection tamper tests cover workflow, gate script, and contract guard;
+  CI runs `tools/cbe_self_protect.py --check`.
+- Contract tests pin report schema, exit codes, object `artifact_repository`,
+  body scope/hash shape, and the 20% threshold.
+- Coverage gate is 80%; E2E subprocesses are excluded from coverage.
+
 ## Runner and CI
 
 - `tests/e2e/run_e2e.py` runs CBE-01..07b, the CBE-08 contract guard, and

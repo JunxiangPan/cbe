@@ -1,0 +1,62 @@
+{
+  "schema_version": "1",
+  "product": "cbe",
+  "distribution_name": "cbe-review",
+  "import_package": "cbe",
+  "cli": "cbe",
+  "version": "0.2.0",
+  "status": "AWAITING_HUMAN_APPROVAL",
+  "source_commit": "PENDING_RELEASE_COMMIT",
+  "tag": "v0.2.0",
+  "tag_created": false,
+  "release_created": false,
+  "pypi_uploaded": false,
+  "artifacts": [
+    {
+      "name": "cbe_review-0.2.0-py3-none-any.whl",
+      "sha256": "a55a14e5a730641afecb0d8dce4c06d2c4e564c0eb6e83aa2f37c436e49d8483",
+      "size": 57162
+    },
+    {
+      "name": "cbe_review-0.2.0.tar.gz",
+      "sha256": "219397728d677b7717b8f8b9395773cb333fd213540d6d268b59850436656c96",
+      "size": 47932
+    }
+  ],
+  "approval": {
+    "required": true,
+    "approved": false,
+    "approver": null,
+    "approved_at": null,
+    "scope": null
+  },
+  "verification": {
+    "tests_total": 251,
+    "unit": 125,
+    "full_unit_coverage": "82.98%",
+    "enforce_no_bypass_coverage": "91%",
+    "mutation_total": 10,
+    "mutation_recall": 1.0,
+    "ci_run": null
+  },
+  "contract": {
+    "report_schema_sha256": "2b3e1c5a77a7f520b80d01fefa328c9353fffc5d65e87782ca90d193839c0e74",
+    "report_schema_changed": false,
+    "skip_ratio_exit4_threshold": 0.2
+  },
+  "sidecar_signing": {
+    "status": "BLOCKED_NO_SIGNING_IDENTITY",
+    "schemas": true,
+    "offline_verifier": true,
+    "production_signature": false
+  },
+  "pypi": {
+    "status": "NOT_UPLOADED",
+    "uploaded": false,
+    "requested_name": "cbe-review",
+    "version": "0.2.0",
+    "old_name": "cbe",
+    "old_name_never_used": true
+  },
+  "notes": "Staged only. No tag/release/PyPI. v0.1.0 and v0.1.1 are immutable. Report schema unchanged."
+}

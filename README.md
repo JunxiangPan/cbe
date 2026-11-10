@@ -77,6 +77,12 @@ unverifiable conditions into exit 3.
 - E2E matrix: [docs/E2E_MATRIX_V1.md](docs/E2E_MATRIX_V1.md)
 - Boundaries: [docs/BOUNDARIES_V1.md](docs/BOUNDARIES_V1.md)
 - 0.1.1 metadata/licensing note: [docs/CBE-0.1.1_METADATA.md](docs/CBE-0.1.1_METADATA.md)
+- Mutation recall: [tests/mutation/README.md](tests/mutation/README.md)
+- Signing/attestation: [docs/SIGNING.md](docs/SIGNING.md)
+- Self-protection: [docs/SELF_PROTECTION.md](docs/SELF_PROTECTION.md)
+- Threat model: [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md)
+- Package name: [docs/PACKAGE_NAME.md](docs/PACKAGE_NAME.md)
+- Schema integration: [docs/SCHEMA_INTEGRATION.md](docs/SCHEMA_INTEGRATION.md)
 
 Topics: `release-gate`, `sarif`, `supply-chain`, `provenance`, `python`.
 
@@ -84,12 +90,13 @@ Topics: `release-gate`, `sarif`, `supply-chain`, `provenance`, `python`.
 
 CBE 0.1.1 is released on GitHub and PyPI
 ([`cbe-review==0.1.1`](https://pypi.org/project/cbe-review/0.1.1/)).
-It adds Apache-2.0 licensing, complete package metadata, and the hardened
-workflow gate (`--strict`, `--gate-job`, local reusable-workflow recursion).
+This tree is **0.2.0 development**, adding quantified mutation recall, opt-in
+remote reusable-workflow closure, sidecar signing/attestation schemas and an
+offline verifier, self-protection, and 80% coverage.
 
 `0.1.0` remains available for historical installs
 ([`cbe-review==0.1.0`](https://pypi.org/project/cbe-review/0.1.0/)); its
-metadata is immutable. The 0.1.0 artifacts and `v0.1.0` tag are unchanged.
+metadata is immutable. The 0.1.0/0.1.1 artifacts and tags are unchanged.
 
 ## License
 
@@ -100,8 +107,9 @@ Apache License 2.0. See [LICENSE](LICENSE).
 ```bash
 python -m pip install -e ".[e2e]"
 pytest
-pytest tests/unit --cov=cbe --cov-fail-under=60
+pytest tests/unit --cov=cbe --cov-fail-under=80
 ```
 
-The CI matrix runs Ubuntu and Windows on Python 3.10. The gate covers unit
+The CI matrix runs Ubuntu and Windows on Python 3.10. The 80% gate covers unit
 coverage; E2E commands run in subprocesses and are not counted by coverage.
+There is no suppression/omit list.
