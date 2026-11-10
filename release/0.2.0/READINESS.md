@@ -1,6 +1,8 @@
 # CBE 0.2.0 Release Readiness
 
-Status: **NOT READY FOR RELEASE — owner approval pending; unsigned; branch/tag protection not configured.**
+Status: **HOLD — CBP 1.3.0 mutual review failed the required `cbp-gate` cross-check; unsigned; branch/tag protection not configured.**
+
+CBP review: [artifacts/cbp-review/1.3.0.md](../../artifacts/cbp-review/1.3.0.md).
 
 This page is the single readiness decision for the 0.2.0 staging package. No
 v0.2.0 tag, GitHub Release, or PyPI upload exists.
