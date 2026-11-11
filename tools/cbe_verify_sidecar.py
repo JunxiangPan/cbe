@@ -195,7 +195,13 @@ def verify_keyless(
     cosign_path = cosign if Path(cosign).is_file() else shutil.which(cosign)
     if not cosign_path:
         return _blocked("COSIGN_UNAVAILABLE", "cosign is required for keyless verification; do not treat as PASS")
-    missing = [str(file) for file in files if not (bundle_dir / f"{file.name}.bundle").is_file()]
+
+    def bundle_for(file: Path) -> Path:
+        preferred = bundle_dir / f"{file.name}.bundle"
+        adjacent = file.with_name(f"{file.name}.bundle")
+        return preferred if preferred.is_file() else adjacent
+
+    missing = [str(file) for file in files if not bundle_for(file).is_file()]
     if missing:
         return _blocked("BUNDLE_MISSING", "cosign bundle missing for one or more files", missing)
     if not certificate_identity and not certificate_identity_regexp:
@@ -217,7 +223,7 @@ def verify_keyless(
             return _fail("ATTESTATION_TYPE_INVALID", "attestation must be an in-toto Statement v1")
     verified: list[dict[str, Any]] = []
     for file in files:
-        bundle = bundle_dir / f"{file.name}.bundle"
+        bundle = bundle_for(file)
         cmd = [str(cosign_path), "verify-blob", "--bundle", str(bundle),
                "--certificate-oidc-issuer", oidc_issuer]
         if certificate_identity:

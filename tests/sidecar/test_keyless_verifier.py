@@ -97,6 +97,15 @@ def test_keyless_verifies_every_bundle(tmp_path: Path) -> None:
     assert len(result["files"]) == len(files)
 
 
+def test_keyless_accepts_bundle_next_to_file(tmp_path: Path) -> None:
+    files, bundles = _fixtures(tmp_path)
+    wheel = files[0]
+    (bundles / f"{wheel.name}.bundle").unlink()
+    (wheel.with_name(f"{wheel.name}.bundle")).write_text("bundle", encoding="utf-8")
+    result = verifier.verify_keyless(files, bundles, cosign=sys.executable, certificate_identity="x", runner=_runner(0))
+    assert result["exit_code"] == 0
+
+
 def test_keyless_invalid_signature_fails(tmp_path: Path) -> None:
     files, bundles = _fixtures(tmp_path)
     result = verifier.verify_keyless(files, bundles, cosign=sys.executable, certificate_identity="x", runner=_runner(1))
