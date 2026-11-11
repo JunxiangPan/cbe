@@ -6,10 +6,15 @@ on:
       tag:
         description: Release tag (must not exist)
         required: true
-        default: v0.2.0
+        default: v0.3.0
       candidate_sha:
         description: Commit to build, sign, and tag
         required: true
+      stage_only:
+        description: Sign and upload a workflow artifact only; no tag/release/PyPI
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -39,12 +44,15 @@ jobs:
           test "$(ls dist/*.tar.gz | wc -l)" -eq 1
 
       - name: Generate release evidence
+        env:
+          TAG: ${{ inputs.tag }}
         run: |
+          VERSION="${TAG#v}"
           python tools/cbe_release_bundle.py \
             --artifacts-dir dist \
             --out-dir evidence \
-            --version 0.2.0 \
-            --tag "${{ inputs.tag }}" \
+            --version "$VERSION" \
+            --tag "$TAG" \
             --commit "${{ inputs.candidate_sha }}" \
             --workflow-ref "https://github.com/${GITHUB_REPOSITORY}/.github/workflows/sign-release.yml@${GITHUB_REF}"
 
@@ -131,6 +139,7 @@ jobs:
   publish:
     name: publish / tag after verification
     needs: sign
+    if: ${{ !inputs.stage_only }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -178,6 +187,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
+          TAG="${{ inputs.tag }}"
+          VERSION="${TAG#v}"
           cat > release-notes.md <<'EOF'
           # CBE 0.2.0 — GATE-INTEGRITY RELEASE
 
@@ -194,10 +205,11 @@ jobs:
           Assets include `.bundle`, `.sig`, `.pem`, SLSA attestations and
           `release-manifest.json`.
           EOF
+          sed -i "s/CBE 0\\.2\\.0/CBE ${VERSION}/g" release-notes.md
           gh release create "${{ inputs.tag }}" \
             --repo "${{ github.repository }}" \
             --target "${{ inputs.candidate_sha }}" \
-            --title "CBE 0.2.0" \
+            --title "CBE ${VERSION}" \
             --notes-file release-notes.md \
             --draft
           gh release upload "${{ inputs.tag }}" \
@@ -235,8 +247,9 @@ jobs:
           done
 
   pypi:
-    name: PyPI cbe-review 0.2.0
+    name: PyPI cbe-review 0.3.0
     needs: publish
+    if: ${{ !inputs.stage_only }}
     runs-on: ubuntu-latest
     environment: pypi
     permissions:

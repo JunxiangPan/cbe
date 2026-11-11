@@ -1,0 +1,30 @@
+{
+  "schema_version": "1",
+  "product": "cbe",
+  "distribution_name": "cbe-review",
+  "version": "0.3.0",
+  "tag": "v0.3.0",
+  "commit": "d1c7343eb55c1cfe2c1991d2de2ba9478d7850f0",
+  "workflow_ref": "https://github.com/JunxiangPan/cbe/.github/workflows/sign-release.yml@refs/heads/0.3.0-dev",
+  "artifacts": [
+    {
+      "name": "cbe_review-0.3.0-py3-none-any.whl",
+      "sha256": "2dcfbfa28661705ddbf414f481dd5dae2fa999a45f015618074e602bb8a4b51a",
+      "size": 58368
+    },
+    {
+      "name": "cbe_review-0.3.0.tar.gz",
+      "sha256": "cdcfb5395c4088d6df333a7e6c1507813e5bdd8ff3f6a750d8a070549cb16c4d",
+      "size": 48354
+    }
+  ],
+  "report": {
+    "name": "cbe-report.json",
+    "sha256": "338e41d3ac385532afa99f78c6a65fee62fb4103c765a2fa7f9253185d886fe0"
+  },
+  "signing": {
+    "method": "sigstore-keyless",
+    "issuer": "https://token.actions.githubusercontent.com",
+    "bundle_required": true
+  }
+}

@@ -229,6 +229,17 @@ def build_parser() -> JsonArgumentParser:
         help="regex for the gate job name (default: ^cbe[-_]gate$); use when a repository renames the gate",
     )
     bypass_parser.add_argument(
+        "--gate-jobs",
+        nargs="+",
+        metavar="JOB",
+        help="multiple gate job names/regexes (for example: cbp-gate mutation-gate ai-gate); takes precedence over --gate-job",
+    )
+    bypass_parser.add_argument(
+        "--cbp-report",
+        metavar="PATH",
+        help="optional CBP report JSON; records its report/manifest hashes without importing or requiring CBP",
+    )
+    bypass_parser.add_argument(
         "--fetch-remote",
         action="store_true",
         help="opt in to fetching GitHub remote reusable workflows; failures remain UNVERIFIABLE and fail under --strict",

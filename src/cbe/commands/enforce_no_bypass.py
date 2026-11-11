@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
+import json
 import os
 import re
 import urllib.error
@@ -110,6 +112,7 @@ class ScanState:
     env_vars: int = 0
     workflows: int = 0
     gate_jobs: int = 0
+    matched_gate_patterns: set[str] = field(default_factory=set)
 
     def add(self, attempt: BypassAttempt) -> None:
         key = (attempt.kind, attempt.path, attempt.line, attempt.rule_id)
@@ -454,12 +457,23 @@ def _commented_gate_lines(text: str, gate_job_re: re.Pattern[str]) -> Iterable[t
             yield line_no, line.strip()
 
 
+def _gate_patterns(gate_job_re: re.Pattern[str] | list[re.Pattern[str]]) -> list[re.Pattern[str]]:
+    return gate_job_re if isinstance(gate_job_re, list) else [gate_job_re]
+
+
+def _matching_gate_patterns(
+    name: str, patterns: list[re.Pattern[str]]
+) -> list[re.Pattern[str]]:
+    return [pattern for pattern in patterns if pattern.search(name)]
+
+
 def _scan_workflow_jobs(
     relative: str,
     text: str,
     state: ScanState,
-    gate_job_re: re.Pattern[str],
+    gate_job_re: re.Pattern[str] | list[re.Pattern[str]],
 ) -> dict[str, Any] | None:
+    gate_patterns = _gate_patterns(gate_job_re)
     try:
         document = yaml.safe_load(text)
     except yaml.YAMLError as exc:
@@ -473,9 +487,14 @@ def _scan_workflow_jobs(
 
     matched = False
     for job_name, job in jobs.items():
-        if not isinstance(job_name, str) or not gate_job_re.search(job_name):
+        if not isinstance(job_name, str):
+            continue
+        matching = _matching_gate_patterns(job_name, gate_patterns)
+        if not matching:
             continue
         matched = True
+        for pattern in matching:
+            state.matched_gate_patterns.add(pattern.pattern)
         line_no = _line_for(text, f"{job_name}:")
         reachability = _job_reachability(job_name, jobs)
         if reachability.status == "unreachable":
@@ -522,17 +541,18 @@ def _scan_workflow_jobs(
     if matched:
         state.gate_jobs += 1
 
-    for line_no, evidence in _commented_gate_lines(text, gate_job_re):
-        state.add(
-            BypassAttempt(
-                kind="workflow",
-                path=relative,
-                line=line_no,
-                rule_id="*",
-                evidence=evidence,
-                reason="WORKFLOW_SKIPS_CBE_GATE",
+    for pattern in gate_patterns:
+        for line_no, evidence in _commented_gate_lines(text, pattern):
+            state.add(
+                BypassAttempt(
+                    kind="workflow",
+                    path=relative,
+                    line=line_no,
+                    rule_id="*",
+                    evidence=evidence,
+                    reason="WORKFLOW_SKIPS_CBE_GATE",
+                )
             )
-        )
     return document
 
 
@@ -581,11 +601,12 @@ def _scan_workflows(
     root: Path,
     patterns: Iterable[str] | None,
     state: ScanState,
-    gate_job_re: re.Pattern[str],
+    gate_job_re: re.Pattern[str] | list[re.Pattern[str]],
     *,
     fetch_remote: bool = False,
     remote_fetcher: Any = None,
 ) -> None:
+    gate_patterns = _gate_patterns(gate_job_re)
     excluded = list(patterns or [])
     if is_cbe_repository(root) and not exclude_matches(CBE_WORKFLOW, excluded):
         raise InputError(
@@ -693,6 +714,40 @@ def _scan_workflows(
                     )
                 elif target is not None:
                     scan_local(target)
+                    child_text = read_text(target)
+                    child_document = None
+                    if child_text is not None:
+                        try:
+                            child_document = yaml.safe_load(child_text)
+                        except yaml.YAMLError:
+                            child_document = None
+                    child_jobs = child_document.get("jobs") if isinstance(child_document, dict) else {}
+                    child_jobs = child_jobs if isinstance(child_jobs, dict) else {}
+                    parent_jobs = document.get("jobs")
+                    parent_jobs = parent_jobs if isinstance(parent_jobs, dict) else {}
+                    for parent_name, parent_job in parent_jobs.items():
+                        if not isinstance(parent_name, str) or not isinstance(parent_job, dict):
+                            continue
+                        if not _matching_gate_patterns(parent_name, gate_patterns):
+                            continue
+                        parent_use = str(parent_job.get("uses", "")).replace("\\", "/")
+                        if parent_use != use:
+                            continue
+                        if not any(
+                            isinstance(child_name, str)
+                            and _matching_gate_patterns(child_name, gate_patterns)
+                            for child_name in child_jobs
+                        ):
+                            state.add(
+                                BypassAttempt(
+                                    kind="workflow",
+                                    path=relative,
+                                    line=line_no,
+                                    rule_id="*",
+                                    evidence=f"gate job={parent_name} delegates to empty local workflow {use}",
+                                    reason="LOCAL_REUSABLE_GATE_EMPTY",
+                                )
+                            )
             else:
                 scan_remote(use, relative, line_no)
 
@@ -712,12 +767,13 @@ def _scan_workflows(
 
     for path in workflow_files(root):
         scan_local(path)
-    if state.gate_jobs == 0:
-        _warn(
-            state,
-            "GATE_JOB_NOT_FOUND",
-            f"no scanned workflow has a job matching {gate_job_re.pattern!r}; use --gate-job for renamed gates",
-        )
+    for pattern in gate_patterns:
+        if pattern.pattern not in state.matched_gate_patterns:
+            _warn(
+                state,
+                "GATE_JOB_NOT_FOUND",
+                f"no scanned workflow has a job matching {pattern.pattern!r}; use --gate-job/--gate-jobs for renamed gates",
+            )
 
 
 def _inspection_failure(inspection: Inspection) -> dict[str, Any] | None:
@@ -747,6 +803,37 @@ def _inspection_failure(inspection: Inspection) -> dict[str, Any] | None:
     }
 
 
+def _cbp_report_metadata(path: Path) -> dict[str, Any]:
+    """Read a CBP report without importing CBP or requiring it to be installed."""
+    if not path.is_file():
+        raise InputError("CBP_REPORT_NOT_FOUND", f"CBP report file not found: {path}")
+    try:
+        raw = path.read_bytes()
+        document = json.loads(raw.decode("utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise InputError("CBP_REPORT_INVALID", f"CBP report is not valid JSON: {exc}") from exc
+    if not isinstance(document, dict):
+        raise InputError("CBP_REPORT_INVALID", "CBP report must be a JSON object")
+    manifest_sha = document.get("manifest_sha256")
+    manifest_source = "manifest_sha256"
+    if not (isinstance(manifest_sha, str) and re.fullmatch(r"[a-f0-9]{64}", manifest_sha)):
+        manifest_sha = None
+        manifest_source = None
+        artifact_hashes = document.get("artifact_hashes")
+        if isinstance(artifact_hashes, dict):
+            for name, value in artifact_hashes.items():
+                if "manifest" in str(name).lower() and isinstance(value, str) and re.fullmatch(r"[a-f0-9]{64}", value):
+                    manifest_sha = value
+                    manifest_source = f"artifact_hashes.{name}"
+                    break
+    return {
+        "path": str(path),
+        "sha256": hashlib.sha256(raw).hexdigest(),
+        "manifest_sha256": manifest_sha,
+        "manifest_sha256_source": manifest_source,
+    }
+
+
 def run(args: argparse.Namespace) -> dict[str, Any]:
     inspection = load_and_inspect(
         args.manifest,
@@ -768,9 +855,14 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     advisory_count = sum(1 for rule in applicable_rules if rule.gate == "advisory")
     blocking_count = sum(1 for rule in applicable_rules if rule.gate == "blocking")
 
-    gate_job_pattern = getattr(args, "gate_job", DEFAULT_GATE_JOB) or DEFAULT_GATE_JOB
+    raw_gate_patterns: list[str] = []
+    for item in (getattr(args, "gate_jobs", None) or []):
+        raw_gate_patterns.extend(part for part in re.split(r"[\s,]+", item) if part)
+    if not raw_gate_patterns:
+        raw_gate_patterns = [getattr(args, "gate_job", DEFAULT_GATE_JOB) or DEFAULT_GATE_JOB]
+    gate_job_pattern = raw_gate_patterns[0] if len(raw_gate_patterns) == 1 else None
     try:
-        gate_job_re = re.compile(gate_job_pattern)
+        gate_job_res = [re.compile(pattern) for pattern in raw_gate_patterns]
     except re.error as exc:
         return {
             "schema_version": "1",
@@ -789,9 +881,10 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             "warn_count": len(inspection.warnings),
             "strict": bool(getattr(args, "strict", False)),
             "gate_job": gate_job_pattern,
+            "gate_jobs": raw_gate_patterns,
             "error": {
                 "code": "INVALID_GATE_JOB_REGEX",
-                "message": f"invalid --gate-job regex: {exc}",
+                "message": f"invalid gate job regex: {exc}",
                 "details": [],
             },
             "warnings": inspection.warnings,
@@ -832,9 +925,20 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             root,
             args.exclude_workflow,
             state,
-            gate_job_re,
+            gate_job_res,
             fetch_remote=bool(getattr(args, "fetch_remote", False)),
         )
+
+    cbp_report: dict[str, Any] | None = None
+    if getattr(args, "cbp_report", None):
+        cbp_report = _cbp_report_metadata(Path(args.cbp_report))
+        if cbp_report["manifest_sha256"] is None:
+            _warn(
+                state,
+                "CBP_REPORT_MANIFEST_HASH_NOT_FOUND",
+                "CBP report has no manifest_sha256 or artifact_hashes manifest entry",
+                path=str(args.cbp_report),
+            )
 
     skip_count = sum(1 for exemption in exemptions if exemption.counted)
     blocking_skip = any(exemption.blocking for exemption in exemptions) or any(
@@ -911,7 +1015,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             "details": [{"path": "$.skip_ratio", "code": "SKIP_RATIO_EXCEEDED", "message": "> 0.20"}],
         }
 
-    return {
+    result = {
         "schema_version": "1",
         "command": COMMAND,
         "ok": exit_code == 0,
@@ -938,3 +1042,8 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "error": error,
         "warnings": state.warnings,
     }
+    if cbp_report is not None:
+        result["cbp_report"] = cbp_report
+    if getattr(args, "gate_jobs", None):
+        result["gate_jobs"] = raw_gate_patterns
+    return result
