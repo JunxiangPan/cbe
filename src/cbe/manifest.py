@@ -18,7 +18,7 @@ from .paths import schema_path
 
 SCHEMA_PATH = schema_path("rule-pack-manifest.v1.schema.json")
 
-PACKAGE_TYPES = ("cbs", "cbe", "cbp", "cbm", "cbc", "cbg")
+PACKAGE_TYPES = ("cbs", "cbe", "cbp", "cbm", "cbc", "cbg", "cbf")
 GATE_VALUES = {"blocking", "advisory"}
 SEVERITY_VALUES = {"error", "warning", "note"}
 

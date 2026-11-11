@@ -80,6 +80,6 @@ still available without `--keyless`.
 ## Boundaries
 
 - No fake signature, certificate, or bundle is produced.
-- The frozen CBE report schema is unchanged.
+- The report schema adds only the `cbf` package_id enum in 0.3.1; sidecar fields are not added.
 - A Sigstore bundle is not an Ed25519 signature; do not describe one as the
   other.

@@ -41,7 +41,7 @@ def test_real_cbe_report_passes_rc2_schema(outside_tmp: Path) -> None:
 
     schema_file = schema_path("v1.7", "cbe-report.schema.json")
     assert hashlib.sha256(schema_file.read_bytes()).hexdigest() == (
-        "2b3e1c5a77a7f520b80d01fefa328c9353fffc5d65e87782ca90d193839c0e74"
+        "7824c18c639c9af8fc013739bdc75dba0d6e22c76f0a96ee91a372a581428fe5"
     )
     schema = json.loads(schema_file.read_text(encoding="utf-8"))
     errors = sorted(Draft202012Validator(schema).iter_errors(report), key=lambda item: list(item.path))

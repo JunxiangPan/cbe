@@ -34,7 +34,7 @@
       "minItems": 1,
       "uniqueItems": true,
       "items": {
-        "enum": ["cbs", "cbe", "cbp", "cbm", "cbc", "cbg"]
+        "enum": ["cbs", "cbe", "cbp", "cbm", "cbc", "cbg", "cbf"]
       }
     },
     "providers": {
@@ -174,7 +174,7 @@
           "minItems": 1,
           "uniqueItems": true,
           "items": {
-            "enum": ["cbs", "cbe", "cbp", "cbm", "cbc", "cbg"]
+            "enum": ["cbs", "cbe", "cbp", "cbm", "cbc", "cbg", "cbf"]
           }
         },
         "provider_rule_ids": {

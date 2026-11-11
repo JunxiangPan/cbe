@@ -49,5 +49,5 @@ def test_schemas_are_bundled_in_package() -> None:
     path = schema_path("v1.7", "cbe-report.schema.json")
     assert path.is_file()
     assert hashlib.sha256(path.read_bytes()).hexdigest() == (
-        "2b3e1c5a77a7f520b80d01fefa328c9353fffc5d65e87782ca90d193839c0e74"
+        "7824c18c639c9af8fc013739bdc75dba0d6e22c76f0a96ee91a372a581428fe5"
     )

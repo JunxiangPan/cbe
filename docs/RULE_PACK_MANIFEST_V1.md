@@ -21,7 +21,7 @@ Draft status: frozen for P0; F2 blocking-set amendment pending in CBS.
 - `pack_id` matches `^[a-z][a-z0-9-]{1,63}$`.
 - `pack_version` is SemVer 2.0.0.
 - `package_types` is a non-empty unique subset of
-  `cbs/cbe/cbp/cbm/cbc/cbg`.
+  `cbs/cbe/cbp/cbm/cbc/cbg/cbf`.
 - `providers` is an object keyed by provider id; at least one provider.
 - `rules` is an array; zero rules is schema-valid but a gate failure (exit 3
   `NO_RULES`).

@@ -117,7 +117,7 @@ def _add_package_options(parser: argparse.ArgumentParser, *, required: bool = Tr
     parser.add_argument(
         "--package-type",
         required=required,
-        choices=["cbs", "cbe", "cbp", "cbm", "cbc", "cbg"],
+        choices=["cbs", "cbe", "cbp", "cbm", "cbc", "cbg", "cbf"],
         help="target package type",
     )
     parser.add_argument(
@@ -152,7 +152,7 @@ def build_parser() -> JsonArgumentParser:
     validate_parser.add_argument("--manifest", required=True, metavar="PATH")
     validate_parser.add_argument(
         "--package-type",
-        choices=["cbs", "cbe", "cbp", "cbm", "cbc", "cbg"],
+        choices=["cbs", "cbe", "cbp", "cbm", "cbc", "cbg", "cbf"],
         help="optional applicability context",
     )
     validate_parser.add_argument(

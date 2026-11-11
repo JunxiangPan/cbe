@@ -88,13 +88,13 @@ Topics: `release-gate`, `sarif`, `supply-chain`, `provenance`, `python`.
 
 ## Status and compatibility
 
-CBE 0.2.0 is released, signed with GitHub OIDC keyless cosign/sigstore
-([`cbe-review==0.2.0`](https://pypi.org/project/cbe-review/0.2.0/),
-[Release](https://github.com/JunxiangPan/cbe/releases/tag/v0.2.0)).
+CBE 0.3.0 is released, signed with GitHub OIDC keyless cosign/sigstore
+([`cbe-review==0.3.0`](https://pypi.org/project/cbe-review/0.3.0/),
+[Release](https://github.com/JunxiangPan/cbe/releases/tag/v0.3.0)).
 
-This tree is **0.3.0 development**, adding multi-gate job integrity
-(`--gate-jobs`), optional CBP report evidence (`--cbp-report`), and clean
-CBE-only tests. Default 0.2.0 behavior remains unchanged.
+This tree is **0.3.1 development**, a patch that adds the `cbf` package type
+to CLI, manifest, rule-pack and report enums while preserving cbs/cbe/cbp/cbm/
+cbc/cbg. Default 0.2.0 behavior remains unchanged.
 
 `0.1.0` and `0.1.1` remain available for historical installs; their metadata,
 artifacts, and tags are immutable.

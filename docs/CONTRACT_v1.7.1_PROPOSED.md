@@ -301,7 +301,7 @@ Reusable workflow inputs:
 package_id: string
 version: string          # vX.Y.Z
 tag: string
-package_type: string     # cbs/cbe/cbp/cbm/cbc/cbg
+package_type: string     # cbs/cbe/cbp/cbm/cbc/cbg/cbf
 rules_manifest: string
 cbe_ref: string          # default previous stable per F4
 cbp_ref: string          # default previous stable per F4

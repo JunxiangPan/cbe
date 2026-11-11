@@ -1,12 +1,13 @@
 # CBS schema integration status
 
-Status: **PENDING — no schema change made by CBE.**
+Status: **PENDING CBS AMENDMENT — CBE-local additive `cbf` package_id.**
 
-The frozen CBE report schema remains:
+The CBE 0.3.1 report schema adds `cbf` to the existing `package_id` enum; no
+field was added or removed. The CBS-side amendment is still pending.
 
 ```text
 src/cbe/schemas/v1.7/cbe-report.schema.json
-sha256 2b3e1c5a77a7f520b80d01fefa328c9353fffc5d65e87782ca90d193839c0e74
+sha256 7824c18c639c9af8fc013739bdc75dba0d6e22c76f0a96ee91a372a581428fe5
 ```
 
 CBE 0.2.0 adds **sidecars only**:

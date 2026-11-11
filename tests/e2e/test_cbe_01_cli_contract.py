@@ -31,7 +31,7 @@ def test_every_subcommand_has_help(command: str) -> None:
 def test_version_exits_zero() -> None:
     code, data, stdout, _ = run_cbe("--version")
     assert code == 0
-    assert "cbe 0.3.0" in stdout
+    assert "cbe 0.3.1" in stdout
     assert data is None
 
 

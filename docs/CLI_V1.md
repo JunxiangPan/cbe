@@ -265,7 +265,7 @@ SKIPPED: CBE-QUALITY-001 reason=legacy fixture, tracked in ISSUE-42
   `--gate-jobs` is explicitly used.
 - When `--cbp-report PATH` is supplied, the output also contains
   `cbp_report: {path, sha256, manifest_sha256, manifest_sha256_source}`. It is
-  absent without the flag; the CBE report schema is unchanged.
+  absent without the flag; `--cbp-report` adds no report-schema fields.
 - `warn_count == len(warnings)` and includes `UNVERIFIABLE_CONDITION`,
   `UNVERIFIABLE_NEEDS_CHAIN`, `UNVERIFIABLE_REMOTE_WORKFLOW`,
   `UNVERIFIABLE_LOCAL_WORKFLOW`, `GATE_JOB_NOT_FOUND`,

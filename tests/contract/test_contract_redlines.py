@@ -15,7 +15,7 @@ from cbe.errors import EXIT_GATE, EXIT_INPUT, EXIT_PASS, EXIT_SKIP
 ROOT = Path(__file__).resolve().parents[2]
 FIXTURES = ROOT / "tests" / "e2e" / "fixtures"
 SCHEMA = ROOT / "src" / "cbe" / "schemas" / "v1.7" / "cbe-report.schema.json"
-SCHEMA_SHA = "2b3e1c5a77a7f520b80d01fefa328c9353fffc5d65e87782ca90d193839c0e74"
+SCHEMA_SHA = "7824c18c639c9af8fc013739bdc75dba0d6e22c76f0a96ee91a372a581428fe5"
 
 
 def test_frozen_exit_codes() -> None:
