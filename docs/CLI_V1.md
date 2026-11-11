@@ -261,7 +261,8 @@ SKIPPED: CBE-QUALITY-001 reason=legacy fixture, tracked in ISSUE-42
 - Output keys: `bypass_attempts`, `exemptions`, `scanned`,
   `applicable_count`, `skip_count`, `not_applicable_count`, `skip_ratio`,
   `blocking_skip`, `blocking_applicable_count`, `strict`, `gate_job`,
-  `gate_jobs`, `fetch_remote`, `warn_count`, `warnings`.
+  `fetch_remote`, `warn_count`, `warnings`. `gate_jobs` is added only when
+  `--gate-jobs` is explicitly used.
 - When `--cbp-report PATH` is supplied, the output also contains
   `cbp_report: {path, sha256, manifest_sha256, manifest_sha256_source}`. It is
   absent without the flag; the CBE report schema is unchanged.

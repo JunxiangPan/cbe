@@ -723,7 +723,9 @@ def _scan_workflows(
                             child_document = None
                     child_jobs = child_document.get("jobs") if isinstance(child_document, dict) else {}
                     child_jobs = child_jobs if isinstance(child_jobs, dict) else {}
-                    for parent_name, parent_job in (document.get("jobs") or {}).items():
+                    parent_jobs = document.get("jobs")
+                    parent_jobs = parent_jobs if isinstance(parent_jobs, dict) else {}
+                    for parent_name, parent_job in parent_jobs.items():
                         if not isinstance(parent_name, str) or not isinstance(parent_job, dict):
                             continue
                         if not _matching_gate_patterns(parent_name, gate_patterns):

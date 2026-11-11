@@ -167,6 +167,51 @@ def test_absent_cbp_report_changes_nothing(tmp_path: Path) -> None:
     assert "cbp_report" not in data
 
 
+def test_gates_can_live_in_separate_workflows(tmp_path: Path) -> None:
+    workflows = tmp_path / ".github" / "workflows"
+    workflows.mkdir(parents=True)
+    for name in ("cbp-gate", "mutation-gate", "ai-gate"):
+        (workflows / f"{name}.yml").write_text(
+            f"name: {name}\non: [push]\njobs:\n  {name}:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo ok\n",
+            encoding="utf-8",
+        )
+    code, data = _run(tmp_path, "--gate-jobs", "cbp-gate", "mutation-gate", "ai-gate")
+    assert code == 0, data
+    assert data["gate_jobs"] == ["cbp-gate", "mutation-gate", "ai-gate"]
+
+
+def test_default_gate_job_output_is_unchanged(tmp_path: Path) -> None:
+    code, data = _run(_multi_root(tmp_path), "--gate-job", "^cbe[-_]gate$")
+    assert code == 0, data
+    assert data["gate_job"] == "^cbe[-_]gate$"
+    assert "gate_jobs" not in data
+
+
+def test_cbp_report_artifact_hashes_fallback(tmp_path: Path) -> None:
+    root = _multi_root(tmp_path)
+    report = tmp_path / "cbp-report.json"
+    report.write_text(
+        json.dumps({"artifact_hashes": {"quality-manifest.json": "b" * 64}}),
+        encoding="utf-8",
+    )
+    code, data = _run(
+        root, "--gate-jobs", "cbp-gate", "mutation-gate", "ai-gate",
+        "--cbp-report", str(report),
+    )
+    assert code == 0, data
+    assert data["cbp_report"]["manifest_sha256"] == "b" * 64
+    assert data["cbp_report"]["manifest_sha256_source"] == "artifact_hashes.quality-manifest.json"
+
+
+def test_cbp_report_missing_file_is_input_error(tmp_path: Path) -> None:
+    code, data = _run(
+        _multi_root(tmp_path), "--gate-jobs", "cbp-gate", "mutation-gate", "ai-gate",
+        "--cbp-report", str(tmp_path / "missing.json"),
+    )
+    assert code == 2, data
+    assert data["error"]["code"] == "CBP_REPORT_NOT_FOUND"
+
+
 def test_no_cbp_import_in_enforce_module() -> None:
     text = (ROOT / "src/cbe/commands/enforce_no_bypass.py").read_text(encoding="utf-8")
     assert "import cbp" not in text
