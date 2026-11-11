@@ -6,10 +6,15 @@ on:
       tag:
         description: Release tag (must not exist)
         required: true
-        default: v0.2.0
+        default: v0.3.0
       candidate_sha:
         description: Commit to build, sign, and tag
         required: true
+      stage_only:
+        description: Sign and upload a workflow artifact only; no tag/release/PyPI
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -131,6 +136,7 @@ jobs:
   publish:
     name: publish / tag after verification
     needs: sign
+    if: ${{ !inputs.stage_only }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -235,8 +241,9 @@ jobs:
           done
 
   pypi:
-    name: PyPI cbe-review 0.2.0
+    name: PyPI cbe-review 0.3.0
     needs: publish
+    if: ${{ !inputs.stage_only }}
     runs-on: ubuntu-latest
     environment: pypi
     permissions:
