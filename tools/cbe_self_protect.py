@@ -30,7 +30,8 @@ PROTECTED = [
 
 
 def _sha(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    # Git may check out CRLF on Windows; protected-file identity is LF-canonical.
+    return hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
 
 
 def _parse_manifest(path: Path) -> list[tuple[str, str]]:
