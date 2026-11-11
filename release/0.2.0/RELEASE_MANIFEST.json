@@ -96,5 +96,23 @@
     "commit": "8c1452ed99c4a1010eba2ecd632c837007e22df1",
     "signing_run": "https://github.com/JunxiangPan/cbe/actions/runs/42982598114",
     "pypi_run": "https://github.com/JunxiangPan/cbe/actions/runs/42984381924"
+  },
+  "erratum": {
+    "status": "ERRATUM",
+    "decision": "B",
+    "tag": "v0.2.0",
+    "tag_commit": "8c1452ed99c4a1010eba2ecd632c837007e22df1",
+    "tag_staging_hashes": {
+      "wheel": "cb4c07ea316836b63f8c9c9538417fb430ab82021d8a6ca10d713add79ab01bc",
+      "sdist": "d04b60e0b0cf057370d23c042b6c48f8ac150d75a957c73d288ef69de3e77bdf"
+    },
+    "published_hashes": {
+      "wheel": "d9acbefaaf14172ce1d4fda50bf49007c13e443a1988de16bc125be3d1daac91",
+      "sdist": "e4c5cdb28ee91a0732cf1d43193c785e5c3feeff7b73924454d69690da61cf9f"
+    },
+    "tag_moved": false,
+    "assets_rewritten": false,
+    "new_release": false,
+    "document": "release/0.2.0/ERRATUM.md"
   }
 }
