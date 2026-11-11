@@ -1,0 +1,17 @@
+{
+  "schema_version": "1",
+  "package_id": "cbe",
+  "producer_id": "cbe",
+  "version": "0.3.0",
+  "tag": "v0.3.0",
+  "gate_status": "PASS",
+  "exit_code": 0,
+  "applicable_count": 10,
+  "skip_count": 0,
+  "skip_ratio": 0.0,
+  "blocking_skip": false,
+  "warn_count": 0,
+  "rules_manifest_hash": "4be62209aaa8e92c5a1c5b99f8ddfbe48843235490055e6b5973d250ee0d9c2b",
+  "sarif_paths": [],
+  "evidence_sha256": "ecdd362ced41b2b589d869b107d4d38277da434fe8bcdd4c080b909bf294ca77"
+}

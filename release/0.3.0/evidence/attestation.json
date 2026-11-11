@@ -1,0 +1,40 @@
+{
+  "_type": "https://in-toto.io/Statement/v1",
+  "subject": [
+    {
+      "name": "cbe_review-0.3.0-py3-none-any.whl",
+      "digest": {
+        "sha256": "2dcfbfa28661705ddbf414f481dd5dae2fa999a45f015618074e602bb8a4b51a"
+      }
+    },
+    {
+      "name": "cbe_review-0.3.0.tar.gz",
+      "digest": {
+        "sha256": "cdcfb5395c4088d6df333a7e6c1507813e5bdd8ff3f6a750d8a070549cb16c4d"
+      }
+    },
+    {
+      "name": "cbe-report.json",
+      "digest": {
+        "sha256": "338e41d3ac385532afa99f78c6a65fee62fb4103c765a2fa7f9253185d886fe0"
+      }
+    },
+    {
+      "name": "release-manifest.json",
+      "digest": {
+        "sha256": "ffb77387d83ec902ba07a4826016bd64985efd9c4f3a1b0d42e3fc7f38a745b3"
+      }
+    }
+  ],
+  "predicateType": "https://cbe.dev/release/v1",
+  "predicate": {
+    "product": "cbe",
+    "version": "0.3.0",
+    "tag": "v0.3.0",
+    "commit": "d1c7343eb55c1cfe2c1991d2de2ba9478d7850f0",
+    "workflow_ref": "https://github.com/JunxiangPan/cbe/.github/workflows/sign-release.yml@refs/heads/0.3.0-dev",
+    "report_sha256": "338e41d3ac385532afa99f78c6a65fee62fb4103c765a2fa7f9253185d886fe0",
+    "manifest_sha256": "ffb77387d83ec902ba07a4826016bd64985efd9c4f3a1b0d42e3fc7f38a745b3",
+    "gate_status": "PASS"
+  }
+}

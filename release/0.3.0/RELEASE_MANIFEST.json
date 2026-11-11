@@ -1,0 +1,51 @@
+{
+  "schema_version": "1",
+  "product": "cbe",
+  "distribution_name": "cbe-review",
+  "version": "0.3.0",
+  "tag": "v0.3.0",
+  "commit": "d1c7343eb55c1cfe2c1991d2de2ba9478d7850f0",
+  "status": "SIGNED_STAGED_NOT_RELEASED",
+  "tag_created": false,
+  "release_created": false,
+  "pypi_uploaded": false,
+  "signed_release_manifest": {
+    "path": "evidence/release-manifest.json",
+    "sha256": "ffb77387d83ec902ba07a4826016bd64985efd9c4f3a1b0d42e3fc7f38a745b3"
+  },
+  "artifacts": [
+    {
+      "name": "cbe_review-0.3.0-py3-none-any.whl",
+      "sha256": "2dcfbfa28661705ddbf414f481dd5dae2fa999a45f015618074e602bb8a4b51a",
+      "size": 58368
+    },
+    {
+      "name": "cbe_review-0.3.0.tar.gz",
+      "sha256": "cdcfb5395c4088d6df333a7e6c1507813e5bdd8ff3f6a750d8a070549cb16c4d",
+      "size": 48354
+    }
+  ],
+  "signing": {
+    "method": "sigstore-keyless",
+    "verified": true,
+    "identity": "https://github.com/JunxiangPan/cbe/.github/workflows/sign-release.yml@refs/heads/0.3.0-dev",
+    "oidc_issuer": "https://token.actions.githubusercontent.com",
+    "workflow_run": "https://github.com/JunxiangPan/cbe/actions/runs/43101056675",
+    "stage_only": true
+  },
+  "verification": {
+    "tests_total": 272,
+    "full_unit_coverage": "81.91%",
+    "coverage_gate": "80%",
+    "mutation": "10/10",
+    "mutation_recall": 1.0,
+    "cbp": "v1.3.2 PASS",
+    "keyless_files": 5
+  },
+  "release": {
+    "tag_created": false,
+    "github_release_created": false,
+    "pypi_uploaded": false
+  },
+  "notes": "Signed staging only. No v0.3.0 tag, GitHub Release, or PyPI upload. Ed25519 is optional/legacy, not production."
+}
