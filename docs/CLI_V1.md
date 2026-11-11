@@ -148,7 +148,8 @@ cbe enforce-no-bypass --manifest PATH --source-root PATH
     --package-type TYPE --package-version vX.Y.Z
     [--config PATH ...] [--env-file PATH ...]
     [--exemptions PATH] [--workflows] [--strict]
-    [--gate-job REGEX] [--fetch-remote] [--exclude-workflow GLOB ...]
+    [--gate-job REGEX] [--gate-jobs JOB ...] [--cbp-report PATH]
+    [--fetch-remote] [--exclude-workflow GLOB ...]
     [--output PATH] [--help]
 ```
 
@@ -157,6 +158,24 @@ repository renames the gate job (for example `^security-gate$`, `^enforce$`,
 or `^policy-check$`). A workflow with no matching job emits
 `GATE_JOB_NOT_FOUND`; the default remains PASS-with-warning, while `--strict`
 turns it into exit 3.
+
+`--gate-jobs` accepts multiple job names/regexes, for example:
+
+```text
+--gate-jobs cbp-gate mutation-gate ai-gate
+```
+
+Each requested gate must be present somewhere in the scanned workflow set;
+each matching job is checked for `if:false`, commented-out gates, unreachable
+`needs`, `continue-on-error`, and empty local reusable delegation. Missing
+gates warn by default and exit 3 under `--strict`. When `--gate-jobs` is given,
+it takes precedence over `--gate-job`; `--gate-job` alone preserves 0.2.0
+behavior.
+
+`--cbp-report` is optional. When supplied, CBE records the report file SHA256
+and the embedded manifest hash (`manifest_sha256`, or a `manifest`-named entry
+in `artifact_hashes`) in the command output. CBE does not import or require CBP;
+without the flag the output is unchanged.
 
 `--fetch-remote` opts in to fetching GitHub job-level reusable workflows
 (`owner/repo/.github/workflows/*.yml@ref`). Fetched workflows are scanned
@@ -242,7 +261,10 @@ SKIPPED: CBE-QUALITY-001 reason=legacy fixture, tracked in ISSUE-42
 - Output keys: `bypass_attempts`, `exemptions`, `scanned`,
   `applicable_count`, `skip_count`, `not_applicable_count`, `skip_ratio`,
   `blocking_skip`, `blocking_applicable_count`, `strict`, `gate_job`,
-  `fetch_remote`, `warn_count`, `warnings`.
+  `gate_jobs`, `fetch_remote`, `warn_count`, `warnings`.
+- When `--cbp-report PATH` is supplied, the output also contains
+  `cbp_report: {path, sha256, manifest_sha256, manifest_sha256_source}`. It is
+  absent without the flag; the CBE report schema is unchanged.
 - `warn_count == len(warnings)` and includes `UNVERIFIABLE_CONDITION`,
   `UNVERIFIABLE_NEEDS_CHAIN`, `UNVERIFIABLE_REMOTE_WORKFLOW`,
   `UNVERIFIABLE_LOCAL_WORKFLOW`, `GATE_JOB_NOT_FOUND`,
