@@ -1,6 +1,6 @@
 # CBE 0.3.0 Release Notes (signed staging)
 
-Status: **SIGNED STAGING — NOT RELEASED.**
+Status: **RELEASED — SIGNED via Sigstore keyless.**
 
 ## Highlights
 
@@ -22,4 +22,5 @@ CBP:         v1.3.2 PASS
 signatures:  keyless bundles verified (5 files)
 ```
 
-No tag/release/PyPI until owner review.
+Released: https://github.com/JunxiangPan/cbe/releases/tag/v0.3.0  
+PyPI: https://pypi.org/project/cbe-review/0.3.0/

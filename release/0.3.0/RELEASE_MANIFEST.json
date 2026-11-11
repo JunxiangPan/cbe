@@ -5,10 +5,10 @@
   "version": "0.3.0",
   "tag": "v0.3.0",
   "commit": "d1c7343eb55c1cfe2c1991d2de2ba9478d7850f0",
-  "status": "SIGNED_STAGED_NOT_RELEASED",
-  "tag_created": false,
-  "release_created": false,
-  "pypi_uploaded": false,
+  "status": "RELEASED",
+  "tag_created": true,
+  "release_created": true,
+  "pypi_uploaded": true,
   "signed_release_manifest": {
     "path": "evidence/release-manifest.json",
     "sha256": "ffb77387d83ec902ba07a4826016bd64985efd9c4f3a1b0d42e3fc7f38a745b3"
@@ -43,9 +43,17 @@
     "keyless_files": 5
   },
   "release": {
-    "tag_created": false,
-    "github_release_created": false,
-    "pypi_uploaded": false
+    "tag": "v0.3.0",
+    "commit": "d1c7343eb55c1cfe2c1991d2de2ba9478d7850f0",
+    "url": "https://github.com/JunxiangPan/cbe/releases/tag/v0.3.0",
+    "pypi": "https://pypi.org/project/cbe-review/0.3.0/"
   },
-  "notes": "Signed staging only. No v0.3.0 tag, GitHub Release, or PyPI upload. Ed25519 is optional/legacy, not production."
+  "notes": "RELEASED. Signed keyless staging assets verified. No old tag moved. CBP 1.5.0 opt-in not blocking.",
+  "pypi": {
+    "status": "PUBLISHED",
+    "uploaded": true,
+    "version": "0.3.0",
+    "wheel_sha256": "2dcfbfa28661705ddbf414f481dd5dae2fa999a45f015618074e602bb8a4b51a",
+    "sdist_sha256": "cdcfb5395c4088d6df333a7e6c1507813e5bdd8ff3f6a750d8a070549cb16c4d"
+  }
 }

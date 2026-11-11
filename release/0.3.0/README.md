@@ -1,6 +1,6 @@
 # CBE 0.3.0 signed staging
 
-Status: **SIGNED STAGING — NOT RELEASED.**
+Status: **RELEASED — SIGNED via Sigstore keyless.**
 
 - Sigstore keyless bundles verified.
 - No `v0.3.0` tag, GitHub Release, or PyPI upload.

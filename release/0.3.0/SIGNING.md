@@ -1,6 +1,6 @@
 # CBE 0.3.0 signing (staging)
 
-Status: **SIGNED via GitHub OIDC keyless cosign/sigstore.**
+Status: **RELEASED — SIGNED via GitHub OIDC keyless cosign/sigstore.**
 
 - Workflow run: <https://github.com/JunxiangPan/cbe/actions/runs/43101056675>
 - Identity: `https://github.com/JunxiangPan/cbe/.github/workflows/sign-release.yml@refs/heads/0.3.0-dev`

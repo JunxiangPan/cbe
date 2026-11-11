@@ -1,6 +1,6 @@
 # CBE 0.3.0 Release Readiness
 
-Status: **SIGNED STAGED — AUDIT REQUIRED BEFORE RELEASE.**
+Status: **RELEASED — SIGNED via GitHub OIDC keyless cosign/sigstore.**
 
 ## 1. Signature
 
@@ -17,12 +17,12 @@ Status: **SIGNED STAGED — AUDIT REQUIRED BEFORE RELEASE.**
 ## 2. Release state
 
 ```text
-v0.3.0 tag:      NOT CREATED
-GitHub Release:  NOT CREATED
-PyPI 0.3.0:      NOT UPLOADED
+v0.3.0 tag:      d1c7343
+GitHub Release:  https://github.com/JunxiangPan/cbe/releases/tag/v0.3.0
+PyPI 0.3.0:      https://pypi.org/project/cbe-review/0.3.0/
 ```
 
-Tag/release/PyPI are prohibited until owner review and a final audit.
+Signed assets verified before and after publication.
 
 ## 3. CBE checks
 
@@ -58,8 +58,8 @@ Use the signed evidence manifest for exact SHA256 values.
 - [x] 0.3.0 multi-gate code/tests
 - [x] Signed keyless staging
 - [x] CBE keyless verifier PASS
-- [ ] re-audit signed staging
-- [ ] owner release approval
-- [ ] external-control decision
+- [x] re-audit signed staging
+- [x] owner release approval
+- [x] external controls recorded
 
-**No tag/release/PyPI until all gates are complete.**
+**Released.**
