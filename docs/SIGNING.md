@@ -1,5 +1,11 @@
 # CBE signing and attestation
 
+Status: **RELEASED — SIGNED via GitHub OIDC keyless cosign/sigstore.**
+
+Release: <https://github.com/JunxiangPan/cbe/releases/tag/v0.2.0>
+Tag: `v0.2.0` -> `8c1452e`
+PyPI: <https://pypi.org/project/cbe-review/0.2.0/>
+
 CBE 0.2.0 production signing is **GitHub OIDC keyless cosign/sigstore**.
 
 The Ed25519 sidecar remains an optional/legacy mechanism. It is not the

@@ -1,18 +1,16 @@
 # CBE 0.2.0 provenance
 
-Status: **SIGNING WORKFLOW DEFINED — release tag not created yet.**
+Status: **RELEASED — SIGNED via GitHub OIDC keyless Sigstore.**
 
-- Source: CBE `main`, version `0.2.0`.
-- CI: Ubuntu + Windows, coverage gate 80%, mutation recall gate.
-- Actions: checkout/setup-python/PyPI/cosign-installer pinned to full commit SHAs.
-- SBOM: `artifacts/sbom/cbe-0.2.0.cdx.json` (CycloneDX 1.5).
-- Self-protection: `security/SELF_PROTECTION.sha256`.
-- Production signature: **GitHub OIDC keyless Sigstore bundles** for wheel,
-  sdist, `cbe-report.json`, `attestation.json`, `release-manifest.json`.
-- Optional/legacy Ed25519 sidecar: retained, not production signing.
-- Signing workflow: `.github/workflows/sign-release.yml`.
-- Tag/release: created only after the workflow’s `cosign verify-blob` and CBE
-  keyless verifier pass. A failed signature run must not tag.
-
-The release provenance is recorded at runtime by the signed
-`release-manifest.json` and `cbe-report.json`; do not pre-fill a tag hash.
+- Tag: `v0.2.0` -> `8c1452ed99c4a1010eba2ecd632c837007e22df1`
+- Release: <https://github.com/JunxiangPan/cbe/releases/tag/v0.2.0>
+- PyPI: <https://pypi.org/project/cbe-review/0.2.0/>
+- Signing workflow: `.github/workflows/sign-release.yml` (run `42982598114`)
+- Production signature: Sigstore keyless bundles for wheel, sdist,
+  `cbe-report.json`, `attestation.json`, `release-manifest.json`
+- Cosign: 5/5 `verify-blob` Verified OK; SLSA v1 attestations for wheel/sdist
+- CBE keyless verifier: 5 files PASS
+- Ed25519 sidecar: optional/legacy only, not production signing.
+- Old tags `v0.1.0` / `v0.1.1` unchanged; old distribution name `cbe` never
+  uploaded.
+- Branch/tag protection remains external; see `release/0.2.0/READINESS.md`.

@@ -1,6 +1,6 @@
 # CBE 0.2.0 Release Readiness
 
-Status: **SIGNED — Sigstore keyless (GitHub OIDC); CBP v1.3.2 PASS; branch/tag
+Status: **RELEASED — SIGNED via Sigstore keyless (GitHub OIDC); CBP v1.3.2 PASS; branch/tag
 protection remains external.**
 
 Production signature is the Sigstore keyless cosign bundle, **not** Ed25519.
@@ -101,28 +101,30 @@ claim full remote reusable call-graph closure.
 
 ## 6. Release gate
 
-- [x] CBE self-audit (252 tests, mutation 10/10, self-protection, contract)
+- [x] CBE self-audit (257 tests, mutation 10/10, self-protection, contract)
 - [x] CBP v1.3.2 tag-level review and `cbp-gate` cross-check
 - [x] Cosign keyless workflow defined with verify-before-tag
-- [ ] `sign-release.yml` OIDC run PASS
-- [ ] release assets verify after publication
-- [ ] PyPI `cbe-review==0.2.0` digest verified
-- [ ] old tags/assets unchanged
+- [x] `sign-release.yml` OIDC signing/verification PASS
+- [x] release assets verify after publication
+- [x] PyPI `cbe-review==0.2.0` digest verified
+- [x] old tags/assets unchanged
 
-Release actions are executed only after the signing workflow PASS.
+Released: https://github.com/JunxiangPan/cbe/releases/tag/v0.2.0
+
+PyPI: https://pypi.org/project/cbe-review/0.2.0/
 
 ## 7. Artifacts / evidence
 
 ```text
-wheel  cb4c07ea316836b63f8c9c9538417fb430ab82021d8a6ca10d713add79ab01bc
-sdist  d04b60e0b0cf057370d23c042b6c48f8ac150d75a957c73d288ef69de3e77bdf
+wheel  d9acbefaaf14172ce1d4fda50bf49007c13e443a1988de16bc125be3d1daac91
+sdist  e4c5cdb28ee91a0732cf1d43193c785e5c3feeff7b73924454d69690da61cf9f
 ```
 
 - CBE self-audit: `artifacts/self-audit/0.2.0.md`
 - CBP v1.3.2 review: `artifacts/cbp-review/1.3.2.md`
 - SBOM: `artifacts/sbom/cbe-0.2.0.cdx.json`
 - Self-protection: `security/SELF_PROTECTION.sha256`
-- CI: <https://github.com/JunxiangPan/cbe/actions/runs/42863397794>
+- CI: <https://github.com/JunxiangPan/cbe/actions/runs/42982598114>
 
 ## 8. Signing commands
 

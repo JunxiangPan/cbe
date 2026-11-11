@@ -1,6 +1,6 @@
 # CBE 0.2.0 Release Notes
 
-Status: **SIGNED — Sigstore keyless (GitHub OIDC); CBP v1.3.2 PASS; release only after signing workflow verification.**
+Status: **RELEASED — SIGNED via Sigstore keyless (GitHub OIDC); CBP v1.3.2 PASS.**
 
 CBE 0.2.0 is the gate-integrity release. Distribution remains `cbe-review`;
 import package and CLI remain `cbe`.

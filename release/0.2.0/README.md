@@ -1,6 +1,6 @@
 # CBE 0.2.0 release staging
 
-Status: **SIGNED — Sigstore keyless (GitHub OIDC); CBP v1.3.2 PASS; no tag/GitHub Release/PyPI until the signing workflow passes.**
+Status: **RELEASED — SIGNED via Sigstore keyless (GitHub OIDC); CBP v1.3.2 PASS.**
 
 Release readiness: [READINESS.md](READINESS.md).
 
@@ -40,8 +40,8 @@ This is a gate-integrity release, not a runtime security boundary.
 
 | File | SHA256 | Size |
 |---|---|---|
-| `cbe_review-0.2.0-py3-none-any.whl` | `cb4c07ea316836b63f8c9c9538417fb430ab82021d8a6ca10d713add79ab01bc` | 57,179 B |
-| `cbe_review-0.2.0.tar.gz` | `d04b60e0b0cf057370d23c042b6c48f8ac150d75a957c73d288ef69de3e77bdf` | 47,966 B |
+| `cbe_review-0.2.0-py3-none-any.whl` | `d9acbefaaf14172ce1d4fda50bf49007c13e443a1988de16bc125be3d1daac91` | 57,147 B |
+| `cbe_review-0.2.0.tar.gz` | `e4c5cdb28ee91a0732cf1d43193c785e5c3feeff7b73924454d69690da61cf9f` | 47,221 B |
 
 Wheel metadata:
 
