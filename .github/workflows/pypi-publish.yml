@@ -21,12 +21,33 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          mkdir -p dist
+          mkdir -p dist manifest
           gh release download "${{ inputs.tag }}" \
             --repo "${{ github.repository }}" \
-            -p 'cbe_review-*' \
+            -p 'cbe_review-*.whl' \
+            -p 'cbe_review-*.tar.gz' \
             -D dist
+          gh release download "${{ inputs.tag }}" \
+            --repo "${{ github.repository }}" \
+            -p 'release-manifest.json' \
+            -D manifest
           ls -l dist
+
+      - name: Verify wheel/sdist hashes against signed manifest
+        run: |
+          python - <<'PY'
+          import hashlib, json, pathlib
+          manifest = json.loads(pathlib.Path("manifest/release-manifest.json").read_text(encoding="utf-8"))
+          declared = {item["name"]: item["sha256"] for item in manifest["artifacts"]}
+          problems = []
+          for path in sorted(pathlib.Path("dist").iterdir()):
+              actual = hashlib.sha256(path.read_bytes()).hexdigest()
+              if declared.get(path.name) != actual:
+                  problems.append(f"{path.name}: {actual} != {declared.get(path.name)}")
+          if problems:
+              raise SystemExit("PYPI_DIGEST_MISMATCH: " + "; ".join(problems))
+          print("PYPI_DIGEST_MATCH", declared)
+          PY
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086 # release/v1
