@@ -126,6 +126,12 @@ Once CBF 0.1.0rc1 is available, this project must pin a CBF policy and run
 `cbf gate --surface git` before upload/release. Until then, do not describe the
 project as CBF-compatible or CBF-passed.
 
+CBE itself does **not** implement CBF scanning. When CBF is available, CBE's
+`--gate-jobs` may include `cbf-privacy-gate`; CBE only verifies that the job is
+reachable and not skipped, not CBF findings or policy semantics. CBE does not
+import CBF. A future CBE release requires a real CBF PASS; 0.3.0 predates CBF
+and is not claimed as CBF-passed.
+
 ## CBF status
 
 CBF 0.1.0 has not been released. This project is **not CBF-integrated** and has **no CBF PASS**. Phase 0 preparation is recorded in [`docs/CBF_ADOPTION.md`](docs/CBF_ADOPTION.md); no runtime dependency, no import, and no CBF-certified release exists yet.

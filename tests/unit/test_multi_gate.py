@@ -216,3 +216,47 @@ def test_no_cbp_import_in_enforce_module() -> None:
     text = (ROOT / "src/cbe/commands/enforce_no_bypass.py").read_text(encoding="utf-8")
     assert "import cbp" not in text
     assert "from cbp" not in text
+
+
+def test_cbf_privacy_gate_is_checked_as_opaque_job(tmp_path: Path) -> None:
+    text = BASE + """  cbf-privacy-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo cbf
+"""
+    _write_workflow(tmp_path, text)
+    code, data = _run(
+        tmp_path,
+        "--gate-jobs", "cbp-gate", "mutation-gate", "ai-gate", "cbf-privacy-gate",
+    )
+    assert code == 0, data
+    assert "cbf-privacy-gate" in data["gate_jobs"]
+    # CBE does not inspect CBF policy or evidence semantics.
+    assert not any(item["kind"] == "cbf" for item in data["bypass_attempts"])
+
+
+def test_cbf_privacy_gate_skip_is_detected(tmp_path: Path) -> None:
+    text = BASE + """  cbf-privacy-gate:
+    if: false
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo cbf
+"""
+    _write_workflow(tmp_path, text)
+    code, data = _run(
+        tmp_path,
+        "--gate-jobs", "cbp-gate", "mutation-gate", "ai-gate", "cbf-privacy-gate",
+    )
+    assert code == 3, data
+    assert any(
+        item["reason"] == "WORKFLOW_SKIPS_CBE_GATE"
+        and "cbf-privacy-gate" in item["evidence"]
+        for item in data["bypass_attempts"]
+    )
+
+
+def test_cbe_source_does_not_import_cbf() -> None:
+    for path in (ROOT / "src" / "cbe").rglob("*.py"):
+        text = path.read_text(encoding="utf-8")
+        assert "import cbf" not in text
+        assert "from cbf" not in text

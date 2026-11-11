@@ -29,4 +29,13 @@ it and does not require it to be installed.
 
 ## Boundary
 
-CBE does not judge CBF rule semantics; the future --gate-jobs must include cbf-privacy-gate and prove it ran. CBE does not import CBF.
+CBE **does not implement CBF scanning** and does not judge CBF policy or
+findings. CBE only verifies that a configured `cbf-privacy-gate` job is
+reachable and not skipped. Future `--gate-jobs` includes `cbf-privacy-gate`;
+CBE proves the job ran, nothing more. CBE does not import CBF or require it at
+runtime.
+
+CBE release/upload must be preceded by a real CBF PASS once CBF 0.1.0 is
+available. CBE 0.3.0 was published during CBF Phase 0; it is **not** claimed to
+have CBF evidence or a CBF PASS. No future CBE release may claim CBF compliance
+without a real gate result.
