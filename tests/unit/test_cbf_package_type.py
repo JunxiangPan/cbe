@@ -8,6 +8,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
 from jsonschema import Draft202012Validator
 
 from cbe.manifest import PACKAGE_TYPES, load_and_inspect
@@ -91,3 +92,42 @@ def test_cli_accepts_cbf_package_type(tmp_path: Path) -> None:
         check=False,
     )
     assert process.returncode == 0, process.stdout + process.stderr
+
+
+@pytest.mark.parametrize("package_type", ["cbs", "cbe", "cbp", "cbm", "cbc", "cbg"])
+def test_legacy_package_types_are_not_removed(tmp_path: Path, package_type: str) -> None:
+    path = _cbf_manifest(tmp_path)
+    process = subprocess.run(
+        [
+            sys.executable, "-m", "cbe", "validate-manifest",
+            "--manifest", str(path), "--package-type", package_type,
+            "--package-version", "v0.1.0",
+        ],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        check=False,
+    )
+    assert process.returncode != 2, process.stdout + process.stderr
+    assert "invalid choice" not in (process.stderr + process.stdout)
+
+
+def test_invalid_package_type_is_still_rejected(tmp_path: Path) -> None:
+    path = _cbf_manifest(tmp_path)
+    process = subprocess.run(
+        [
+            sys.executable, "-m", "cbe", "validate-manifest",
+            "--manifest", str(path), "--package-type", "cbx",
+            "--package-version", "v0.1.0",
+        ],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        check=False,
+    )
+    assert process.returncode == 2
+    assert "invalid choice" in (process.stderr + process.stdout)
