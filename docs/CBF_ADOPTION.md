@@ -39,3 +39,7 @@ CBE release/upload must be preceded by a real CBF PASS once CBF 0.1.0 is
 available. CBE 0.3.0 was published during CBF Phase 0; it is **not** claimed to
 have CBF evidence or a CBF PASS. No future CBE release may claim CBF compliance
 without a real gate result.
+
+`semantic-gate` is handled with the same opaque reachability rule: CBE checks
+that the job exists and is not skipped, but does not run a model and does not
+judge semantic findings.

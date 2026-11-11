@@ -288,3 +288,48 @@ def test_cbe_source_does_not_import_cbf() -> None:
         text = path.read_text(encoding="utf-8")
         assert "import cbf" not in text
         assert "from cbf" not in text
+
+
+def test_semantic_gate_single_gate_job_is_supported(tmp_path: Path) -> None:
+    text = BASE + """  semantic-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo semantic
+"""
+    _write_workflow(tmp_path, text)
+    code, data = _run(tmp_path, "--gate-job", "^semantic-gate$")
+    assert code == 0, data
+    assert data["gate_job"] == "^semantic-gate$"
+
+
+def test_semantic_gate_skip_is_detected(tmp_path: Path) -> None:
+    text = BASE + """  semantic-gate:
+    if: false
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo semantic
+"""
+    _write_workflow(tmp_path, text)
+    code, data = _run(tmp_path, "--gate-job", "^semantic-gate$")
+    assert code == 3, data
+    assert any(
+        item["reason"] == "WORKFLOW_SKIPS_CBE_GATE" and "semantic-gate" in item["evidence"]
+        for item in data["bypass_attempts"]
+    )
+
+
+def test_semantic_gate_is_opaque_in_multi_gate_mode(tmp_path: Path) -> None:
+    text = BASE + """  semantic-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo semantic
+"""
+    _write_workflow(tmp_path, text)
+    code, data = _run(
+        tmp_path,
+        "--gate-jobs", "cbp-gate", "mutation-gate", "ai-gate", "semantic-gate",
+    )
+    assert code == 0, data
+    assert "semantic-gate" in data["gate_jobs"]
+    # CBE only proves the job is present/reachable; it never runs a model.
+    assert not any("model" in item["evidence"].lower() for item in data["bypass_attempts"])

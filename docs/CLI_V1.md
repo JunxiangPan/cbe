@@ -162,7 +162,7 @@ turns it into exit 3.
 `--gate-jobs` accepts multiple job names/regexes, for example:
 
 ```text
---gate-jobs cbp-gate mutation-gate ai-gate
+--gate-jobs cbp-gate mutation-gate ai-gate cbf-privacy-gate semantic-gate
 ```
 
 Each requested gate must be present somewhere in the scanned workflow set;
@@ -171,6 +171,10 @@ each matching job is checked for `if:false`, commented-out gates, unreachable
 gates warn by default and exit 3 under `--strict`. When `--gate-jobs` is given,
 it takes precedence over `--gate-job`; `--gate-job` alone preserves 0.2.0
 behavior.
+
+`cbf-privacy-gate` and `semantic-gate` are treated as opaque gate jobs: CBE
+checks reachability and non-skipping only. CBE does not run CBF/model scans or
+judge semantics, and does not import CBF.
 
 `--cbp-report` is optional. When supplied, CBE records the report file SHA256
 and the embedded manifest hash (`manifest_sha256`, or a `manifest`-named entry

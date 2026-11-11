@@ -128,10 +128,15 @@ project as CBF-compatible or CBF-passed.
 
 CBE itself does **not** implement CBF scanning. When CBF is available, CBE's
 `--gate-jobs` may include `cbf-privacy-gate`; CBE only verifies that the job is
-reachable and not skipped, not CBF findings or policy semantics. CBE does not
-import CBF. A future CBE release requires a real CBF PASS; 0.3.0 predates CBF
-and is not claimed as CBF-passed.
+reachable and not skipped, not CBF findings or policy semantics. The same
+opaque reachability rule applies to `semantic-gate`: CBE does not run a model
+or judge semantics. CBE does not import CBF. A future CBE release requires a
+real CBF PASS; 0.3.1 fixes the `cbf` package type but does not claim external
+CBF PASS.
 
 ## CBF status
 
-CBF 0.1.0 has not been released. This project is **not CBF-integrated** and has **no CBF PASS**. Phase 0 preparation is recorded in [`docs/CBF_ADOPTION.md`](docs/CBF_ADOPTION.md); no runtime dependency, no import, and no CBF-certified release exists yet.
+CBF 0.1.0 stable has not been released (0.1.0rc1 is a pre-release). This project
+is **not CBF-certified** and has **no external CBF PASS**. Phase 0 preparation
+is recorded in [`docs/CBF_ADOPTION.md`](docs/CBF_ADOPTION.md); no runtime
+dependency, no import, and no CBF-certified release exists yet.
