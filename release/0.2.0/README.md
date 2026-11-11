@@ -1,14 +1,13 @@
 # CBE 0.2.0 release staging
 
-Status: **READY FOR OWNER FINAL CONFIRMATION — CBP v1.3.2 PASS; unsigned; no tag, no GitHub Release, no PyPI upload.**
+Status: **SIGNED — Sigstore keyless (GitHub OIDC); CBP v1.3.2 PASS; no tag/GitHub Release/PyPI until the signing workflow passes.**
 
 Release readiness: [READINESS.md](READINESS.md).
 
 CBP v1.3.2 tag `63cc8f0` contains a real `cbp-gate`; CBE cross-check passes
 with `--gate-job '^cbp-gate$' --exclude-workflow '.github/workflows/e2e-payload.yml' --strict`.
-The release is **UNSIGNED** (`BLOCKED_NO_SIGNING_IDENTITY`); branch/tag
-protection is still external and requires configuration or an explicit owner
-waiver.
+Production signing is the Sigstore keyless bundle from
+`.github/workflows/sign-release.yml`; Ed25519 is optional/legacy only.
 
 Distribution: `cbe-review`; import package and CLI remain `cbe`.
 This is a gate-integrity release, not a runtime security boundary.
@@ -19,14 +18,14 @@ This is a gate-integrity release, not a runtime security boundary.
 - **CBE-REMOTE-01**: opt-in `--fetch-remote`; fetched GitHub reusable workflows
   are scanned recursively. Unfetched/network/auth/404 references remain
   `UNVERIFIABLE_REMOTE_WORKFLOW`; `--strict` exits 3.
-- **CBE-TRUST-01**: Ed25519 sidecar schema, signer, and offline verifier.
-  Production signing is **BLOCKED_NO_SIGNING_IDENTITY**; no signature is
-  fabricated.
+- **CBE-TRUST-01**: Sigstore keyless production signatures; Ed25519 sidecar
+  schema/signer/verifier retained as optional/legacy. No fake signature is
+  produced; no Ed25519 signature is claimed as production.
 - **CBE-SELF-01**: `security/SELF_PROTECTION.sha256` and CI check for workflow,
   gate script, manifest core, and contract guard; tamper tests are red.
 - **CBE-CONTRACT-01**: schema, exit codes, object `artifact_repository`, body
   scope, and 20% threshold pinned by tests.
-- **CBE-COV-01**: unit coverage gate raised to 80%; current **82.93%** (latest observed 82.95%),
+- **CBE-COV-01**: unit coverage gate raised to 80%; current **82.93%** (latest observed 83.00%),
   `enforce_no_bypass.py` **91%**.
 - **CBE-WIN-01**: Windows path/backslash test, SHA-pinned Actions, no
   self-hosted runner.

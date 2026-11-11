@@ -1,6 +1,6 @@
 # CBE 0.2.0 Release Notes
 
-Status: **ready for owner final confirmation; CBP v1.3.2 PASS; unsigned; no tag, no GitHub Release, no PyPI upload.**
+Status: **SIGNED — Sigstore keyless (GitHub OIDC); CBP v1.3.2 PASS; release only after signing workflow verification.**
 
 CBE 0.2.0 is the gate-integrity release. Distribution remains `cbe-review`;
 import package and CLI remain `cbe`.
@@ -10,8 +10,8 @@ import package and CLI remain `cbe`.
 - 10-mutant no-bypass recall: **1.0**; every mutant exits 3 / non-PASS.
 - Remote reusable workflow closure: `--fetch-remote` opt-in, recursive local and
   remote scans; unverifiable/failed fetches exit 3 under `--strict`.
-- Sidecar signing/attestation schemas + offline verifier; production identity
-  unavailable, so status is **BLOCKED_NO_SIGNING_IDENTITY**.
+- Sigstore keyless production signatures for wheel/sdist/report/attestation/
+  release manifest; Ed25519 sidecar retained as optional/legacy.
 - Self-protection manifest and CI tamper check.
 - Contract red-line tests: frozen report schema, exit codes, object
   `artifact_repository`, body scope/hash, 20% threshold.

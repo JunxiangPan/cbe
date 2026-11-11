@@ -1,55 +1,79 @@
-# CBE sidecar signing and attestation
+# CBE signing and attestation
 
-Status: **BLOCKED_NO_SIGNING_IDENTITY**.
+CBE 0.2.0 production signing is **GitHub OIDC keyless cosign/sigstore**.
 
-CBE 0.2.0 ships the sidecar schema and an offline verifier, but no production
-signature or production attestation. No signing key or OIDC identity was
-available, so no signature was fabricated.
+The Ed25519 sidecar remains an optional/legacy mechanism. It is not the
+production signature and must never be described as one.
 
-## Sidecar files
+## Production signature (Sigstore keyless)
 
-- `manifest.sig` — JSON envelope, Ed25519 signature over canonical fields:
-  `schema_version`, `alg`, `keyid`, `subject`, `manifest_sha256`,
-  `report_sha256`, `attestation_sha256`.
-- `attestation.json` — in-toto Statement v1 with the manifest/report subject
-  digests and a CBE release predicate.
-- The frozen CBE report schema is **not** changed; sidecars are external.
+Signed files on the `v0.2.0` Release:
 
-Schemas:
+- `cbe_review-0.2.0-py3-none-any.whl`
+- `cbe_review-0.2.0.tar.gz`
+- `cbe-report.json`
+- `attestation.json`
+- `release-manifest.json`
 
-- `schemas/sidecar/manifest-signature.v1.schema.json`
-- `schemas/sidecar/attestation.v1.schema.json`
+Each file has:
 
-## Sign (only with a real identity)
+- `<file>.bundle` — Sigstore bundle (certificate + signature + transparency
+  proof), mandatory;
+- `<file>.sig` / `<file>.pem` — detached signature/certificate, optional
+  convenience copies.
+
+The signing workflow is `.github/workflows/sign-release.yml`. It builds once,
+generates the evidence files, signs with GitHub OIDC, runs `cosign verify-blob`
+and the CBE keyless verifier **before** creating the tag/release. It does not
+create a tag if signing or verification fails.
+
+Verify:
 
 ```bash
-python tools/cbe_sign_sidecar.py \
-  --manifest rules.json --report cbe-report.json \
+cosign verify-blob \
+  --bundle cbe_review-0.2.0-py3-none-any.whl.bundle \
+  --certificate-identity-regexp \
+    'https://github.com/JunxiangPan/cbe/.github/workflows/sign-release.yml@refs/heads/main' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+  cbe_review-0.2.0-py3-none-any.whl
+```
+
+The certificate identity is the signing workflow at the branch/ref that
+triggered the OIDC token; it is not a long-lived key.
+
+## CBE verifier
+
+```bash
+python tools/cbe_verify_sidecar.py --keyless \
+  --bundle-dir . \
+  --artifact cbe_review-0.2.0-py3-none-any.whl \
+  --artifact cbe_review-0.2.0.tar.gz \
+  --report cbe-report.json \
+  --manifest release-manifest.json \
   --attestation attestation.json \
-  --private-key /secure/ed25519.pem --keyid release-2026 \
-  --version v0.2.0 --out manifest.sig
+  --certificate-identity-regexp \
+    'https://github.com/JunxiangPan/cbe/.github/workflows/sign-release.yml@.*' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
 ```
 
-The signer is a tool, not proof of identity. Keep the private key outside the
-repository.
+If any bundle is missing, or `cosign` is unavailable, the verifier exits 4
+with `BLOCKED`/`NOT_UPLOADED`; it never returns PASS for unsigned evidence.
 
-## Verify offline
+## Legacy Ed25519 sidecar (optional)
 
-```bash
-python tools/cbe_verify_sidecar.py \
-  --manifest rules.json --report cbe-report.json \
-  --signature manifest.sig --attestation attestation.json \
-  --public-key release-2026.pub
-```
+The old sidecar is retained for offline/legacy verification only:
 
-The verifier reads only these files and the public key. It checks schema,
-manifest/report/attestation digests, subject binding, and the Ed25519
-signature. It does not fetch or execute anything.
+- `manifest.sig` — JSON envelope, Ed25519 over canonical fields;
+- `attestation.json` — in-toto Statement v1 with manifest/report digests;
+- schemas under `schemas/sidecar/`.
 
-## Current delivery
+`tools/cbe_sign_sidecar.py` only signs when a real private key is supplied.
+No production `manifest.sig` is generated or claimed. The legacy verifier is
+still available without `--keyless`.
 
-- Schema: delivered.
-- Signer: delivered for use with a real key.
-- Verifier: delivered; tested with ephemeral keys.
-- Production signature: **not produced** (`BLOCKED_NO_SIGNING_IDENTITY`).
-- Production attestation: **not produced**.
+## Boundaries
+
+- No fake signature, certificate, or bundle is produced.
+- The frozen CBE report schema is unchanged.
+- A Sigstore bundle is not an Ed25519 signature; do not describe one as the
+  other.

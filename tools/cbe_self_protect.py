@@ -20,9 +20,12 @@ DEFAULT_MANIFEST = "security/SELF_PROTECTION.sha256"
 PROTECTED = [
     ".github/workflows/cbe-e2e.yml",
     ".github/workflows/pypi-publish.yml",
+    ".github/workflows/sign-release.yml",
     "src/cbe/commands/enforce_no_bypass.py",
     "src/cbe/manifest.py",
     "tools/cbe_contract_guard.py",
+    "tools/cbe_release_bundle.py",
+    "tools/cbe_verify_sidecar.py",
 ]
 
 

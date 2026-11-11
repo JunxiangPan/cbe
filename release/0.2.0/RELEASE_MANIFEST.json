@@ -41,8 +41,8 @@
     "ci_run": "https://github.com/JunxiangPan/cbe/actions/runs/42841108822",
     "ci_ubuntu": "success",
     "ci_windows": "success",
-    "coverage_note": "Manifest records the requested 82.93% baseline; latest local/CI measurement is 82.95% (252 tests). Both clear the 80% gate.",
-    "coverage_observed": "82.95%"
+    "coverage_note": "Manifest records the requested 82.93% baseline; latest local/CI observation is 83.00% (82.95–83.00% variance). All clear the 80% gate.",
+    "coverage_observed": "83.00%"
   },
   "contract": {
     "report_schema_sha256": "2b3e1c5a77a7f520b80d01fefa328c9353fffc5d65e87782ca90d193839c0e74",
@@ -50,10 +50,17 @@
     "skip_ratio_exit4_threshold": 0.2
   },
   "sidecar_signing": {
-    "status": "BLOCKED_NO_SIGNING_IDENTITY",
-    "schemas": true,
-    "offline_verifier": true,
-    "production_signature": false
+    "status": "SIGSTORE_KEYLESS_WORKFLOW",
+    "production_signature": "sigstore-keyless-bundle",
+    "signed_files": [
+      "cbe_review-0.2.0-py3-none-any.whl",
+      "cbe_review-0.2.0.tar.gz",
+      "cbe-report.json",
+      "attestation.json",
+      "release-manifest.json"
+    ],
+    "legacy_ed25519": "optional",
+    "verified": false
   },
   "pypi": {
     "status": "NOT_UPLOADED",
@@ -63,7 +70,7 @@
     "old_name": "cbe",
     "old_name_never_used": true
   },
-  "notes": "Staged only. CBP v1.3.2 PASS. Awaiting owner final confirmation and branch/tag protection waiver/config. No tag/release/PyPI. Report schema unchanged.",
+  "notes": "Staged. Sigstore keyless signing workflow must verify before tag/release/PyPI. No Ed25519 production signature is claimed.",
   "cbp_review": {
     "status": "PASS",
     "tag": "v1.3.2",

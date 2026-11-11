@@ -1,16 +1,18 @@
-# CBE 0.2.0 provenance (development)
+# CBE 0.2.0 provenance
 
-Status: **NOT RELEASED.**
+Status: **SIGNING WORKFLOW DEFINED — release tag not created yet.**
 
 - Source: CBE `main`, version `0.2.0`.
 - CI: Ubuntu + Windows, coverage gate 80%, mutation recall gate.
-- Actions: checkout/setup-python/PyPI publish pinned to full commit SHAs.
+- Actions: checkout/setup-python/PyPI/cosign-installer pinned to full commit SHAs.
 - SBOM: `artifacts/sbom/cbe-0.2.0.cdx.json` (CycloneDX 1.5).
 - Self-protection: `security/SELF_PROTECTION.sha256`.
-- Signature/attestation: schemas + offline verifier delivered; production
-  sidecar **BLOCKED_NO_SIGNING_IDENTITY**. No signature is claimed.
-- Release: requires human approval; no v0.2.0 tag, GitHub Release, or PyPI
-  upload exists yet.
+- Production signature: **GitHub OIDC keyless Sigstore bundles** for wheel,
+  sdist, `cbe-report.json`, `attestation.json`, `release-manifest.json`.
+- Optional/legacy Ed25519 sidecar: retained, not production signing.
+- Signing workflow: `.github/workflows/sign-release.yml`.
+- Tag/release: created only after the workflow’s `cosign verify-blob` and CBE
+  keyless verifier pass. A failed signature run must not tag.
 
-The release provenance should be finalized with the source commit and CI run
-only after the release is approved.
+The release provenance is recorded at runtime by the signed
+`release-manifest.json` and `cbe-report.json`; do not pre-fill a tag hash.
